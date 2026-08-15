@@ -1,6 +1,6 @@
-/* ============================================
-   DOM ELEMENTS
-============================================ */
+/* =========================================================
+   BASIC DOM
+========================================================= */
 
 const modeScreen = document.getElementById("mode-screen");
 const nameScreen = document.getElementById("name-screen");
@@ -89,9 +89,9 @@ const submitScoreBtn =
     document.getElementById("submit-score");
 
 
-/* ============================================
-   501 SCORING METHOD DOM
-============================================ */
+/* =========================================================
+   SCORING METHOD
+========================================================= */
 
 const methodButtons =
     document.querySelectorAll(".method-button");
@@ -106,29 +106,9 @@ const cameraScoringSection =
     document.getElementById("camera-scoring-section");
 
 
-/* ============================================
-   501 CAMERA DOM
-============================================ */
-
-const cameraVideo =
-    document.getElementById("camera-video");
-
-const cameraPlaceholder =
-    document.getElementById("camera-placeholder");
-
-const startCameraBtn =
-    document.getElementById("start-camera");
-
-const stopCameraBtn =
-    document.getElementById("stop-camera");
-
-const cameraStatus =
-    document.getElementById("camera-status");
-
-
-/* ============================================
-   CRICKET DOM ELEMENTS
-============================================ */
+/* =========================================================
+   CRICKET DOM
+========================================================= */
 
 const cricketTeamA =
     document.getElementById("cricket-team-a");
@@ -182,62 +162,9 @@ const cricketBackBtn =
     document.getElementById("cricket-back");
 
 
-/* ============================================
-   CRICKET CAMERA DOM
-============================================ */
-
-const cricketMethodButtons =
-    document.querySelectorAll(
-        ".cricket-method-button"
-    );
-
-const cricketTapSection =
-    document.getElementById(
-        "cricket-tap-section"
-    );
-
-const cricketCameraSection =
-    document.getElementById(
-        "cricket-camera-section"
-    );
-
-const cricketCameraVideo =
-    document.getElementById(
-        "cricket-camera-video"
-    );
-
-const cricketCameraPlaceholder =
-    document.getElementById(
-        "cricket-camera-placeholder"
-    );
-
-const cricketStartCameraBtn =
-    document.getElementById(
-        "cricket-start-camera"
-    );
-
-const cricketStopCameraBtn =
-    document.getElementById(
-        "cricket-stop-camera"
-    );
-
-const cricketCameraStatus =
-    document.getElementById(
-        "cricket-camera-status"
-    );
-
-
-/* ============================================
-   CAMERA STREAMS
-============================================ */
-
-let mainCameraStream = null;
-let cricketCameraStream = null;
-
-
-/* ============================================
-   GAME MODE
-============================================ */
+/* =========================================================
+   MODE SELECTION
+========================================================= */
 
 let selectedMode = "501";
 
@@ -248,8 +175,6 @@ modeButtons.forEach(button => {
 
         selectedMode = button.dataset.mode;
 
-        stopAllCameras();
-
         modeScreen.classList.add("hidden");
 
 
@@ -258,11 +183,8 @@ modeButtons.forEach(button => {
             nameScreenTitle.textContent =
                 "Enter Team Names";
 
-            p1Label.textContent =
-                "Team A:";
-
-            p2Label.textContent =
-                "Team B:";
+            p1Label.textContent = "Team A:";
+            p2Label.textContent = "Team B:";
 
             p1NameInput.placeholder =
                 "Team A";
@@ -293,9 +215,9 @@ modeButtons.forEach(button => {
 });
 
 
-/* ============================================
+/* =========================================================
    NAME SCREEN
-============================================ */
+========================================================= */
 
 continueToSetupBtn.addEventListener("click", () => {
 
@@ -306,7 +228,6 @@ continueToSetupBtn.addEventListener("click", () => {
                 ? "Team A"
                 : "Player 1"
         );
-
 
     const name2 =
         p2NameInput.value.trim() ||
@@ -319,8 +240,11 @@ continueToSetupBtn.addEventListener("click", () => {
 
     if (selectedMode === "cricket") {
 
-        cricketTeamA.textContent = name1;
-        cricketTeamB.textContent = name2;
+        cricketTeamA.textContent =
+            name1;
+
+        cricketTeamB.textContent =
+            name2;
 
         cricketBattingName.textContent =
             name2;
@@ -328,7 +252,9 @@ continueToSetupBtn.addEventListener("click", () => {
         cricketBowlingName.textContent =
             name1;
 
-        nameScreen.classList.add("hidden");
+        nameScreen.classList.add(
+            "hidden"
+        );
 
         cricketScreen.classList.remove(
             "hidden"
@@ -345,7 +271,9 @@ continueToSetupBtn.addEventListener("click", () => {
         p2NameDisplay.textContent =
             name2;
 
-        nameScreen.classList.add("hidden");
+        nameScreen.classList.add(
+            "hidden"
+        );
 
         setupScreen.classList.remove(
             "hidden"
@@ -354,17 +282,19 @@ continueToSetupBtn.addEventListener("click", () => {
 });
 
 
-/* ============================================
-   501 / SETS
-============================================ */
+/* =========================================================
+   501 / SETS VARIABLES
+========================================================= */
 
 let gameMode = "legs";
+
 let legsPerSet = 3;
 let setsToWin = 3;
+
 let startingScore = 501;
 
-let p1Score = startingScore;
-let p2Score = startingScore;
+let p1Score = 501;
+let p2Score = 501;
 
 let p1Legs = 0;
 let p2Legs = 0;
@@ -376,55 +306,58 @@ let currentSet = 1;
 let currentLeg = 1;
 
 let currentPlayer = 1;
+
 let dartsLeft = 3;
 
-let turnStartScoreP1 = startingScore;
-let turnStartScoreP2 = startingScore;
+let turnStartScoreP1 = 501;
+let turnStartScoreP2 = 501;
 
 
-/* ============================================
+/* =========================================================
    START MATCH
-============================================ */
+========================================================= */
 
 startMatchBtn.addEventListener("click", () => {
 
-    if (selectedMode === "501") {
-
-        gameMode = "legs";
-
-    } else if (selectedMode === "sets") {
-
-        gameMode = "sets";
-    }
-
+    gameMode =
+        selectedMode === "sets"
+            ? "sets"
+            : "legs";
 
     legsPerSet =
-        parseInt(legsPerSetInput.value) || 3;
+        parseInt(
+            legsPerSetInput.value
+        ) || 3;
 
     setsToWin =
-        parseInt(setsToWinInput.value) || 3;
+        parseInt(
+            setsToWinInput.value
+        ) || 3;
 
     startingScore =
-        parseInt(startingScoreInput.value) || 501;
-
+        parseInt(
+            startingScoreInput.value
+        ) || 501;
 
     resetMatch();
 
+    setupScreen.classList.add(
+        "hidden"
+    );
 
-    setupScreen.classList.add("hidden");
+    gameScreen.classList.remove(
+        "hidden"
+    );
 
-    gameScreen.classList.remove("hidden");
-
-
-    select501ScoringMethod("tap");
+    selectScoringMethod("tap");
 
     updateDisplay();
 });
 
 
-/* ============================================
-   RESET 501 MATCH
-============================================ */
+/* =========================================================
+   RESET MATCH
+========================================================= */
 
 function resetMatch() {
 
@@ -441,6 +374,7 @@ function resetMatch() {
     currentLeg = 1;
 
     currentPlayer = 1;
+
     dartsLeft = 3;
 
     turnStartScoreP1 =
@@ -449,32 +383,29 @@ function resetMatch() {
     turnStartScoreP2 =
         startingScore;
 
-
     modeLabel.textContent =
         gameMode === "legs"
-
             ? `Legs Only - First to ${setsToWin}`
-
-            : `Sets + Legs - ${legsPerSet} legs per set - First to ${setsToWin} sets`;
+            : `${legsPerSet} legs per set - First to ${setsToWin} sets`;
 }
 
 
-/* ============================================
-   501 SCORING METHOD
-============================================ */
+/* =========================================================
+   SCORING METHOD
+========================================================= */
 
 methodButtons.forEach(button => {
 
     button.addEventListener("click", () => {
 
-        select501ScoringMethod(
+        selectScoringMethod(
             button.dataset.method
         );
     });
 });
 
 
-function select501ScoringMethod(method) {
+function selectScoringMethod(method) {
 
     methodButtons.forEach(button => {
 
@@ -483,7 +414,6 @@ function select501ScoringMethod(method) {
             button.dataset.method === method
         );
     });
-
 
     tapScoringSection.classList.add(
         "hidden"
@@ -504,28 +434,33 @@ function select501ScoringMethod(method) {
             "hidden"
         );
 
-        stopMainCamera();
-
     } else if (method === "manual") {
 
         manualScoringSection.classList.remove(
             "hidden"
         );
 
-        stopMainCamera();
-
-    } else if (method === "camera") {
+    } else {
 
         cameraScoringSection.classList.remove(
             "hidden"
         );
     }
+
+
+    if (
+        method !== "camera" &&
+        window.DartsCamera
+    ) {
+
+        window.DartsCamera.stop();
+    }
 }
 
 
-/* ============================================
-   CREATE 501 DART BUTTONS
-============================================ */
+/* =========================================================
+   CREATE DART BUTTONS
+========================================================= */
 
 function createButtons501() {
 
@@ -560,9 +495,11 @@ function createButtons501() {
         double.className =
             "segment btn-score";
 
-        double.dataset.score = i * 2;
+        double.dataset.score =
+            i * 2;
 
-        double.textContent = "D" + i;
+        double.textContent =
+            "D" + i;
 
         doubles.appendChild(double);
 
@@ -573,9 +510,11 @@ function createButtons501() {
         treble.className =
             "segment btn-score";
 
-        treble.dataset.score = i * 3;
+        treble.dataset.score =
+            i * 3;
 
-        treble.textContent = "T" + i;
+        treble.textContent =
+            "T" + i;
 
         trebles.appendChild(treble);
     }
@@ -591,12 +530,11 @@ function createButtons501() {
                 "click",
                 () => {
 
-                    const score =
+                    handleDart501(
                         parseInt(
                             button.dataset.score
-                        );
-
-                    handleDart501(score);
+                        )
+                    );
                 }
             );
         });
@@ -606,9 +544,9 @@ function createButtons501() {
 createButtons501();
 
 
-/* ============================================
-   HANDLE 501 DART
-============================================ */
+/* =========================================================
+   HANDLE ONE DART
+========================================================= */
 
 function handleDart501(value) {
 
@@ -651,7 +589,9 @@ function handleDart501(value) {
 
             endTurn501("Bust!");
 
-        } else if (p1Score === 0) {
+        } else if (
+            p1Score === 0
+        ) {
 
             handleLegWin(1);
 
@@ -680,7 +620,9 @@ function handleDart501(value) {
 
             endTurn501("Bust!");
 
-        } else if (p2Score === 0) {
+        } else if (
+            p2Score === 0
+        ) {
 
             handleLegWin(2);
 
@@ -700,97 +642,107 @@ function handleDart501(value) {
 }
 
 
-/* ============================================
-   MANUAL VISIT
-============================================ */
+/*
+Expose the dart-scoring function to camera.js.
+camera.js does not need to know anything about the rest
+of the 501 game.
+*/
 
-submitScoreBtn.addEventListener(
-    "click",
-    () => {
+window.scoreDetectedDart501 =
+    function(points) {
 
-        const visitScore =
-            parseInt(scoreInput.value);
+        handleDart501(points);
+    };
+
+
+/* =========================================================
+   MANUAL SCORE
+========================================================= */
+
+submitScoreBtn.addEventListener("click", () => {
+
+    const visitScore =
+        parseInt(scoreInput.value);
+
+
+    if (
+        isNaN(visitScore) ||
+        visitScore < 0 ||
+        visitScore > 180
+    ) {
+
+        alert(
+            "Enter a valid visit score (0–180)"
+        );
+
+        return;
+    }
+
+
+    if (currentPlayer === 1) {
+
+        turnStartScoreP1 =
+            p1Score;
+
+        p1Score -= visitScore;
 
 
         if (
-            isNaN(visitScore) ||
-            visitScore < 0 ||
-            visitScore > 180
+            p1Score < 0 ||
+            p1Score === 1
         ) {
 
-            alert(
-                "Enter a valid visit score (0–180)"
-            );
+            p1Score =
+                turnStartScoreP1;
 
-            return;
-        }
+            endTurn501("Bust!");
 
+        } else if (
+            p1Score === 0
+        ) {
 
-        if (currentPlayer === 1) {
-
-            turnStartScoreP1 =
-                p1Score;
-
-            p1Score -= visitScore;
-
-
-            if (
-                p1Score < 0 ||
-                p1Score === 1
-            ) {
-
-                p1Score =
-                    turnStartScoreP1;
-
-                endTurn501("Bust!");
-
-            } else if (
-                p1Score === 0
-            ) {
-
-                handleLegWin(1);
-
-            } else {
-
-                endTurn501();
-            }
+            handleLegWin(1);
 
         } else {
 
-            turnStartScoreP2 =
-                p2Score;
-
-            p2Score -= visitScore;
-
-
-            if (
-                p2Score < 0 ||
-                p2Score === 1
-            ) {
-
-                p2Score =
-                    turnStartScoreP2;
-
-                endTurn501("Bust!");
-
-            } else if (
-                p2Score === 0
-            ) {
-
-                handleLegWin(2);
-
-            } else {
-
-                endTurn501();
-            }
+            endTurn501();
         }
 
+    } else {
 
-        scoreInput.value = "";
+        turnStartScoreP2 =
+            p2Score;
 
-        updateDisplay();
+        p2Score -= visitScore;
+
+
+        if (
+            p2Score < 0 ||
+            p2Score === 1
+        ) {
+
+            p2Score =
+                turnStartScoreP2;
+
+            endTurn501("Bust!");
+
+        } else if (
+            p2Score === 0
+        ) {
+
+            handleLegWin(2);
+
+        } else {
+
+            endTurn501();
+        }
     }
-);
+
+
+    scoreInput.value = "";
+
+    updateDisplay();
+});
 
 
 scoreInput.addEventListener(
@@ -805,9 +757,9 @@ scoreInput.addEventListener(
 );
 
 
-/* ============================================
+/* =========================================================
    END TURN
-============================================ */
+========================================================= */
 
 function endTurn501(message) {
 
@@ -822,14 +774,13 @@ function endTurn501(message) {
             ? 2
             : 1;
 
-
     dartsLeft = 3;
 }
 
 
-/* ============================================
-   LEG / SET WIN
-============================================ */
+/* =========================================================
+   LEG WIN
+========================================================= */
 
 function handleLegWin(player) {
 
@@ -858,7 +809,6 @@ function handleLegWin(player) {
 
                 p2Sets++;
             }
-
 
             p1Legs = 0;
             p2Legs = 0;
@@ -915,8 +865,11 @@ function handleLegWin(player) {
     }
 
 
-    p1Score = startingScore;
-    p2Score = startingScore;
+    p1Score =
+        startingScore;
+
+    p2Score =
+        startingScore;
 
     dartsLeft = 3;
 
@@ -928,9 +881,9 @@ function handleLegWin(player) {
 }
 
 
-/* ============================================
-   UPDATE 501 DISPLAY
-============================================ */
+/* =========================================================
+   DISPLAY
+========================================================= */
 
 function updateDisplay() {
 
@@ -957,9 +910,7 @@ function updateDisplay() {
 
     legSetStatus.textContent =
         gameMode === "sets"
-
             ? `Set ${currentSet} · Leg ${currentLeg}`
-
             : `Leg ${currentLeg}`;
 
 
@@ -967,36 +918,35 @@ function updateDisplay() {
         `Darts: ${dartsLeft}`;
 
 
-    updateTurnHighlight();
+    if (currentPlayer === 1) {
+
+        p1Box.classList.add(
+            "active"
+        );
+
+        p2Box.classList.remove(
+            "active"
+        );
+
+    } else {
+
+        p2Box.classList.add(
+            "active"
+        );
+
+        p1Box.classList.remove(
+            "active"
+        );
+    }
+
 
     updateCheckoutSuggestion();
 }
 
 
-/* ============================================
-   ACTIVE PLAYER
-============================================ */
-
-function updateTurnHighlight() {
-
-    if (currentPlayer === 1) {
-
-        p1Box.classList.add("active");
-
-        p2Box.classList.remove("active");
-
-    } else {
-
-        p2Box.classList.add("active");
-
-        p1Box.classList.remove("active");
-    }
-}
-
-
-/* ============================================
+/* =========================================================
    CHECKOUT
-============================================ */
+========================================================= */
 
 function updateCheckoutSuggestion() {
 
@@ -1004,7 +954,6 @@ function updateCheckoutSuggestion() {
         currentPlayer === 1
             ? p1Score
             : p2Score;
-
 
     checkoutText.textContent =
         getCheckoutRoute(score);
@@ -1022,350 +971,59 @@ function getCheckoutRoute(score) {
     }
 
 
-    switch (score) {
+    const routes = {
 
-        case 170:
-            return "T20, T20, Bull";
+        170: "T20, T20, Bull",
+        167: "T20, T19, Bull",
+        164: "T20, T18, Bull",
+        161: "T20, T17, Bull",
 
-        case 167:
-            return "T20, T19, Bull";
+        160: "T20, T20, D20",
+        158: "T20, T20, D19",
+        157: "T20, T19, D20",
+        156: "T20, T20, D18",
 
-        case 164:
-            return "T20, T18, Bull";
+        155: "T20, T19, D19",
+        154: "T20, T18, D20",
+        153: "T20, T19, D18",
+        152: "T20, T20, D16",
 
-        case 161:
-            return "T20, T17, Bull";
+        151: "T20, T17, D20",
+        150: "T20, T18, D18",
 
-        case 160:
-            return "T20, T20, D20";
+        149: "T20, T19, D16",
+        148: "T20, T16, D20",
 
-        case 158:
-            return "T20, T20, D19";
+        147: "T20, T17, D18",
+        146: "T20, T18, D16",
+        145: "T20, T15, D20",
+        144: "T20, T20, D12",
 
-        case 157:
-            return "T20, T19, D20";
+        141: "T20, T19, D12",
+        140: "T20, T20, D10",
 
-        case 156:
-            return "T20, T20, D18";
+        121: "T20, T11, D14",
+        120: "T20, 20, D20",
 
-        case 155:
-            return "T20, T19, D19";
+        100: "T20, D20",
 
-        case 154:
-            return "T20, T18, D20";
+        80: "T20, D10",
 
-        case 153:
-            return "T20, T19, D18";
+        40: "D20",
+        32: "D16",
+        24: "D12",
+        16: "D8"
+    };
 
-        case 152:
-            return "T20, T20, D16";
 
-        case 151:
-            return "T20, T17, D20";
-
-        case 150:
-            return "T20, T18, D18";
-
-        case 149:
-            return "T20, T19, D16";
-
-        case 148:
-            return "T20, T16, D20";
-
-        case 147:
-            return "T20, T17, D18";
-
-        case 146:
-            return "T20, T18, D16";
-
-        case 145:
-            return "T20, T15, D20";
-
-        case 144:
-            return "T20, T20, D12";
-
-        case 141:
-            return "T20, T19, D12";
-
-        case 140:
-            return "T20, T20, D10";
-
-        case 121:
-            return "T20, T11, D14";
-
-        case 120:
-            return "T20, 20, D20";
-
-        case 100:
-            return "T20, D20";
-
-        case 80:
-            return "T20, D10";
-
-        case 40:
-            return "D20";
-
-        case 32:
-            return "D16";
-
-        case 24:
-            return "D12";
-
-        case 16:
-            return "D8";
-
-        default:
-            return "Standard route";
-    }
+    return routes[score] ||
+        "Standard route";
 }
 
 
-updateDisplay();
-
-
-/* ============================================
-   CAMERA SUPPORT
-============================================ */
-
-function cameraSupported() {
-
-    return !!(
-        navigator.mediaDevices &&
-        navigator.mediaDevices.getUserMedia
-    );
-}
-
-
-/* ============================================
-   START MAIN CAMERA
-============================================ */
-
-startCameraBtn.addEventListener(
-    "click",
-    async () => {
-
-        stopMainCamera();
-
-
-        if (!cameraSupported()) {
-
-            setCameraStatus(
-                cameraStatus,
-                "Camera access is not supported in this browser or the page is not using a secure connection.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        try {
-
-            setCameraStatus(
-                cameraStatus,
-                "Starting camera...",
-                ""
-            );
-
-
-            mainCameraStream =
-                await navigator.mediaDevices
-                    .getUserMedia({
-
-                        audio: false,
-
-                        video: {
-                            facingMode: {
-                                ideal: "environment"
-                            },
-
-                            width: {
-                                ideal: 1920
-                            },
-
-                            height: {
-                                ideal: 1080
-                            }
-                        }
-                    });
-
-
-            cameraVideo.srcObject =
-                mainCameraStream;
-
-
-            cameraVideo.classList.add(
-                "camera-running"
-            );
-
-
-            cameraPlaceholder.classList.add(
-                "hidden"
-            );
-
-
-            startCameraBtn.disabled =
-                true;
-
-
-            stopCameraBtn.disabled =
-                false;
-
-
-            setCameraStatus(
-                cameraStatus,
-                "Camera running",
-                "success"
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Camera error:",
-                error
-            );
-
-
-            let message =
-                "Could not start the camera.";
-
-
-            if (
-                error.name ===
-                "NotAllowedError"
-            ) {
-
-                message =
-                    "Camera permission was denied.";
-
-            } else if (
-                error.name ===
-                "NotFoundError"
-            ) {
-
-                message =
-                    "No camera was found.";
-
-            } else if (
-                error.name ===
-                "NotReadableError"
-            ) {
-
-                message =
-                    "The camera is already being used by another app.";
-
-            } else if (
-                error.name ===
-                "SecurityError"
-            ) {
-
-                message =
-                    "The browser blocked camera access.";
-            }
-
-
-            setCameraStatus(
-                cameraStatus,
-                message,
-                "error"
-            );
-        }
-    }
-);
-
-
-/* ============================================
-   STOP MAIN CAMERA
-============================================ */
-
-stopCameraBtn.addEventListener(
-    "click",
-    () => {
-
-        stopMainCamera();
-    }
-);
-
-
-function stopMainCamera() {
-
-    if (mainCameraStream) {
-
-        mainCameraStream
-            .getTracks()
-            .forEach(track => {
-
-                track.stop();
-            });
-
-
-        mainCameraStream = null;
-    }
-
-
-    cameraVideo.srcObject = null;
-
-
-    cameraVideo.classList.remove(
-        "camera-running"
-    );
-
-
-    cameraPlaceholder.classList.remove(
-        "hidden"
-    );
-
-
-    startCameraBtn.disabled = false;
-
-    stopCameraBtn.disabled = true;
-
-
-    setCameraStatus(
-        cameraStatus,
-        "Camera ready to start",
-        ""
-    );
-}
-
-
-/* ============================================
-   CAMERA STATUS
-============================================ */
-
-function setCameraStatus(
-    element,
-    message,
-    type
-) {
-
-    element.textContent = message;
-
-
-    element.classList.remove(
-        "camera-success",
-        "camera-error"
-    );
-
-
-    if (type === "success") {
-
-        element.classList.add(
-            "camera-success"
-        );
-
-    } else if (type === "error") {
-
-        element.classList.add(
-            "camera-error"
-        );
-    }
-}
-
-
-/* ============================================
-   CRICKET MODE
-============================================ */
+/* =========================================================
+   CRICKET
+========================================================= */
 
 let cricketInnings = 1;
 
@@ -1381,71 +1039,13 @@ let cricketTarget = null;
 
 let cricketDartsLeft = 3;
 
-let cricketPhase = "bowling";
+let cricketPhase =
+    "bowling";
 
 
-/* ============================================
-   CRICKET SCORING METHOD
-============================================ */
-
-cricketMethodButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            selectCricketScoringMethod(
-                button.dataset.method
-            );
-        }
-    );
-});
-
-
-function selectCricketScoringMethod(method) {
-
-    cricketMethodButtons.forEach(
-        button => {
-
-            button.classList.toggle(
-                "active-method",
-                button.dataset.method === method
-            );
-        }
-    );
-
-
-    cricketTapSection.classList.add(
-        "hidden"
-    );
-
-    cricketCameraSection.classList.add(
-        "hidden"
-    );
-
-
-    if (method === "tap") {
-
-        cricketTapSection.classList.remove(
-            "hidden"
-        );
-
-        stopCricketCamera();
-
-    } else if (
-        method === "camera"
-    ) {
-
-        cricketCameraSection.classList.remove(
-            "hidden"
-        );
-    }
-}
-
-
-/* ============================================
+/* =========================================================
    CREATE CRICKET BUTTONS
-============================================ */
+========================================================= */
 
 function initCricketBoard() {
 
@@ -1464,7 +1064,6 @@ function initCricketBoard() {
             "cricket-bowl-trebles"
         );
 
-
     const batSingles =
         document.getElementById(
             "cricket-bat-singles"
@@ -1482,205 +1081,154 @@ function initCricketBoard() {
 
 
     if (
-        bowlSingles.children.length === 0
+        bowlSingles.children.length > 0
     ) {
 
-        for (let i = 1; i <= 20; i++) {
-
-            const bowlSingle =
-                document.createElement("button");
-
-            bowlSingle.className =
-                "segment btn-score";
-
-            bowlSingle.dataset.base = i;
-
-            bowlSingle.dataset.mult = 1;
-
-            bowlSingle.dataset.role =
-                "bowl";
-
-            bowlSingle.textContent = i;
-
-            bowlSingles.appendChild(
-                bowlSingle
-            );
-
-
-            const bowlDouble =
-                document.createElement("button");
-
-            bowlDouble.className =
-                "segment btn-score";
-
-            bowlDouble.dataset.base = i;
-
-            bowlDouble.dataset.mult = 2;
-
-            bowlDouble.dataset.role =
-                "bowl";
-
-            bowlDouble.textContent =
-                "D" + i;
-
-            bowlDoubles.appendChild(
-                bowlDouble
-            );
-
-
-            const bowlTreble =
-                document.createElement("button");
-
-            bowlTreble.className =
-                "segment btn-score";
-
-            bowlTreble.dataset.base = i;
-
-            bowlTreble.dataset.mult = 3;
-
-            bowlTreble.dataset.role =
-                "bowl";
-
-            bowlTreble.textContent =
-                "T" + i;
-
-            bowlTrebles.appendChild(
-                bowlTreble
-            );
-
-
-            const batSingle =
-                document.createElement("button");
-
-            batSingle.className =
-                "segment btn-score";
-
-            batSingle.dataset.base = i;
-
-            batSingle.dataset.mult = 1;
-
-            batSingle.dataset.role =
-                "bat";
-
-            batSingle.dataset.score =
-                i;
-
-            batSingle.textContent = i;
-
-            batSingles.appendChild(
-                batSingle
-            );
-
-
-            const batDouble =
-                document.createElement("button");
-
-            batDouble.className =
-                "segment btn-score";
-
-            batDouble.dataset.base = i;
-
-            batDouble.dataset.mult = 2;
-
-            batDouble.dataset.role =
-                "bat";
-
-            batDouble.dataset.score =
-                i * 2;
-
-            batDouble.textContent =
-                "D" + i;
-
-            batDoubles.appendChild(
-                batDouble
-            );
-
-
-            const batTreble =
-                document.createElement("button");
-
-            batTreble.className =
-                "segment btn-score";
-
-            batTreble.dataset.base = i;
-
-            batTreble.dataset.mult = 3;
-
-            batTreble.dataset.role =
-                "bat";
-
-            batTreble.dataset.score =
-                i * 3;
-
-            batTreble.textContent =
-                "T" + i;
-
-            batTrebles.appendChild(
-                batTreble
-            );
-        }
-
-
-        document
-            .querySelectorAll(
-                "#cricket-screen .segment"
-            )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const role =
-                            button.dataset.role;
-
-                        const base =
-                            parseInt(
-                                button.dataset.base
-                            );
-
-                        const mult =
-                            parseInt(
-                                button.dataset.mult
-                            );
-
-                        const score =
-                            button.dataset.score
-
-                                ? parseInt(
-                                    button.dataset.score
-                                )
-
-                                : null;
-
-
-                        handleCricketDart(
-                            role,
-                            base,
-                            mult,
-                            score
-                        );
-                    }
-                );
-            });
+        return;
     }
+
+
+    for (let i = 1; i <= 20; i++) {
+
+        createCricketButton(
+            bowlSingles,
+            i,
+            1,
+            "bowl",
+            String(i)
+        );
+
+        createCricketButton(
+            bowlDoubles,
+            i,
+            2,
+            "bowl",
+            "D" + i
+        );
+
+        createCricketButton(
+            bowlTrebles,
+            i,
+            3,
+            "bowl",
+            "T" + i
+        );
+
+
+        createCricketButton(
+            batSingles,
+            i,
+            1,
+            "bat",
+            String(i)
+        );
+
+        createCricketButton(
+            batDoubles,
+            i,
+            2,
+            "bat",
+            "D" + i
+        );
+
+        createCricketButton(
+            batTrebles,
+            i,
+            3,
+            "bat",
+            "T" + i
+        );
+    }
+
+
+    document
+        .querySelectorAll(
+            "#cricket-screen .segment"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const role =
+                        button.dataset.role;
+
+                    if (!role)
+                        return;
+
+
+                    handleCricketDart(
+
+                        role,
+
+                        parseInt(
+                            button.dataset.base
+                        ),
+
+                        parseInt(
+                            button.dataset.mult
+                        ),
+
+                        parseInt(
+                            button.dataset.score
+                        )
+                    );
+                }
+            );
+        });
 }
 
 
-/* ============================================
+function createCricketButton(
+    container,
+    base,
+    mult,
+    role,
+    label
+) {
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+    button.className =
+        "segment btn-score";
+
+    button.dataset.base =
+        base;
+
+    button.dataset.mult =
+        mult;
+
+    button.dataset.role =
+        role;
+
+    button.dataset.score =
+        base * mult;
+
+    button.textContent =
+        label;
+
+    container.appendChild(
+        button
+    );
+}
+
+
+/* =========================================================
    RESET CRICKET
-============================================ */
+========================================================= */
 
 function resetCricketMatch() {
 
     cricketInnings = 1;
 
-
     cricketTotalWickets =
         parseInt(
             cricketTotalWicketsInput.value
         ) || 11;
-
 
     cricketRuns = 0;
 
@@ -1692,13 +1240,8 @@ function resetCricketMatch() {
 
     cricketDartsLeft = 3;
 
-    cricketPhase = "bowling";
-
-
-    selectCricketScoringMethod(
-        "tap"
-    );
-
+    cricketPhase =
+        "bowling";
 
     updateCricketDisplay();
 }
@@ -1706,42 +1249,33 @@ function resetCricketMatch() {
 
 cricketStartMatchBtn.addEventListener(
     "click",
-    () => {
-
-        resetCricketMatch();
-    }
+    resetCricketMatch
 );
 
 
-/* ============================================
-   DECLARE
-============================================ */
+/* =========================================================
+   CRICKET DECLARE
+========================================================= */
 
 cricketDeclareBtn.addEventListener(
     "click",
     () => {
 
-        if (cricketInnings === 1) {
+        if (
+            cricketInnings === 1
+        ) {
 
             cricketTarget =
                 cricketRuns + 1;
 
-
             cricketInnings = 2;
 
 
-            const teamAName =
+            cricketBattingName.textContent =
                 cricketTeamA.textContent;
 
-            const teamBName =
-                cricketTeamB.textContent;
-
-
-            cricketBattingName.textContent =
-                teamAName;
-
             cricketBowlingName.textContent =
-                teamBName;
+                cricketTeamB.textContent;
 
 
             cricketRuns = 0;
@@ -1752,17 +1286,18 @@ cricketDeclareBtn.addEventListener(
 
             cricketDartsLeft = 3;
 
-            cricketPhase = "bowling";
+            cricketPhase =
+                "bowling";
 
 
             alert(
-                `Innings declared at ${cricketTarget - 1} runs.\n\nTarget: ${cricketTarget}`
+                `Innings declared.\nTarget: ${cricketTarget}`
             );
 
         } else {
 
             alert(
-                `Second innings declared at ${cricketRuns} runs.`
+                `Second innings declared at ${cricketRuns}.`
             );
         }
 
@@ -1772,9 +1307,9 @@ cricketDeclareBtn.addEventListener(
 );
 
 
-/* ============================================
-   MISS SCORING ZONE
-============================================ */
+/* =========================================================
+   CRICKET SPECIAL BUTTONS
+========================================================= */
 
 cricketMissBoardBtn.addEventListener(
     "click",
@@ -1789,7 +1324,7 @@ cricketMissBoardBtn.addEventListener(
         }
 
 
-        cricketRuns += 1;
+        cricketRuns++;
 
         cricketDartsLeft--;
 
@@ -1805,16 +1340,12 @@ cricketMissBoardBtn.addEventListener(
         }
 
 
-        checkCricketWinOrEnd();
+        checkCricketResult();
 
         updateCricketDisplay();
     }
 );
 
-
-/* ============================================
-   FALL OUT
-============================================ */
 
 cricketFallOutBtn.addEventListener(
     "click",
@@ -1829,46 +1360,24 @@ cricketFallOutBtn.addEventListener(
         }
 
 
-        cricketRuns += 1;
+        cricketRuns++;
 
 
         /*
-        Extra dart means the dart is replayed,
-        so darts left does NOT reduce.
+        Extra dart:
+        darts-left is NOT reduced.
         */
 
+        checkCricketResult();
 
         updateCricketDisplay();
     }
 );
 
 
-/* ============================================
-   BACK TO MENU
-============================================ */
-
-cricketBackBtn.addEventListener(
-    "click",
-    () => {
-
-        stopCricketCamera();
-
-
-        cricketScreen.classList.add(
-            "hidden"
-        );
-
-
-        modeScreen.classList.remove(
-            "hidden"
-        );
-    }
-);
-
-
-/* ============================================
-   HANDLE CRICKET DART
-============================================ */
+/* =========================================================
+   CRICKET DART
+========================================================= */
 
 function handleCricketDart(
     role,
@@ -1885,49 +1394,16 @@ function handleCricketDart(
     }
 
 
-    /* BOWLING */
-
     if (role === "bowl") {
 
         if (
-            base === cricketNextWicket
+            base ===
+            cricketNextWicket
         ) {
 
-            let wicketsTaken =
-                mult;
-
-
-            let remainingWickets =
-                cricketTotalWickets -
-                cricketWicketsLost;
-
-
-            if (
-                wicketsTaken >
-                remainingWickets
-            ) {
-
-                wicketsTaken =
-                    remainingWickets;
-            }
-
-
-            cricketWicketsLost +=
-                wicketsTaken;
-
-
-            cricketNextWicket +=
-                wicketsTaken;
-
-
-            if (
-                cricketNextWicket >
-                cricketTotalWickets
-            ) {
-
-                cricketNextWicket =
-                    cricketTotalWickets;
-            }
+            takeCricketWickets(
+                mult
+            );
         }
 
 
@@ -1944,57 +1420,21 @@ function handleCricketDart(
             cricketDartsLeft = 3;
         }
 
-
-    /* BATTING */
-
-    } else if (
-        role === "bat"
-    ) {
+    } else {
 
         if (
-            base === cricketNextWicket
+            base ===
+            cricketNextWicket
         ) {
 
-            let wicketsTaken =
-                mult;
-
-
-            let remainingWickets =
-                cricketTotalWickets -
-                cricketWicketsLost;
-
-
-            if (
-                wicketsTaken >
-                remainingWickets
-            ) {
-
-                wicketsTaken =
-                    remainingWickets;
-            }
-
-
-            cricketWicketsLost +=
-                wicketsTaken;
-
-
-            cricketNextWicket +=
-                wicketsTaken;
-
-
-            if (
-                cricketNextWicket >
-                cricketTotalWickets
-            ) {
-
-                cricketNextWicket =
-                    cricketTotalWickets;
-            }
+            takeCricketWickets(
+                mult
+            );
 
         } else {
 
             cricketRuns +=
-                score || 0;
+                score;
         }
 
 
@@ -2013,44 +1453,60 @@ function handleCricketDart(
     }
 
 
-    checkCricketWinOrEnd();
+    checkCricketResult();
 
     updateCricketDisplay();
 }
 
 
-/* ============================================
-   CHECK CRICKET RESULT
-============================================ */
+function takeCricketWickets(
+    amount
+) {
 
-function checkCricketWinOrEnd() {
+    const remaining =
+        cricketTotalWickets -
+        cricketWicketsLost;
+
+    const actual =
+        Math.min(
+            amount,
+            remaining
+        );
+
+    cricketWicketsLost +=
+        actual;
+
+    cricketNextWicket +=
+        actual;
+}
+
+
+/* =========================================================
+   CRICKET RESULT
+========================================================= */
+
+function checkCricketResult() {
 
     if (
         cricketWicketsLost >=
         cricketTotalWickets
     ) {
 
-        if (cricketInnings === 1) {
+        if (
+            cricketInnings === 1
+        ) {
 
             cricketTarget =
                 cricketRuns + 1;
 
-
             cricketInnings = 2;
 
 
-            const teamAName =
+            cricketBattingName.textContent =
                 cricketTeamA.textContent;
 
-            const teamBName =
-                cricketTeamB.textContent;
-
-
-            cricketBattingName.textContent =
-                teamAName;
-
             cricketBowlingName.textContent =
-                teamBName;
+                cricketTeamB.textContent;
 
 
             cricketRuns = 0;
@@ -2066,32 +1522,24 @@ function checkCricketWinOrEnd() {
 
 
             alert(
-                `All wickets down.\n\nFirst innings: ${cricketTarget - 1}\nTarget: ${cricketTarget}`
+                `All out.\nTarget: ${cricketTarget}`
             );
 
         } else {
 
             if (
-                cricketTarget === null
-            ) {
-
-                alert(
-                    `Second innings all out at ${cricketRuns}.`
-                );
-
-            } else if (
                 cricketRuns >=
                 cricketTarget
             ) {
 
                 alert(
-                    `${cricketBattingName.textContent} wins with ${cricketRuns} runs!`
+                    `${cricketBattingName.textContent} wins!`
                 );
 
             } else {
 
                 alert(
-                    `${cricketBowlingName.textContent} wins!\n\n${cricketBattingName.textContent} all out for ${cricketRuns}.\nTarget was ${cricketTarget}.`
+                    `${cricketBowlingName.textContent} wins!`
                 );
             }
         }
@@ -2101,285 +1549,73 @@ function checkCricketWinOrEnd() {
     if (
         cricketInnings === 2 &&
         cricketTarget !== null &&
-        cricketRuns >= cricketTarget
+        cricketRuns >=
+        cricketTarget
     ) {
 
         alert(
-            `${cricketBattingName.textContent} wins!\n\nTarget ${cricketTarget} reached.`
+            `${cricketBattingName.textContent} wins!`
         );
     }
 }
 
 
-/* ============================================
-   UPDATE CRICKET DISPLAY
-============================================ */
+/* =========================================================
+   CRICKET DISPLAY
+========================================================= */
 
 function updateCricketDisplay() {
 
     cricketInningsDisplay.textContent =
         cricketInnings;
 
-
     cricketTotalWicketsInput.value =
         cricketTotalWickets;
-
 
     cricketRunsDisplay.textContent =
         cricketRuns;
 
-
     cricketWicketsDisplay.textContent =
         cricketWicketsLost;
 
-
     cricketDangerDisplay.textContent =
-
         cricketNextWicket <=
         cricketTotalWickets
-
             ? cricketNextWicket
-
             : "–";
 
-
     cricketTargetDisplay.textContent =
-
         cricketTarget === null
-
             ? "–"
-
             : cricketTarget;
 
-
     cricketPhaseDisplay.textContent =
-
         cricketPhase === "bowling"
-
             ? "Bowling Turn"
-
             : "Batting Turn";
-
 
     cricketDartsLeftDisplay.textContent =
         cricketDartsLeft;
 }
 
 
-/* ============================================
-   CRICKET CAMERA
-============================================ */
+/* =========================================================
+   BACK
+========================================================= */
 
-cricketStartCameraBtn.addEventListener(
-    "click",
-    async () => {
-
-        stopCricketCamera();
-
-
-        if (!cameraSupported()) {
-
-            setCameraStatus(
-                cricketCameraStatus,
-                "Camera access is not supported in this browser or the page is not using a secure connection.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        try {
-
-            setCameraStatus(
-                cricketCameraStatus,
-                "Starting camera...",
-                ""
-            );
-
-
-            cricketCameraStream =
-                await navigator.mediaDevices
-                    .getUserMedia({
-
-                        audio: false,
-
-                        video: {
-
-                            facingMode: {
-                                ideal: "environment"
-                            },
-
-                            width: {
-                                ideal: 1920
-                            },
-
-                            height: {
-                                ideal: 1080
-                            }
-                        }
-                    });
-
-
-            cricketCameraVideo.srcObject =
-                cricketCameraStream;
-
-
-            cricketCameraVideo.classList.add(
-                "camera-running"
-            );
-
-
-            cricketCameraPlaceholder.classList.add(
-                "hidden"
-            );
-
-
-            cricketStartCameraBtn.disabled =
-                true;
-
-
-            cricketStopCameraBtn.disabled =
-                false;
-
-
-            setCameraStatus(
-                cricketCameraStatus,
-                "Camera running",
-                "success"
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Cricket camera error:",
-                error
-            );
-
-
-            let message =
-                "Could not start the camera.";
-
-
-            if (
-                error.name ===
-                "NotAllowedError"
-            ) {
-
-                message =
-                    "Camera permission was denied.";
-
-            } else if (
-                error.name ===
-                "NotFoundError"
-            ) {
-
-                message =
-                    "No camera was found.";
-
-            } else if (
-                error.name ===
-                "NotReadableError"
-            ) {
-
-                message =
-                    "The camera is already being used by another app.";
-
-            } else if (
-                error.name ===
-                "SecurityError"
-            ) {
-
-                message =
-                    "The browser blocked camera access.";
-            }
-
-
-            setCameraStatus(
-                cricketCameraStatus,
-                message,
-                "error"
-            );
-        }
-    }
-);
-
-
-cricketStopCameraBtn.addEventListener(
+cricketBackBtn.addEventListener(
     "click",
     () => {
 
-        stopCricketCamera();
+        cricketScreen.classList.add(
+            "hidden"
+        );
+
+        modeScreen.classList.remove(
+            "hidden"
+        );
     }
 );
 
 
-function stopCricketCamera() {
-
-    if (cricketCameraStream) {
-
-        cricketCameraStream
-            .getTracks()
-            .forEach(track => {
-
-                track.stop();
-            });
-
-
-        cricketCameraStream = null;
-    }
-
-
-    cricketCameraVideo.srcObject =
-        null;
-
-
-    cricketCameraVideo.classList.remove(
-        "camera-running"
-    );
-
-
-    cricketCameraPlaceholder.classList.remove(
-        "hidden"
-    );
-
-
-    cricketStartCameraBtn.disabled =
-        false;
-
-
-    cricketStopCameraBtn.disabled =
-        true;
-
-
-    setCameraStatus(
-        cricketCameraStatus,
-        "Camera ready to start",
-        ""
-    );
-}
-
-
-/* ============================================
-   STOP ALL CAMERAS
-============================================ */
-
-function stopAllCameras() {
-
-    stopMainCamera();
-
-    stopCricketCamera();
-}
-
-
-/* ============================================
-   STOP CAMERA WHEN PAGE CLOSES
-============================================ */
-
-window.addEventListener(
-    "beforeunload",
-    () => {
-
-        stopAllCameras();
-    }
-);
+updateDisplay();

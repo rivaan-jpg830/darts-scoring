@@ -13,443 +13,259 @@
 
 <body>
 
-    <!-- ============================= -->
-    <!-- GAME MODE MENU -->
-    <!-- ============================= -->
+<!-- =========================================================
+     MODE SCREEN
+========================================================= -->
 
-    <div id="mode-screen" class="card">
+<div id="mode-screen" class="card">
+    <h1 class="title">Darts Scoring</h1>
+    <p class="subtitle">Select Game Mode</p>
 
-        <h1 class="title">Darts Scoring</h1>
-
-        <p class="subtitle">Select Game Mode</p>
-
-        <div class="mode-buttons">
-
-            <button class="btn-primary mode-btn" data-mode="501">
-                501 / Legs
-            </button>
-
-            <button class="btn-primary mode-btn" data-mode="sets">
-                Sets + Legs
-            </button>
-
-            <button class="btn-primary mode-btn" data-mode="cricket">
-                Cricket
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- ============================= -->
-    <!-- PLAYER / TEAM NAME SCREEN -->
-    <!-- ============================= -->
-
-    <div id="name-screen" class="card hidden">
-
-        <h1 class="title" id="name-screen-title">
-            Enter Player Names
-        </h1>
-
-        <div class="setup-row">
-
-            <label for="p1-name-input" id="p1-label">
-                Player 1:
-            </label>
-
-            <input
-                type="text"
-                id="p1-name-input"
-                placeholder="Player 1"
-                autocomplete="off"
-            >
-
-        </div>
-
-        <div class="setup-row">
-
-            <label for="p2-name-input" id="p2-label">
-                Player 2:
-            </label>
-
-            <input
-                type="text"
-                id="p2-name-input"
-                placeholder="Player 2"
-                autocomplete="off"
-            >
-
-        </div>
-
-        <button id="continue-to-setup" class="btn-primary">
-            Continue
+    <div class="mode-buttons">
+        <button class="btn-primary mode-btn" data-mode="501">
+            501 / Legs
         </button>
 
-    </div>
-
-
-    <!-- ============================= -->
-    <!-- SETUP SCREEN -->
-    <!-- ============================= -->
-
-    <div id="setup-screen" class="card hidden">
-
-        <h1 class="title">Darts Match Setup</h1>
-
-        <div class="setup-row">
-
-            <label for="starting-score">
-                Starting Score:
-            </label>
-
-            <input
-                type="number"
-                id="starting-score"
-                value="501"
-                min="1"
-                inputmode="numeric"
-            >
-
-        </div>
-
-
-        <div class="setup-row">
-
-            <label for="legs-per-set">
-                Legs per Set:
-            </label>
-
-            <input
-                type="number"
-                id="legs-per-set"
-                value="3"
-                min="1"
-                inputmode="numeric"
-            >
-
-        </div>
-
-
-        <div class="setup-row">
-
-            <label for="sets-to-win">
-                Sets / Legs to Win:
-            </label>
-
-            <input
-                type="number"
-                id="sets-to-win"
-                value="3"
-                min="1"
-                inputmode="numeric"
-            >
-
-        </div>
-
-        <button id="start-match" class="btn-primary">
-            Start Match
+        <button class="btn-primary mode-btn" data-mode="sets">
+            Sets + Legs
         </button>
 
+        <button class="btn-primary mode-btn" data-mode="cricket">
+            Cricket
+        </button>
+    </div>
+</div>
+
+
+<!-- =========================================================
+     PLAYER / TEAM NAMES
+========================================================= -->
+
+<div id="name-screen" class="card hidden">
+
+    <h1 class="title" id="name-screen-title">
+        Enter Player Names
+    </h1>
+
+    <div class="setup-row">
+        <label id="p1-label" for="p1-name-input">Player 1:</label>
+
+        <input
+            id="p1-name-input"
+            type="text"
+            placeholder="Player 1"
+            autocomplete="off"
+        >
+    </div>
+
+    <div class="setup-row">
+        <label id="p2-label" for="p2-name-input">Player 2:</label>
+
+        <input
+            id="p2-name-input"
+            type="text"
+            placeholder="Player 2"
+            autocomplete="off"
+        >
+    </div>
+
+    <button id="continue-to-setup" class="btn-primary">
+        Continue
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     501 / SETS SETUP
+========================================================= -->
+
+<div id="setup-screen" class="card hidden">
+
+    <h1 class="title">Darts Match Setup</h1>
+
+    <div class="setup-row">
+        <label for="starting-score">Starting Score:</label>
+
+        <input
+            id="starting-score"
+            type="number"
+            value="501"
+            min="1"
+            inputmode="numeric"
+        >
+    </div>
+
+    <div class="setup-row">
+        <label for="legs-per-set">Legs per Set:</label>
+
+        <input
+            id="legs-per-set"
+            type="number"
+            value="3"
+            min="1"
+            inputmode="numeric"
+        >
+    </div>
+
+    <div class="setup-row">
+        <label for="sets-to-win">Sets / Legs to Win:</label>
+
+        <input
+            id="sets-to-win"
+            type="number"
+            value="3"
+            min="1"
+            inputmode="numeric"
+        >
+    </div>
+
+    <button id="start-match" class="btn-primary">
+        Start Match
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     501 / SETS GAME
+========================================================= -->
+
+<div id="game-screen" class="hidden">
+
+    <h1 class="title">Darts Scoring</h1>
+
+
+    <!-- MATCH STATUS -->
+
+    <div class="match-info">
+        <span id="mode-label" class="info-tag"></span>
+        <span id="leg-set-status" class="info-tag"></span>
+        <span id="darts-status" class="info-tag"></span>
     </div>
 
 
+    <!-- PLAYERS -->
 
-    <!-- ============================= -->
-    <!-- 501 / SETS GAME SCREEN -->
-    <!-- ============================= -->
+    <div class="players">
 
-    <div id="game-screen" class="hidden">
+        <div class="player card" id="p1-box">
 
-        <div class="top-section">
+            <h2 id="p1-name">Player 1</h2>
 
-            <h1 class="title">
-                Darts Scoring
-            </h1>
+            <p id="p1-score" class="score">
+                501
+            </p>
 
-            <div class="match-info">
-
-                <span id="mode-label" class="info-tag"></span>
-
-                <span id="leg-set-status" class="info-tag"></span>
-
-                <span id="darts-status" class="info-tag"></span>
-
+            <div class="stats">
+                <span id="p1-legs">Legs: 0</span>
+                <span id="p1-sets">Sets: 0</span>
             </div>
 
         </div>
 
 
-        <!-- PLAYER SCORES -->
+        <div class="player card" id="p2-box">
 
-        <div class="players">
+            <h2 id="p2-name">Player 2</h2>
 
-            <div class="player card" id="p1-box">
+            <p id="p2-score" class="score">
+                501
+            </p>
 
-                <h2 id="p1-name">
-                    Player 1
-                </h2>
-
-                <p id="p1-score" class="score">
-                    501
-                </p>
-
-                <div class="stats">
-
-                    <span id="p1-legs">
-                        Legs: 0
-                    </span>
-
-                    <span id="p1-sets">
-                        Sets: 0
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="player card" id="p2-box">
-
-                <h2 id="p2-name">
-                    Player 2
-                </h2>
-
-                <p id="p2-score" class="score">
-                    501
-                </p>
-
-                <div class="stats">
-
-                    <span id="p2-legs">
-                        Legs: 0
-                    </span>
-
-                    <span id="p2-sets">
-                        Sets: 0
-                    </span>
-
-                </div>
-
+            <div class="stats">
+                <span id="p2-legs">Legs: 0</span>
+                <span id="p2-sets">Sets: 0</span>
             </div>
 
         </div>
 
+    </div>
 
-        <!-- CHECKOUT -->
 
-        <div class="checkout card">
+    <!-- CHECKOUT -->
 
-            <span class="checkout-label">
-                Checkout
-            </span>
+    <div class="checkout card">
 
-            <span id="checkout-text" class="checkout-value">
-                No checkout available
-            </span>
+        <span class="checkout-label">
+            Checkout
+        </span>
+
+        <span id="checkout-text" class="checkout-value">
+            No checkout available
+        </span>
+
+    </div>
+
+
+    <!-- SCORING METHOD -->
+
+    <div class="scoring-method card">
+
+        <h2>Scoring Method</h2>
+
+        <div class="scoring-method-buttons">
+
+            <button
+                class="method-button active-method"
+                data-method="tap"
+            >
+                🎯 Tap Darts
+            </button>
+
+            <button
+                class="method-button"
+                data-method="manual"
+            >
+                ⌨ Manual Score
+            </button>
+
+            <button
+                class="method-button"
+                data-method="camera"
+            >
+                📷 Camera
+            </button>
 
         </div>
 
+    </div>
 
-        <!-- ============================= -->
-        <!-- SCORING METHOD -->
-        <!-- ============================= -->
 
-        <div class="scoring-method card">
+    <!-- TAP SCORING -->
 
-            <h2>Scoring Method</h2>
+    <div id="tap-scoring-section">
 
-            <div class="scoring-method-buttons">
+        <div class="dartboard card">
+
+            <h2>Singles</h2>
+            <div class="ring" id="singles"></div>
+
+            <h2>Doubles</h2>
+            <div class="ring" id="doubles"></div>
+
+            <h2>Trebles</h2>
+            <div class="ring" id="trebles"></div>
+
+            <h2>Bull</h2>
+
+            <div class="ring bull-ring">
 
                 <button
-                    class="method-button active-method"
-                    data-method="tap"
+                    class="segment btn-score bull-button"
+                    data-score="25"
                 >
-                    🎯 Tap Darts
+                    Outer Bull
+                    <span>25</span>
                 </button>
 
                 <button
-                    class="method-button"
-                    data-method="manual"
+                    class="segment btn-score bull-button"
+                    data-score="50"
                 >
-                    ⌨ Manual Score
+                    Bull
+                    <span>50</span>
                 </button>
-
-                <button
-                    class="method-button"
-                    data-method="camera"
-                >
-                    📷 Camera
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- ============================= -->
-        <!-- TAP DARTS SECTION -->
-        <!-- ============================= -->
-
-        <div id="tap-scoring-section">
-
-            <div class="dartboard card">
-
-                <h2>Singles</h2>
-
-                <div class="ring" id="singles"></div>
-
-
-                <h2>Doubles</h2>
-
-                <div class="ring" id="doubles"></div>
-
-
-                <h2>Trebles</h2>
-
-                <div class="ring" id="trebles"></div>
-
-
-                <h2>Bull</h2>
-
-                <div class="ring bull-ring">
-
-                    <button
-                        class="segment btn-score bull-button"
-                        data-score="25"
-                        data-base="25"
-                        data-mult="1"
-                    >
-                        Outer Bull
-                        <span>25</span>
-                    </button>
-
-                    <button
-                        class="segment btn-score bull-button"
-                        data-score="50"
-                        data-base="50"
-                        data-mult="1"
-                    >
-                        Bull
-                        <span>50</span>
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ============================= -->
-        <!-- MANUAL SCORE SECTION -->
-        <!-- ============================= -->
-
-        <div id="manual-scoring-section" class="hidden">
-
-            <div class="input-section card">
-
-                <h2>Enter Visit Score</h2>
-
-                <div class="manual-score-row">
-
-                    <input
-                        type="number"
-                        id="score-input"
-                        placeholder="0 - 180"
-                        min="0"
-                        max="180"
-                        inputmode="numeric"
-                    >
-
-                    <button
-                        id="submit-score"
-                        class="btn-primary"
-                    >
-                        Submit Visit
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ============================= -->
-        <!-- CAMERA SECTION -->
-        <!-- ============================= -->
-
-        <div id="camera-scoring-section" class="hidden">
-
-            <div class="camera-card card">
-
-                <h2>Camera Scoring</h2>
-
-                <p class="camera-description">
-                    Point your phone at the dartboard.
-                </p>
-
-                <div class="camera-container">
-
-                    <video
-                        id="camera-video"
-                        autoplay
-                        playsinline
-                        muted
-                    ></video>
-
-                    <div
-                        id="camera-placeholder"
-                        class="camera-placeholder"
-                    >
-                        📷
-                        <span>Camera is not running</span>
-                    </div>
-
-                </div>
-
-
-                <div class="camera-controls">
-
-                    <button
-                        id="start-camera"
-                        class="btn-primary"
-                    >
-                        Start Camera
-                    </button>
-
-                    <button
-                        id="stop-camera"
-                        class="btn-danger"
-                        disabled
-                    >
-                        Stop Camera
-                    </button>
-
-                </div>
-
-
-                <div
-                    id="camera-status"
-                    class="camera-status"
-                >
-                    Camera ready to start
-                </div>
-
-
-                <div class="camera-next-step">
-
-                    <strong>
-                        Automatic dart detection will be added next.
-                    </strong>
-
-                    <p>
-                        For now this lets us confirm the camera works correctly
-                        inside the scorer.
-                    </p>
-
-                </div>
 
             </div>
 
@@ -458,472 +274,240 @@
     </div>
 
 
+    <!-- MANUAL SCORING -->
 
-    <!-- ============================= -->
-    <!-- CRICKET SCREEN -->
-    <!-- ============================= -->
+    <div id="manual-scoring-section" class="hidden">
 
-    <div id="cricket-screen" class="hidden">
+        <div class="input-section card">
 
-        <h1 class="title">
-            Darts Cricket
-        </h1>
+            <h2>Enter Visit Score</h2>
 
-
-        <!-- CRICKET SCOREBOARD -->
-
-        <div class="cricket-info card">
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Team A
-                </span>
-
-                <span id="cricket-team-a" class="cricket-value">
-                    Team A
-                </span>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Team B
-                </span>
-
-                <span id="cricket-team-b" class="cricket-value">
-                    Team B
-                </span>
-
-            </div>
-
-
-            <hr>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Batting
-                </span>
-
-                <span
-                    id="cricket-batting-name"
-                    class="cricket-value cricket-runs"
-                >
-                    Batting
-                </span>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Bowling
-                </span>
-
-                <span
-                    id="cricket-bowling-name"
-                    class="cricket-value cricket-wickets"
-                >
-                    Bowling
-                </span>
-
-            </div>
-
-
-            <hr>
-
-
-            <div class="cricket-score-main">
-
-                <div class="cricket-score-box">
-
-                    <span class="cricket-score-title">
-                        RUNS
-                    </span>
-
-                    <span
-                        id="cricket-runs"
-                        class="cricket-big-number cricket-runs"
-                    >
-                        0
-                    </span>
-
-                </div>
-
-
-                <div class="cricket-score-box">
-
-                    <span class="cricket-score-title">
-                        WICKETS
-                    </span>
-
-                    <span
-                        id="cricket-wickets"
-                        class="cricket-big-number cricket-wickets"
-                    >
-                        0
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Innings
-                </span>
-
-                <span id="cricket-innings" class="cricket-value">
-                    1
-                </span>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Total Wickets
-                </span>
+            <div class="manual-score-row">
 
                 <input
+                    id="score-input"
                     type="number"
-                    id="cricket-total-wickets"
-                    value="11"
-                    min="1"
-                    max="20"
+                    min="0"
+                    max="180"
                     inputmode="numeric"
+                    placeholder="0 - 180"
                 >
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Next Wicket Number
-                </span>
-
-                <span
-                    id="cricket-danger"
-                    class="cricket-value cricket-danger"
-                >
-                    1
-                </span>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Target
-                </span>
-
-                <span
-                    id="cricket-target"
-                    class="cricket-value cricket-target"
-                >
-                    –
-                </span>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Phase
-                </span>
-
-                <span id="cricket-phase" class="cricket-value">
-                    Bowling Turn
-                </span>
-
-            </div>
-
-
-            <div class="cricket-row">
-
-                <span class="cricket-label">
-                    Darts Left
-                </span>
-
-                <span
-                    id="cricket-darts-left"
-                    class="cricket-value darts-left"
-                >
-                    3
-                </span>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- CRICKET CONTROLS -->
-
-        <div class="cricket-controls card">
-
-            <button
-                id="cricket-start-match"
-                class="btn-primary"
-            >
-                Start / Reset Match
-            </button>
-
-
-            <button
-                id="cricket-declare"
-                class="btn-warning"
-            >
-                Declare Innings
-            </button>
-
-
-            <button
-                id="cricket-miss-board"
-                class="btn-secondary"
-            >
-                Miss Scoring Zone
-                <span>+1 Run</span>
-            </button>
-
-
-            <button
-                id="cricket-fall-out"
-                class="btn-secondary"
-            >
-                Dart Falls Out
-                <span>+1 Run + Extra Dart</span>
-            </button>
-
-        </div>
-
-
-        <!-- CRICKET SCORING METHOD -->
-
-        <div class="scoring-method card">
-
-            <h2>Scoring Method</h2>
-
-            <div class="scoring-method-buttons cricket-method-buttons">
 
                 <button
-                    class="cricket-method-button active-method"
-                    data-method="tap"
+                    id="submit-score"
+                    class="btn-primary"
                 >
-                    🎯 Tap Darts
-                </button>
-
-                <button
-                    class="cricket-method-button"
-                    data-method="camera"
-                >
-                    📷 Camera
+                    Submit Visit
                 </button>
 
             </div>
 
         </div>
 
-
-        <!-- CRICKET TAP SCORING -->
-
-        <div id="cricket-tap-section">
-
-            <!-- BOWLING -->
-
-            <div class="dartboard card">
-
-                <h2 class="bowling-heading">
-                    Bowling
-                </h2>
-
-                <p class="section-help">
-                    Select exactly where the bowling dart lands.
-                </p>
+    </div>
 
 
-                <h3>Singles</h3>
+    <!-- =====================================================
+         CAMERA SCORING
+    ====================================================== -->
 
-                <div
-                    class="ring"
-                    id="cricket-bowl-singles"
-                ></div>
+    <div id="camera-scoring-section" class="hidden">
+
+        <div class="camera-card card">
+
+            <h2>Automatic Camera Scoring</h2>
+
+            <p class="camera-description">
+                Keep the phone completely still once the board is calibrated.
+            </p>
 
 
-                <h3>Doubles</h3>
+            <!-- CAMERA VIEW -->
 
-                <div
-                    class="ring"
-                    id="cricket-bowl-doubles"
-                ></div>
+            <div class="camera-container">
 
+                <video
+                    id="camera-video"
+                    autoplay
+                    playsinline
+                    muted
+                ></video>
 
-                <h3>Trebles</h3>
+                <canvas
+                    id="camera-overlay"
+                ></canvas>
 
                 <div
-                    class="ring"
-                    id="cricket-bowl-trebles"
-                ></div>
-
-            </div>
-
-
-
-            <!-- BATTING -->
-
-            <div class="dartboard card">
-
-                <h2 class="batting-heading">
-                    Batting
-                </h2>
-
-                <p class="section-help">
-                    Select exactly where the batting dart lands.
-                </p>
-
-
-                <h3>Singles</h3>
-
-                <div
-                    class="ring"
-                    id="cricket-bat-singles"
-                ></div>
-
-
-                <h3>Doubles</h3>
-
-                <div
-                    class="ring"
-                    id="cricket-bat-doubles"
-                ></div>
-
-
-                <h3>Trebles</h3>
-
-                <div
-                    class="ring"
-                    id="cricket-bat-trebles"
-                ></div>
-
-
-                <h3>Bull</h3>
-
-                <div class="ring bull-ring">
-
-                    <button
-                        class="segment btn-score bull-button"
-                        data-score="25"
-                        data-base="25"
-                        data-mult="1"
-                        data-role="bat"
-                    >
-                        Outer Bull
-                        <span>25</span>
-                    </button>
-
-                    <button
-                        class="segment btn-score bull-button"
-                        data-score="50"
-                        data-base="50"
-                        data-mult="1"
-                        data-role="bat"
-                    >
-                        Bull
-                        <span>50</span>
-                    </button>
-
+                    id="camera-placeholder"
+                    class="camera-placeholder"
+                >
+                    📷
+                    <span>Camera is not running</span>
                 </div>
 
             </div>
 
-        </div>
+
+            <!-- CAMERA START/STOP -->
+
+            <div class="camera-controls">
+
+                <button
+                    id="start-camera"
+                    class="btn-primary"
+                >
+                    Start Camera
+                </button>
+
+                <button
+                    id="stop-camera"
+                    class="btn-danger"
+                    disabled
+                >
+                    Stop Camera
+                </button>
+
+            </div>
 
 
-        <!-- CRICKET CAMERA -->
+            <div
+                id="camera-status"
+                class="camera-status"
+            >
+                Camera ready
+            </div>
 
-        <div
-            id="cricket-camera-section"
-            class="hidden"
-        >
 
-            <div class="camera-card card">
+            <!-- CALIBRATION -->
 
-                <h2>Cricket Camera Scoring</h2>
+            <div class="camera-stage">
 
-                <p class="camera-description">
-                    Point the camera at the board.
+                <h3>1. Calibrate Dartboard</h3>
+
+                <p>
+                    Press Calibrate and then tap these four points on the live image:
                 </p>
 
-                <div class="camera-container">
+                <ol class="calibration-list">
+                    <li>Top of the outer double ring at 20</li>
+                    <li>Right edge of the outer double ring</li>
+                    <li>Bottom edge of the outer double ring</li>
+                    <li>Left edge of the outer double ring</li>
+                </ol>
 
-                    <video
-                        id="cricket-camera-video"
-                        autoplay
-                        playsinline
-                        muted
-                    ></video>
+                <button
+                    id="start-calibration"
+                    class="btn-primary"
+                    disabled
+                >
+                    Calibrate Board
+                </button>
 
-                    <div
-                        id="cricket-camera-placeholder"
-                        class="camera-placeholder"
-                    >
-                        📷
-                        <span>Camera is not running</span>
-                    </div>
+                <button
+                    id="clear-calibration"
+                    class="btn-secondary"
+                    disabled
+                >
+                    Clear Calibration
+                </button>
 
+                <div id="calibration-status" class="camera-small-status">
+                    Not calibrated
                 </div>
 
+            </div>
 
-                <div class="camera-controls">
+
+            <!-- EMPTY BOARD -->
+
+            <div class="camera-stage">
+
+                <h3>2. Capture Empty Board</h3>
+
+                <p>
+                    Remove all darts from the board, then capture the reference image.
+                </p>
+
+                <button
+                    id="capture-empty-board"
+                    class="btn-primary"
+                    disabled
+                >
+                    Capture Empty Board
+                </button>
+
+                <div
+                    id="reference-status"
+                    class="camera-small-status"
+                >
+                    No reference captured
+                </div>
+
+            </div>
+
+
+            <!-- DETECT DART -->
+
+            <div class="camera-stage">
+
+                <h3>3. Throw One Dart</h3>
+
+                <p>
+                    Throw one dart, wait until the board is still, then press Detect Dart.
+                </p>
+
+                <button
+                    id="detect-dart"
+                    class="btn-primary"
+                    disabled
+                >
+                    Detect Dart
+                </button>
+
+            </div>
+
+
+            <!-- RESULT -->
+
+            <div
+                id="camera-detection-result"
+                class="detection-result hidden"
+            >
+
+                <span class="detection-label">
+                    DETECTED
+                </span>
+
+                <span
+                    id="detected-segment"
+                    class="detected-segment"
+                >
+                    T20
+                </span>
+
+                <span
+                    id="detected-points"
+                    class="detected-points"
+                >
+                    60 points
+                </span>
+
+
+                <div class="detection-actions">
 
                     <button
-                        id="cricket-start-camera"
-                        class="btn-primary"
+                        id="confirm-detection"
+                        class="btn-confirm"
                     >
-                        Start Camera
+                        ✓ Correct
                     </button>
 
                     <button
-                        id="cricket-stop-camera"
+                        id="reject-detection"
                         class="btn-danger"
-                        disabled
                     >
-                        Stop Camera
+                        ✕ Wrong
                     </button>
-
-                </div>
-
-
-                <div
-                    id="cricket-camera-status"
-                    class="camera-status"
-                >
-                    Camera ready to start
-                </div>
-
-
-                <div class="camera-next-step">
-
-                    <strong>
-                        Dart recognition will be added next.
-                    </strong>
-
-                    <p>
-                        Once working, camera hits will feed into the
-                        same Cricket rules as the tap buttons.
-                    </p>
 
                 </div>
 
@@ -931,19 +515,296 @@
 
         </div>
 
+    </div>
 
+</div>
+
+
+<!-- =========================================================
+     CRICKET
+========================================================= -->
+
+<div id="cricket-screen" class="hidden">
+
+    <h1 class="title">
+        Darts Cricket
+    </h1>
+
+
+    <div class="cricket-info card">
+
+        <div class="cricket-row">
+            <span class="cricket-label">Team A</span>
+            <span id="cricket-team-a" class="cricket-value">Team A</span>
+        </div>
+
+        <div class="cricket-row">
+            <span class="cricket-label">Team B</span>
+            <span id="cricket-team-b" class="cricket-value">Team B</span>
+        </div>
+
+        <hr>
+
+        <div class="cricket-row">
+            <span class="cricket-label">Batting</span>
+            <span id="cricket-batting-name" class="cricket-value cricket-runs">
+                Batting
+            </span>
+        </div>
+
+        <div class="cricket-row">
+            <span class="cricket-label">Bowling</span>
+            <span id="cricket-bowling-name" class="cricket-value cricket-wickets">
+                Bowling
+            </span>
+        </div>
+
+        <hr>
+
+
+        <div class="cricket-score-main">
+
+            <div class="cricket-score-box">
+
+                <span class="cricket-score-title">
+                    RUNS
+                </span>
+
+                <span
+                    id="cricket-runs"
+                    class="cricket-big-number cricket-runs"
+                >
+                    0
+                </span>
+
+            </div>
+
+
+            <div class="cricket-score-box">
+
+                <span class="cricket-score-title">
+                    WICKETS
+                </span>
+
+                <span
+                    id="cricket-wickets"
+                    class="cricket-big-number cricket-wickets"
+                >
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="cricket-row">
+            <span class="cricket-label">Innings</span>
+            <span id="cricket-innings" class="cricket-value">1</span>
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span class="cricket-label">
+                Total Wickets
+            </span>
+
+            <input
+                id="cricket-total-wickets"
+                type="number"
+                value="11"
+                min="1"
+                max="20"
+                inputmode="numeric"
+            >
+
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span class="cricket-label">
+                Next Wicket Number
+            </span>
+
+            <span
+                id="cricket-danger"
+                class="cricket-value cricket-danger"
+            >
+                1
+            </span>
+
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span class="cricket-label">
+                Target
+            </span>
+
+            <span
+                id="cricket-target"
+                class="cricket-value cricket-target"
+            >
+                –
+            </span>
+
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span class="cricket-label">
+                Phase
+            </span>
+
+            <span
+                id="cricket-phase"
+                class="cricket-value"
+            >
+                Bowling Turn
+            </span>
+
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span class="cricket-label">
+                Darts Left
+            </span>
+
+            <span
+                id="cricket-darts-left"
+                class="cricket-value darts-left"
+            >
+                3
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- CRICKET CONTROLS -->
+
+    <div class="cricket-controls card">
 
         <button
-            id="cricket-back"
-            class="btn-primary back-button"
+            id="cricket-start-match"
+            class="btn-primary"
         >
-            ← Back to Game Menu
+            Start / Reset Match
+        </button>
+
+        <button
+            id="cricket-declare"
+            class="btn-warning"
+        >
+            Declare Innings
+        </button>
+
+        <button
+            id="cricket-miss-board"
+            class="btn-secondary"
+        >
+            Miss Scoring Zone
+            <span>+1 Run</span>
+        </button>
+
+        <button
+            id="cricket-fall-out"
+            class="btn-secondary"
+        >
+            Dart Falls Out
+            <span>+1 Run + Extra Dart</span>
         </button>
 
     </div>
 
 
-    <script src="script.js"></script>
+    <!-- CRICKET TAP BOARD -->
+
+    <div class="dartboard card">
+
+        <h2 class="bowling-heading">
+            Bowling
+        </h2>
+
+        <h3>Singles</h3>
+        <div class="ring" id="cricket-bowl-singles"></div>
+
+        <h3>Doubles</h3>
+        <div class="ring" id="cricket-bowl-doubles"></div>
+
+        <h3>Trebles</h3>
+        <div class="ring" id="cricket-bowl-trebles"></div>
+
+    </div>
+
+
+    <div class="dartboard card">
+
+        <h2 class="batting-heading">
+            Batting
+        </h2>
+
+        <h3>Singles</h3>
+        <div class="ring" id="cricket-bat-singles"></div>
+
+        <h3>Doubles</h3>
+        <div class="ring" id="cricket-bat-doubles"></div>
+
+        <h3>Trebles</h3>
+        <div class="ring" id="cricket-bat-trebles"></div>
+
+        <h3>Bull</h3>
+
+        <div class="ring bull-ring">
+
+            <button
+                class="segment btn-score bull-button"
+                data-score="25"
+                data-base="25"
+                data-mult="1"
+                data-role="bat"
+            >
+                Outer Bull
+                <span>25</span>
+            </button>
+
+            <button
+                class="segment btn-score bull-button"
+                data-score="50"
+                data-base="50"
+                data-mult="1"
+                data-role="bat"
+            >
+                Bull
+                <span>50</span>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="cricket-back"
+        class="btn-primary back-button"
+    >
+        ← Back to Game Menu
+    </button>
+
+</div>
+
+
+<script src="script.js"></script>
+
+<!-- CAMERA CODE MUST COME AFTER SCRIPT.JS -->
+<script src="camera.js"></script>
 
 </body>
 </html>
