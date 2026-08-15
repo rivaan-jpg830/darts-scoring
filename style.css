@@ -1,0 +1,1181 @@
+/* =================================
+   GLOBAL
+================================= */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #18242c 0%,
+            #0d0d0d 45%,
+            #050505 100%
+        );
+
+    color: #e6e6e6;
+
+    text-align: center;
+
+    padding: 15px;
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    overflow-x: hidden;
+}
+
+
+/* =================================
+   HEADINGS
+================================= */
+
+.title {
+    font-size: 32px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #00aaff;
+
+    text-shadow:
+        0 0 10px rgba(0, 170, 255, 0.7);
+}
+
+.subtitle {
+    color: #aaaaaa;
+    font-size: 17px;
+    margin-bottom: 25px;
+}
+
+h2 {
+    margin-top: 12px;
+}
+
+h3 {
+    color: #bbbbbb;
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+
+
+/* =================================
+   CARDS
+================================= */
+
+.card {
+    background:
+        linear-gradient(
+            145deg,
+            #1b1b1b,
+            #121212
+        );
+
+    padding: 20px;
+
+    border-radius: 14px;
+
+    border: 1px solid #252525;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(0, 170, 255, 0.08);
+
+    margin: 15px auto;
+
+    max-width: 700px;
+
+    width: 100%;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =================================
+   SETUP
+================================= */
+
+.setup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.setup-row label {
+    font-weight: 600;
+    color: #cccccc;
+}
+
+.setup-row input,
+.setup-row select {
+    padding: 11px;
+    width: 220px;
+    max-width: 55%;
+
+    background: #090909;
+    border: 1px solid #444;
+    color: #ffffff;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+    outline: none;
+}
+
+.setup-row input:focus,
+.setup-row select:focus {
+    border-color: #00aaff;
+
+    box-shadow:
+        0 0 8px rgba(0, 170, 255, 0.5);
+}
+
+
+/* =================================
+   BUTTONS
+================================= */
+
+button {
+    font-family: inherit;
+    touch-action: manipulation;
+}
+
+.btn-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #00aaff,
+            #0077cc
+        );
+
+    border: none;
+
+    min-height: 48px;
+
+    padding: 12px 22px;
+
+    color: #ffffff;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.1s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+.btn-primary:hover {
+    box-shadow:
+        0 0 15px rgba(0, 170, 255, 0.7);
+}
+
+.btn-primary:active {
+    transform: scale(0.96);
+}
+
+.btn-secondary {
+    background:
+        linear-gradient(
+            135deg,
+            #008844,
+            #006633
+        );
+
+    border: none;
+
+    min-height: 50px;
+
+    padding: 11px 17px;
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+}
+
+.btn-secondary span {
+    display: block;
+
+    font-size: 12px;
+
+    color: #baffd7;
+
+    margin-top: 2px;
+}
+
+.btn-warning {
+    background:
+        linear-gradient(
+            135deg,
+            #dd8800,
+            #aa5500
+        );
+
+    border: none;
+
+    color: white;
+
+    font-weight: 600;
+    font-size: 15px;
+
+    min-height: 50px;
+
+    padding: 11px 18px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+}
+
+.btn-danger {
+    background:
+        linear-gradient(
+            135deg,
+            #d93636,
+            #941c1c
+        );
+
+    border: none;
+
+    color: #ffffff;
+
+    font-weight: 600;
+
+    font-size: 15px;
+
+    min-height: 48px;
+
+    padding: 11px 18px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+}
+
+.btn-danger:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+
+/* =================================
+   MODE MENU
+================================= */
+
+.mode-buttons {
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+
+    max-width: 420px;
+
+    margin: 0 auto;
+}
+
+.mode-btn {
+    width: 100%;
+    min-height: 60px;
+    font-size: 19px;
+}
+
+
+/* =================================
+   MATCH INFORMATION
+================================= */
+
+.match-info {
+    display: flex;
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-bottom: 15px;
+}
+
+.info-tag {
+    background: #101010;
+
+    padding: 8px 12px;
+
+    border-radius: 7px;
+
+    border: 1px solid #333;
+
+    font-size: 14px;
+
+    white-space: nowrap;
+}
+
+
+/* =================================
+   PLAYERS
+================================= */
+
+.players {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    max-width: 700px;
+
+    margin: 0 auto;
+}
+
+.player {
+    width: 100%;
+    margin: 0;
+
+    transition:
+        border 0.2s,
+        box-shadow 0.2s;
+}
+
+.player h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+
+    overflow-wrap: anywhere;
+}
+
+.score {
+    font-size: clamp(42px, 10vw, 64px);
+
+    font-weight: 700;
+
+    margin: 8px 0;
+
+    color: #00aaff;
+
+    text-shadow:
+        0 0 12px rgba(0, 153, 221, 0.7);
+}
+
+.stats {
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 6px 15px;
+
+    color: #bbbbbb;
+
+    font-size: 14px;
+}
+
+.active {
+    border: 2px solid #00aaff;
+
+    box-shadow:
+        0 0 18px rgba(0, 170, 255, 0.65);
+}
+
+
+/* =================================
+   CHECKOUT
+================================= */
+
+.checkout {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 14px;
+}
+
+.checkout-label {
+    font-size: 13px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    color: #888888;
+}
+
+.checkout-value {
+    font-size: 21px;
+
+    font-weight: 700;
+
+    color: #00aaff;
+}
+
+
+/* =================================
+   SCORING METHOD
+================================= */
+
+.scoring-method h2 {
+    color: #00aaff;
+    margin-top: 0;
+}
+
+.scoring-method-buttons {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+}
+
+.cricket-method-buttons {
+    grid-template-columns:
+        repeat(2, 1fr);
+}
+
+.method-button,
+.cricket-method-button {
+    background: #171717;
+
+    border: 1px solid #3d3d3d;
+
+    color: #d7d7d7;
+
+    border-radius: 9px;
+
+    min-height: 52px;
+
+    padding: 8px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.method-button:hover,
+.cricket-method-button:hover {
+    border-color: #00aaff;
+}
+
+.active-method {
+    background:
+        linear-gradient(
+            135deg,
+            #008dd4,
+            #005c91
+        ) !important;
+
+    border-color: #00bbff !important;
+
+    color: white !important;
+
+    box-shadow:
+        0 0 12px rgba(0, 170, 255, 0.5);
+}
+
+
+/* =================================
+   MANUAL SCORE
+================================= */
+
+.input-section h2 {
+    color: #00aaff;
+    margin-top: 0;
+}
+
+.manual-score-row {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.input-section input {
+    padding: 12px;
+
+    min-height: 48px;
+
+    width: 220px;
+
+    max-width: 55%;
+
+    background: #090909;
+
+    border: 1px solid #444;
+
+    color: white;
+
+    border-radius: 8px;
+
+    font-size: 18px;
+
+    text-align: center;
+}
+
+
+/* =================================
+   DART SCORING AREA
+================================= */
+
+.dartboard {
+    max-width: 800px;
+}
+
+.dartboard h2 {
+    color: #00aaff;
+
+    margin-top: 20px;
+
+    margin-bottom: 10px;
+}
+
+.section-help {
+    margin-top: -5px;
+
+    font-size: 13px;
+
+    color: #777777;
+}
+
+.ring {
+    display: grid;
+
+    grid-template-columns:
+        repeat(10, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-bottom: 20px;
+}
+
+.btn-score {
+    background:
+        linear-gradient(
+            145deg,
+            #252525,
+            #171717
+        );
+
+    border: 1px solid #3b3b3b;
+
+    min-width: 0;
+
+    min-height: 45px;
+
+    padding: 8px 3px;
+
+    border-radius: 7px;
+
+    color: #eeeeee;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    touch-action: manipulation;
+
+    transition:
+        transform 0.08s,
+        background 0.15s,
+        box-shadow 0.15s;
+}
+
+.btn-score:hover {
+    background: #333333;
+
+    box-shadow:
+        0 0 8px rgba(0, 170, 255, 0.7);
+}
+
+.btn-score:active {
+    transform: scale(0.90);
+
+    background: #006fa8;
+
+    box-shadow:
+        0 0 12px #00aaff;
+}
+
+.bull-ring {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+.bull-button {
+    min-height: 58px;
+
+    font-size: 16px;
+}
+
+.bull-button span {
+    display: block;
+
+    color: #00ff88;
+
+    margin-top: 2px;
+}
+
+
+/* =================================
+   CAMERA
+================================= */
+
+.camera-card h2 {
+    color: #00aaff;
+    margin-top: 0;
+}
+
+.camera-description {
+    color: #aaaaaa;
+}
+
+.camera-container {
+    position: relative;
+
+    width: 100%;
+
+    max-width: 620px;
+
+    aspect-ratio: 4 / 3;
+
+    background: #050505;
+
+    border: 2px solid #303030;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    margin: 15px auto;
+}
+
+.camera-container video {
+    display: none;
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.camera-container video.camera-running {
+    display: block;
+}
+
+.camera-placeholder {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    font-size: 60px;
+
+    color: #555555;
+}
+
+.camera-placeholder span {
+    font-size: 15px;
+
+    color: #888888;
+}
+
+.camera-controls {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+.camera-status {
+    background: #0b0b0b;
+
+    border: 1px solid #303030;
+
+    border-radius: 8px;
+
+    padding: 10px;
+
+    margin-top: 12px;
+
+    color: #bbbbbb;
+}
+
+.camera-status.camera-success {
+    border-color: #008844;
+
+    color: #00ff88;
+}
+
+.camera-status.camera-error {
+    border-color: #aa2222;
+
+    color: #ff6666;
+}
+
+.camera-next-step {
+    margin-top: 15px;
+
+    padding: 12px;
+
+    background: rgba(0, 170, 255, 0.08);
+
+    border: 1px solid rgba(0, 170, 255, 0.25);
+
+    border-radius: 8px;
+
+    color: #aaaaaa;
+}
+
+.camera-next-step strong {
+    color: #00aaff;
+}
+
+.camera-next-step p {
+    margin-bottom: 0;
+}
+
+
+/* =================================
+   CRICKET
+================================= */
+
+.cricket-info {
+    border-left: 4px solid #00ff88;
+}
+
+.cricket-info hr {
+    border: 0;
+
+    border-top: 1px solid #292929;
+
+    margin: 14px 0;
+}
+
+.cricket-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 5px 0;
+
+    text-align: left;
+}
+
+.cricket-label {
+    font-weight: 600;
+
+    color: #aaaaaa;
+}
+
+.cricket-value {
+    font-weight: 700;
+
+    text-align: right;
+}
+
+.cricket-row input {
+    width: 75px;
+
+    padding: 8px;
+
+    background: #090909;
+
+    color: white;
+
+    border: 1px solid #444;
+
+    border-radius: 7px;
+
+    font-size: 16px;
+
+    text-align: center;
+}
+
+.cricket-score-main {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin: 15px 0;
+}
+
+.cricket-score-box {
+    background: #0b0b0b;
+
+    border-radius: 10px;
+
+    padding: 14px 5px;
+
+    border: 1px solid #292929;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.cricket-score-title {
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+    color: #888888;
+}
+
+.cricket-big-number {
+    font-size: 48px;
+
+    font-weight: 800;
+}
+
+.cricket-runs {
+    color: #00ff88;
+
+    text-shadow:
+        0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+.cricket-wickets {
+    color: #ff5555;
+
+    text-shadow:
+        0 0 8px rgba(255, 85, 85, 0.6);
+}
+
+.cricket-danger {
+    color: #ffdd55;
+
+    text-shadow:
+        0 0 8px rgba(255, 221, 85, 0.6);
+}
+
+.cricket-target {
+    color: #00ff88;
+}
+
+.darts-left {
+    color: #00aaff;
+
+    font-size: 20px;
+}
+
+.cricket-controls {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+.cricket-controls button {
+    width: 100%;
+}
+
+.bowling-heading {
+    color: #ff5555 !important;
+}
+
+.batting-heading {
+    color: #00ff88 !important;
+}
+
+.back-button {
+    display: block;
+
+    margin: 20px auto 30px;
+
+    width: min(100%, 400px);
+}
+
+
+/* =================================
+   TABLET
+================================= */
+
+@media (max-width: 800px) {
+
+    body {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .ring {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 8px;
+    }
+
+    .btn-score {
+        min-height: 50px;
+
+        font-size: 15px;
+    }
+}
+
+
+/* =================================
+   PHONE
+================================= */
+
+@media (max-width: 550px) {
+
+    body {
+        padding:
+            8px
+            8px
+            25px;
+    }
+
+    .title {
+        font-size: 27px;
+        margin-top: 8px;
+    }
+
+    .card {
+        border-radius: 10px;
+
+        padding: 14px;
+
+        margin: 10px auto;
+    }
+
+
+    .setup-row {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 6px;
+    }
+
+    .setup-row input,
+    .setup-row select {
+        width: 100%;
+
+        max-width: none;
+
+        min-height: 46px;
+    }
+
+
+    .players {
+        gap: 7px;
+    }
+
+    .player {
+        padding:
+            12px 5px;
+    }
+
+    .player h2 {
+        font-size: 16px;
+    }
+
+    .score {
+        font-size: 42px;
+    }
+
+    .stats {
+        font-size: 12px;
+
+        flex-direction: column;
+
+        gap: 2px;
+    }
+
+
+    .match-info {
+        gap: 5px;
+    }
+
+    .info-tag {
+        font-size: 11px;
+
+        padding:
+            6px 8px;
+    }
+
+
+    .scoring-method-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .cricket-method-buttons {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .manual-score-row {
+        display: grid;
+
+        grid-template-columns:
+            1fr auto;
+    }
+
+    .input-section input {
+        width: 100%;
+
+        max-width: none;
+
+        min-width: 0;
+    }
+
+
+    .dartboard {
+        padding:
+            12px 8px;
+    }
+
+    .ring {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 6px;
+
+        margin-bottom: 18px;
+    }
+
+    .btn-score {
+        min-height: 52px;
+
+        padding:
+            8px 2px;
+
+        font-size: 15px;
+    }
+
+    .bull-ring {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .camera-container {
+        aspect-ratio: 3 / 4;
+    }
+
+    .camera-controls {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .cricket-info {
+        padding:
+            14px 12px;
+    }
+
+    .cricket-row {
+        font-size: 14px;
+    }
+
+    .cricket-big-number {
+        font-size: 42px;
+    }
+
+    .cricket-controls {
+        grid-template-columns:
+            1fr;
+    }
+
+    .cricket-controls button {
+        min-height: 52px;
+    }
+}
+
+
+/* =================================
+   VERY SMALL PHONES
+================================= */
+
+@media (max-width: 360px) {
+
+    .title {
+        font-size: 24px;
+    }
+
+    .player h2 {
+        font-size: 14px;
+    }
+
+    .score {
+        font-size: 36px;
+    }
+
+    .ring {
+        gap: 4px;
+    }
+
+    .btn-score {
+        font-size: 13px;
+
+        min-height: 48px;
+    }
+
+    .info-tag {
+        font-size: 10px;
+    }
+}
