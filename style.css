@@ -1,25 +1,15 @@
-/* =========================================================
-   GLOBAL
-========================================================= */
-
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
-
 
 html {
     width: 100%;
     min-height: 100%;
 }
 
-
 body {
-
-    font-family:
-        "Segoe UI",
-        Arial,
-        sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
 
     background:
         radial-gradient(
@@ -30,78 +20,50 @@ body {
         );
 
     color: #e6e6e6;
-
     text-align: center;
 
     padding: 15px;
-
     margin: 0;
 
     min-height: 100vh;
-
     overflow-x: hidden;
 }
 
-
-
 /* =========================================================
-   TITLES
+   HEADINGS
 ========================================================= */
 
 .title {
-
     font-size: 32px;
-
-    margin:
-        5px
-        0
-        10px;
+    margin: 5px 0 10px;
 
     color: #00aaff;
 
     text-shadow:
-        0 0 10px
-        rgba(
-            0,
-            170,
-            255,
-            0.7
-        );
+        0 0 10px rgba(0, 170, 255, 0.7);
 }
-
 
 .subtitle {
-
     color: #aaaaaa;
-
     font-size: 17px;
-
     margin-bottom: 25px;
 }
-
 
 h2 {
     margin-top: 12px;
 }
 
-
 h3 {
-
     color: #bbbbbb;
-
     margin-top: 18px;
-
     margin-bottom: 8px;
 }
-
-
 
 /* =========================================================
    CARDS
 ========================================================= */
 
 .card {
-
     background:
         linear-gradient(
             145deg,
@@ -112,133 +74,79 @@ h3 {
     padding: 20px;
 
     border-radius: 14px;
-
-    border:
-        1px solid
-        #252525;
+    border: 1px solid #252525;
 
     box-shadow:
-        0 4px 20px
-        rgba(
-            0,
-            0,
-            0,
-            0.5
-        ),
-        0 0 20px
-        rgba(
-            0,
-            170,
-            255,
-            0.08
-        );
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(0, 170, 255, 0.08);
 
-    margin:
-        15px
-        auto;
+    margin: 15px auto;
 
     max-width: 700px;
-
     width: 100%;
 }
-
 
 .hidden {
     display: none !important;
 }
-
-
 
 /* =========================================================
    SETUP
 ========================================================= */
 
 .setup-row {
-
     display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
+    justify-content: space-between;
+    align-items: center;
 
     gap: 15px;
 
-    margin-bottom:
-        16px;
+    margin-bottom: 16px;
 
     text-align: left;
 }
 
-
 .setup-row label {
-
     font-weight: 600;
-
     color: #cccccc;
 }
 
-
 .setup-row input,
 .setup-row select {
-
     padding: 11px;
 
     width: 220px;
-
     max-width: 55%;
 
-    background:
-        #090909;
+    background: #090909;
 
-    border:
-        1px solid
-        #444444;
+    border: 1px solid #444444;
 
     color: white;
 
     border-radius: 8px;
 
     font-size: 16px;
-
     outline: none;
 }
 
-
 .setup-row input:focus {
-
-    border-color:
-        #00aaff;
+    border-color: #00aaff;
 
     box-shadow:
-        0 0 8px
-        rgba(
-            0,
-            170,
-            255,
-            0.5
-        );
+        0 0 8px rgba(0, 170, 255, 0.5);
 }
-
-
 
 /* =========================================================
    BUTTONS
 ========================================================= */
 
 button {
-
-    font-family:
-        inherit;
-
-    touch-action:
-        manipulation;
+    font-family: inherit;
+    touch-action: manipulation;
 }
 
-
 .btn-primary {
-
     background:
         linear-gradient(
             135deg,
@@ -248,54 +156,30 @@ button {
 
     border: none;
 
-    min-height:
-        48px;
+    min-height: 48px;
 
-    padding:
-        12px
-        22px;
+    padding: 12px 22px;
 
-    color:
-        white;
+    color: white;
 
-    font-size:
-        16px;
+    font-size: 16px;
+    font-weight: 600;
 
-    font-weight:
-        600;
+    border-radius: 9px;
 
-    border-radius:
-        9px;
-
-    cursor:
-        pointer;
+    cursor: pointer;
 }
-
 
 .btn-primary:hover {
-
     box-shadow:
-        0 0 15px
-        rgba(
-            0,
-            170,
-            255,
-            0.7
-        );
+        0 0 15px rgba(0, 170, 255, 0.7);
 }
-
 
 .btn-primary:active {
-
-    transform:
-        scale(
-            0.96
-        );
+    transform: scale(0.96);
 }
 
-
 .btn-secondary {
-
     background:
         linear-gradient(
             135deg,
@@ -303,51 +187,33 @@ button {
             #006633
         );
 
-    border:
-        none;
+    border: none;
 
-    min-height:
-        50px;
+    min-height: 50px;
 
-    padding:
-        11px
-        17px;
+    padding: 11px 17px;
 
-    color:
-        white;
+    color: white;
 
-    font-size:
-        15px;
+    font-size: 15px;
+    font-weight: 600;
 
-    font-weight:
-        600;
+    border-radius: 9px;
 
-    border-radius:
-        9px;
-
-    cursor:
-        pointer;
+    cursor: pointer;
 }
-
 
 .btn-secondary span {
+    display: block;
 
-    display:
-        block;
+    font-size: 12px;
 
-    font-size:
-        12px;
+    color: #baffd7;
 
-    color:
-        #baffd7;
-
-    margin-top:
-        3px;
+    margin-top: 3px;
 }
 
-
 .btn-warning {
-
     background:
         linear-gradient(
             135deg,
@@ -355,355 +221,214 @@ button {
             #aa5500
         );
 
-    border:
-        none;
+    border: none;
 
-    color:
-        white;
+    color: white;
 
-    font-weight:
-        600;
+    font-weight: 600;
+    font-size: 15px;
 
-    font-size:
-        15px;
+    min-height: 50px;
 
-    min-height:
-        50px;
+    padding: 11px 18px;
 
-    padding:
-        11px
-        18px;
+    border-radius: 9px;
 
-    border-radius:
-        9px;
-
-    cursor:
-        pointer;
+    cursor: pointer;
 }
 
-
+.btn-warning:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
 
 /* =========================================================
    MODE MENU
 ========================================================= */
 
 .mode-buttons {
+    display: flex;
+    flex-direction: column;
 
-    display:
-        flex;
+    gap: 14px;
 
-    flex-direction:
-        column;
+    max-width: 420px;
 
-    gap:
-        14px;
-
-    max-width:
-        420px;
-
-    margin:
-        0 auto;
+    margin: 0 auto;
 }
-
 
 .mode-btn {
-
-    width:
-        100%;
-
-    min-height:
-        60px;
-
-    font-size:
-        19px;
+    width: 100%;
+    min-height: 60px;
+    font-size: 19px;
 }
-
-
 
 /* =========================================================
    MATCH INFO
 ========================================================= */
 
 .match-info {
+    display: flex;
+    flex-wrap: wrap;
 
-    display:
-        flex;
+    justify-content: center;
 
-    flex-wrap:
-        wrap;
+    gap: 8px;
 
-    justify-content:
-        center;
-
-    gap:
-        8px;
-
-    margin-bottom:
-        15px;
+    margin-bottom: 15px;
 }
-
 
 .info-tag {
+    background: #101010;
 
-    background:
-        #101010;
+    padding: 8px 12px;
 
-    padding:
-        8px
-        12px;
+    border-radius: 7px;
 
-    border-radius:
-        7px;
+    border: 1px solid #333333;
 
-    border:
-        1px solid
-        #333333;
-
-    font-size:
-        14px;
+    font-size: 14px;
 }
-
-
 
 /* =========================================================
    PLAYERS
 ========================================================= */
 
 .players {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                0,
-                1fr
-            )
-        );
+        repeat(2, minmax(0, 1fr));
 
-    gap:
-        12px;
+    gap: 12px;
 
-    max-width:
-        700px;
+    max-width: 700px;
 
-    margin:
-        0 auto;
+    margin: 0 auto;
 }
-
 
 .player {
-
-    width:
-        100%;
-
-    margin:
-        0;
+    width: 100%;
+    margin: 0;
 }
-
 
 .player h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
 
-    margin-top:
-        0;
-
-    margin-bottom:
-        5px;
-
-    overflow-wrap:
-        anywhere;
+    overflow-wrap: anywhere;
 }
-
 
 .score {
-
     font-size:
-        clamp(
-            42px,
-            10vw,
-            64px
-        );
+        clamp(42px, 10vw, 64px);
 
-    font-weight:
-        700;
+    font-weight: 700;
 
-    margin:
-        8px 0;
+    margin: 8px 0;
 
-    color:
-        #00aaff;
+    color: #00aaff;
 
     text-shadow:
-        0 0 12px
-        rgba(
-            0,
-            153,
-            221,
-            0.7
-        );
+        0 0 12px rgba(0, 153, 221, 0.7);
 }
-
 
 .stats {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: center;
 
-    justify-content:
-        center;
+    flex-wrap: wrap;
 
-    flex-wrap:
-        wrap;
+    gap: 6px 15px;
 
-    gap:
-        6px 15px;
+    color: #bbbbbb;
 
-    color:
-        #bbbbbb;
-
-    font-size:
-        14px;
+    font-size: 14px;
 }
-
 
 .active {
-
-    border:
-        2px solid
-        #00aaff;
+    border: 2px solid #00aaff;
 
     box-shadow:
-        0 0 18px
-        rgba(
-            0,
-            170,
-            255,
-            0.65
-        );
+        0 0 18px rgba(0, 170, 255, 0.65);
 }
-
-
 
 /* =========================================================
    CHECKOUT
 ========================================================= */
 
 .checkout {
+    display: flex;
+    flex-direction: column;
 
-    display:
-        flex;
+    gap: 6px;
 
-    flex-direction:
-        column;
-
-    gap:
-        4px;
-
-    padding:
-        14px;
+    padding: 14px;
 }
-
 
 .checkout-label {
+    font-size: 13px;
 
-    font-size:
-        13px;
+    text-transform: uppercase;
 
-    text-transform:
-        uppercase;
+    letter-spacing: 1px;
 
-    letter-spacing:
-        1px;
-
-    color:
-        #888888;
+    color: #888888;
 }
-
 
 .checkout-value {
+    font-size: 21px;
 
-    font-size:
-        21px;
+    font-weight: 700;
 
-    font-weight:
-        700;
+    color: #00aaff;
 
-    color:
-        #00aaff;
+    line-height: 1.35;
 }
-
-
 
 /* =========================================================
    SCORING METHOD
 ========================================================= */
 
 .scoring-method h2 {
+    margin-top: 0;
 
-    margin-top:
-        0;
-
-    color:
-        #00aaff;
+    color: #00aaff;
 }
-
 
 .scoring-method-buttons {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(
-            2,
-            1fr
-        );
+        repeat(3, 1fr);
 
-    gap:
-        8px;
+    gap: 8px;
 }
-
 
 .method-button {
+    background: #171717;
 
-    background:
-        #171717;
+    border: 1px solid #3d3d3d;
 
-    border:
-        1px solid
-        #3d3d3d;
+    color: #dddddd;
 
-    color:
-        #dddddd;
+    min-height: 52px;
 
-    min-height:
-        52px;
+    border-radius: 9px;
 
-    border-radius:
-        9px;
+    font-size: 15px;
 
-    font-size:
-        15px;
+    font-weight: 600;
 
-    font-weight:
-        600;
-
-    cursor:
-        pointer;
+    cursor: pointer;
 }
-
 
 .method-button:hover {
-
-    border-color:
-        #00aaff;
+    border-color: #00aaff;
 }
 
-
 .active-method {
-
     background:
         linear-gradient(
             135deg,
@@ -711,148 +436,108 @@ button {
             #005c91
         ) !important;
 
-    border-color:
-        #00bbff !important;
+    border-color: #00bbff !important;
 
-    color:
-        white !important;
+    color: white !important;
 
     box-shadow:
-        0 0 12px
-        rgba(
-            0,
-            170,
-            255,
-            0.5
-        );
+        0 0 12px rgba(0, 170, 255, 0.5);
 }
 
+/* =========================================================
+   UNDO
+========================================================= */
 
+.undo-card {
+    padding: 10px;
+}
+
+.undo-card button {
+    width: 100%;
+}
 
 /* =========================================================
-   MANUAL SCORE
+   INPUT
 ========================================================= */
 
 .input-section h2 {
+    margin-top: 0;
 
-    margin-top:
-        0;
-
-    color:
-        #00aaff;
+    color: #00aaff;
 }
-
 
 .manual-score-row {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: center;
+    align-items: center;
 
-    justify-content:
-        center;
-
-    align-items:
-        center;
-
-    gap:
-        10px;
+    gap: 10px;
 }
-
 
 .input-section input {
+    padding: 12px;
 
-    padding:
-        12px;
+    min-height: 48px;
 
-    min-height:
-        48px;
+    width: 220px;
 
-    width:
-        220px;
+    background: #090909;
 
-    background:
-        #090909;
+    border: 1px solid #444444;
 
-    border:
-        1px solid
-        #444444;
+    color: white;
 
-    color:
-        white;
+    border-radius: 8px;
 
-    border-radius:
-        8px;
+    font-size: 18px;
 
-    font-size:
-        18px;
-
-    text-align:
-        center;
+    text-align: center;
 }
 
+.manual-status {
+    margin-top: 12px;
 
+    color: #00aaff;
+
+    font-weight: 600;
+}
 
 /* =========================================================
    DART BUTTONS
 ========================================================= */
 
 .dartboard {
-
-    max-width:
-        800px;
+    max-width: 800px;
 }
-
 
 .dartboard h2 {
+    color: #00aaff;
 
-    color:
-        #00aaff;
-
-    margin-top:
-        20px;
-
-    margin-bottom:
-        10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
-
 
 .section-help {
+    margin-top: -5px;
 
-    margin-top:
-        -5px;
+    color: #888888;
 
-    color:
-        #888888;
-
-    font-size:
-        13px;
+    font-size: 13px;
 }
-
 
 .ring {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(
-            10,
-            minmax(
-                0,
-                1fr
-            )
-        );
+        repeat(10, minmax(0, 1fr));
 
-    gap:
-        7px;
+    gap: 7px;
 
-    margin-bottom:
-        20px;
+    margin-bottom: 20px;
 }
 
-
 .btn-score {
-
     background:
         linear-gradient(
             145deg,
@@ -860,735 +545,431 @@ button {
             #171717
         );
 
-    border:
-        1px solid
-        #3b3b3b;
+    border: 1px solid #3b3b3b;
 
-    min-width:
-        0;
+    min-width: 0;
+    min-height: 45px;
 
-    min-height:
-        45px;
+    padding: 8px 3px;
 
-    padding:
-        8px 3px;
+    border-radius: 7px;
 
-    border-radius:
-        7px;
+    color: #eeeeee;
 
-    color:
-        #eeeeee;
+    font-size: 14px;
 
-    font-size:
-        14px;
+    font-weight: 600;
 
-    font-weight:
-        600;
+    cursor: pointer;
 
-    cursor:
-        pointer;
-
-    user-select:
-        none;
+    user-select: none;
 }
-
 
 .btn-score:hover {
-
-    background:
-        #333333;
+    background: #333333;
 
     box-shadow:
-        0 0 8px
-        rgba(
-            0,
-            170,
-            255,
-            0.7
-        );
+        0 0 8px rgba(0, 170, 255, 0.7);
 }
-
 
 .btn-score:active {
+    transform: scale(0.90);
 
-    transform:
-        scale(
-            0.90
-        );
-
-    background:
-        #006fa8;
+    background: #006fa8;
 }
-
 
 .bull-ring {
-
     grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                0,
-                1fr
-            )
-        );
+        repeat(2, minmax(0, 1fr));
 }
-
 
 .bull-button {
-
-    min-height:
-        58px;
-
-    font-size:
-        16px;
+    min-height: 58px;
+    font-size: 16px;
 }
 
+.bull-button span,
+.miss-button span {
+    display: block;
 
-.bull-button span {
+    color: #00ff88;
 
-    display:
-        block;
-
-    color:
-        #00ff88;
-
-    margin-top:
-        2px;
+    margin-top: 2px;
 }
 
-
+.miss-ring {
+    grid-template-columns: 1fr;
+}
 
 /* =========================================================
    CRICKET
 ========================================================= */
 
 .cricket-info {
-
-    border-left:
-        4px solid
-        #00ff88;
+    border-left: 4px solid #00ff88;
 }
-
 
 .cricket-info hr {
+    border: none;
 
-    border:
-        none;
+    border-top: 1px solid #292929;
 
-    border-top:
-        1px solid
-        #292929;
-
-    margin:
-        14px 0;
+    margin: 14px 0;
 }
-
 
 .cricket-row {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
+    align-items: center;
 
-    justify-content:
-        space-between;
+    gap: 15px;
 
-    align-items:
-        center;
+    padding: 5px 0;
 
-    gap:
-        15px;
-
-    padding:
-        5px 0;
-
-    text-align:
-        left;
+    text-align: left;
 }
-
 
 .cricket-label {
+    font-weight: 600;
 
-    font-weight:
-        600;
-
-    color:
-        #aaaaaa;
+    color: #aaaaaa;
 }
-
 
 .cricket-value {
+    font-weight: 700;
 
-    font-weight:
-        700;
-
-    text-align:
-        right;
+    text-align: right;
 }
-
 
 .cricket-row input {
+    width: 75px;
 
-    width:
-        75px;
+    padding: 8px;
 
-    padding:
-        8px;
+    background: #090909;
 
-    background:
-        #090909;
+    color: white;
 
-    color:
-        white;
+    border: 1px solid #444444;
 
-    border:
-        1px solid
-        #444444;
+    border-radius: 7px;
 
-    border-radius:
-        7px;
+    font-size: 16px;
 
-    font-size:
-        16px;
-
-    text-align:
-        center;
+    text-align: center;
 }
-
 
 .cricket-score-main {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(
-            2,
-            1fr
-        );
+        repeat(2, 1fr);
 
-    gap:
-        10px;
+    gap: 10px;
 
-    margin:
-        15px 0;
+    margin: 15px 0;
 }
-
 
 .cricket-score-box {
+    background: #0b0b0b;
 
-    background:
-        #0b0b0b;
+    border: 1px solid #292929;
 
-    border:
-        1px solid
-        #292929;
+    border-radius: 10px;
 
-    border-radius:
-        10px;
+    padding: 14px 5px;
 
-    padding:
-        14px 5px;
+    display: flex;
 
-    display:
-        flex;
-
-    flex-direction:
-        column;
+    flex-direction: column;
 }
-
 
 .cricket-score-title {
+    font-size: 12px;
 
-    font-size:
-        12px;
+    letter-spacing: 1px;
 
-    letter-spacing:
-        1px;
-
-    color:
-        #888888;
+    color: #888888;
 }
-
 
 .cricket-big-number {
+    font-size: 48px;
 
-    font-size:
-        48px;
-
-    font-weight:
-        800;
+    font-weight: 800;
 }
-
 
 .cricket-runs {
-
-    color:
-        #00ff88;
+    color: #00ff88;
 
     text-shadow:
-        0 0 8px
-        rgba(
-            0,
-            255,
-            136,
-            0.6
-        );
+        0 0 8px rgba(0, 255, 136, 0.6);
 }
-
 
 .cricket-wickets {
-
-    color:
-        #ff5555;
+    color: #ff5555;
 
     text-shadow:
-        0 0 8px
-        rgba(
-            255,
-            85,
-            85,
-            0.6
-        );
+        0 0 8px rgba(255, 85, 85, 0.6);
 }
-
 
 .cricket-danger {
-
-    color:
-        #ffdd55;
+    color: #ffdd55;
 
     text-shadow:
-        0 0 8px
-        rgba(
-            255,
-            221,
-            85,
-            0.6
-        );
+        0 0 8px rgba(255, 221, 85, 0.6);
 }
-
 
 .cricket-target {
-
-    color:
-        #00ff88;
+    color: #00ff88;
 }
-
 
 .darts-left {
+    color: #00aaff;
 
-    color:
-        #00aaff;
-
-    font-size:
-        20px;
+    font-size: 20px;
 }
-
 
 .cricket-controls {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                0,
-                1fr
-            )
-        );
+        repeat(2, minmax(0, 1fr));
 
-    gap:
-        8px;
+    gap: 8px;
 }
-
 
 .cricket-controls button {
-
-    width:
-        100%;
+    width: 100%;
 }
-
 
 .bowling-heading {
-
-    color:
-        #ff5555 !important;
+    color: #ff5555 !important;
 }
-
 
 .batting-heading {
-
-    color:
-        #00ff88 !important;
+    color: #00ff88 !important;
 }
 
-
 .back-button {
-
-    display:
-        block;
+    display: block;
 
     width:
-        min(
-            100%,
-            400px
-        );
+        min(100%, 400px);
 
     margin:
         20px auto 30px;
 }
 
-
-
 /* =========================================================
    TABLET
 ========================================================= */
 
-@media (
-    max-width:
-    800px
-) {
+@media (max-width: 800px) {
 
     body {
-
-        padding:
-            12px;
+        padding: 12px;
     }
-
 
     .card {
-
-        padding:
-            16px;
+        padding: 16px;
     }
-
 
     .ring {
-
         grid-template-columns:
-            repeat(
-                5,
-                minmax(
-                    0,
-                    1fr
-                )
-            );
+            repeat(5, minmax(0, 1fr));
 
-        gap:
-            8px;
+        gap: 8px;
     }
 
-
     .btn-score {
+        min-height: 50px;
 
-        min-height:
-            50px;
-
-        font-size:
-            15px;
+        font-size: 15px;
     }
 
 }
-
-
 
 /* =========================================================
    PHONE
 ========================================================= */
 
-@media (
-    max-width:
-    550px
-) {
+@media (max-width: 550px) {
 
     body {
-
-        padding:
-            8px
-            8px
-            25px;
+        padding: 8px 8px 25px;
     }
-
 
     .title {
-
-        font-size:
-            27px;
+        font-size: 27px;
     }
-
 
     .card {
+        border-radius: 10px;
 
-        border-radius:
-            10px;
+        padding: 14px;
 
-        padding:
-            14px;
-
-        margin:
-            10px auto;
+        margin: 10px auto;
     }
-
 
     .setup-row {
+        flex-direction: column;
 
-        flex-direction:
-            column;
+        align-items: stretch;
 
-        align-items:
-            stretch;
-
-        gap:
-            6px;
+        gap: 6px;
     }
-
 
     .setup-row input,
     .setup-row select {
+        width: 100%;
 
-        width:
-            100%;
+        max-width: none;
 
-        max-width:
-            none;
-
-        min-height:
-            46px;
+        min-height: 46px;
     }
-
 
     .players {
-
-        gap:
-            7px;
+        gap: 7px;
     }
-
 
     .player {
-
-        padding:
-            12px
-            5px;
+        padding: 12px 5px;
     }
-
 
     .player h2 {
-
-        font-size:
-            16px;
+        font-size: 16px;
     }
-
 
     .score {
-
-        font-size:
-            42px;
+        font-size: 42px;
     }
-
 
     .stats {
+        flex-direction: column;
 
-        flex-direction:
-            column;
+        gap: 2px;
 
-        gap:
-            2px;
-
-        font-size:
-            12px;
+        font-size: 12px;
     }
-
 
     .match-info {
-
-        gap:
-            5px;
+        gap: 5px;
     }
-
 
     .info-tag {
+        font-size: 11px;
 
-        font-size:
-            11px;
-
-        padding:
-            6px
-            8px;
+        padding: 6px 8px;
     }
-
 
     .scoring-method-buttons {
-
-        grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
+        grid-template-columns: 1fr;
     }
-
 
     .manual-score-row {
-
-        display:
-            grid;
+        display: grid;
 
         grid-template-columns:
-            1fr
-            auto;
+            1fr auto;
     }
-
 
     .input-section input {
-
-        width:
-            100%;
-
-        min-width:
-            0;
+        width: 100%;
+        min-width: 0;
     }
-
 
     .dartboard {
-
-        padding:
-            12px
-            8px;
+        padding: 12px 8px;
     }
-
 
     .ring {
-
         grid-template-columns:
-            repeat(
-                5,
-                minmax(
-                    0,
-                    1fr
-                )
-            );
+            repeat(5, minmax(0, 1fr));
 
-        gap:
-            6px;
+        gap: 6px;
 
-        margin-bottom:
-            18px;
+        margin-bottom: 18px;
     }
-
 
     .btn-score {
+        min-height: 52px;
 
-        min-height:
-            52px;
-
-        font-size:
-            15px;
+        font-size: 15px;
     }
-
 
     .bull-ring {
-
         grid-template-columns:
-            repeat(
-                2,
-                minmax(
-                    0,
-                    1fr
-                )
-            );
+            repeat(2, minmax(0, 1fr));
     }
 
+    .miss-ring {
+        grid-template-columns: 1fr;
+    }
 
     .cricket-info {
-
-        padding:
-            14px 12px;
+        padding: 14px 12px;
     }
-
 
     .cricket-row {
-
-        font-size:
-            14px;
+        font-size: 14px;
     }
-
 
     .cricket-big-number {
-
-        font-size:
-            42px;
+        font-size: 42px;
     }
-
 
     .cricket-controls {
-
-        grid-template-columns:
-            1fr;
+        grid-template-columns: 1fr;
     }
 
-
     .cricket-controls button {
-
-        min-height:
-            52px;
+        min-height: 52px;
     }
 
 }
+/* =========================================================
+   ANNOUNCER
+========================================================= */
 
+.announcer-card {
+    padding: 10px;
+}
 
+.announcer-card button {
+    width: 100%;
+}
 
 /* =========================================================
    VERY SMALL PHONES
 ========================================================= */
 
-@media (
-    max-width:
-    360px
-) {
+@media (max-width: 360px) {
 
     .title {
-
-        font-size:
-            24px;
+        font-size: 24px;
     }
-
 
     .player h2 {
-
-        font-size:
-            14px;
+        font-size: 14px;
     }
-
 
     .score {
-
-        font-size:
-            36px;
+        font-size: 36px;
     }
-
 
     .ring {
-
-        gap:
-            4px;
+        gap: 4px;
     }
-
 
     .btn-score {
+        font-size: 13px;
 
-        font-size:
-            13px;
-
-        min-height:
-            48px;
+        min-height: 48px;
     }
 
-
     .info-tag {
-
-        font-size:
-            10px;
+        font-size: 10px;
     }
 
 }
