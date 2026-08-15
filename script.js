@@ -1,92 +1,207 @@
+"use strict";
+
+
 /* =========================================================
-   BASIC DOM
+   DOM
 ========================================================= */
 
-const modeScreen = document.getElementById("mode-screen");
-const nameScreen = document.getElementById("name-screen");
-const setupScreen = document.getElementById("setup-screen");
-const gameScreen = document.getElementById("game-screen");
-const cricketScreen = document.getElementById("cricket-screen");
+const modeScreen =
+    document.getElementById(
+        "mode-screen"
+    );
 
-const modeButtons = document.querySelectorAll(".mode-btn");
+
+const nameScreen =
+    document.getElementById(
+        "name-screen"
+    );
+
+
+const setupScreen =
+    document.getElementById(
+        "setup-screen"
+    );
+
+
+const gameScreen =
+    document.getElementById(
+        "game-screen"
+    );
+
+
+const cricketScreen =
+    document.getElementById(
+        "cricket-screen"
+    );
+
+
+const modeButtons =
+    document.querySelectorAll(
+        ".mode-btn"
+    );
+
 
 const continueToSetupBtn =
-    document.getElementById("continue-to-setup");
+    document.getElementById(
+        "continue-to-setup"
+    );
+
 
 const p1NameInput =
-    document.getElementById("p1-name-input");
+    document.getElementById(
+        "p1-name-input"
+    );
+
 
 const p2NameInput =
-    document.getElementById("p2-name-input");
+    document.getElementById(
+        "p2-name-input"
+    );
+
 
 const p1NameDisplay =
-    document.getElementById("p1-name");
+    document.getElementById(
+        "p1-name"
+    );
+
 
 const p2NameDisplay =
-    document.getElementById("p2-name");
+    document.getElementById(
+        "p2-name"
+    );
+
 
 const nameScreenTitle =
-    document.getElementById("name-screen-title");
+    document.getElementById(
+        "name-screen-title"
+    );
+
 
 const p1Label =
-    document.getElementById("p1-label");
+    document.getElementById(
+        "p1-label"
+    );
+
 
 const p2Label =
-    document.getElementById("p2-label");
+    document.getElementById(
+        "p2-label"
+    );
+
 
 const startMatchBtn =
-    document.getElementById("start-match");
+    document.getElementById(
+        "start-match"
+    );
+
 
 const startingScoreInput =
-    document.getElementById("starting-score");
+    document.getElementById(
+        "starting-score"
+    );
+
 
 const legsPerSetInput =
-    document.getElementById("legs-per-set");
+    document.getElementById(
+        "legs-per-set"
+    );
+
 
 const setsToWinInput =
-    document.getElementById("sets-to-win");
+    document.getElementById(
+        "sets-to-win"
+    );
+
 
 const p1ScoreDisplay =
-    document.getElementById("p1-score");
+    document.getElementById(
+        "p1-score"
+    );
+
 
 const p2ScoreDisplay =
-    document.getElementById("p2-score");
+    document.getElementById(
+        "p2-score"
+    );
+
 
 const p1LegsDisplay =
-    document.getElementById("p1-legs");
+    document.getElementById(
+        "p1-legs"
+    );
+
 
 const p2LegsDisplay =
-    document.getElementById("p2-legs");
+    document.getElementById(
+        "p2-legs"
+    );
+
 
 const p1SetsDisplay =
-    document.getElementById("p1-sets");
+    document.getElementById(
+        "p1-sets"
+    );
+
 
 const p2SetsDisplay =
-    document.getElementById("p2-sets");
+    document.getElementById(
+        "p2-sets"
+    );
+
 
 const p1Box =
-    document.getElementById("p1-box");
+    document.getElementById(
+        "p1-box"
+    );
+
 
 const p2Box =
-    document.getElementById("p2-box");
+    document.getElementById(
+        "p2-box"
+    );
+
 
 const modeLabel =
-    document.getElementById("mode-label");
+    document.getElementById(
+        "mode-label"
+    );
+
 
 const legSetStatus =
-    document.getElementById("leg-set-status");
+    document.getElementById(
+        "leg-set-status"
+    );
+
 
 const checkoutText =
-    document.getElementById("checkout-text");
+    document.getElementById(
+        "checkout-text"
+    );
+
 
 const dartsStatus =
-    document.getElementById("darts-status");
+    document.getElementById(
+        "darts-status"
+    );
+
 
 const scoreInput =
-    document.getElementById("score-input");
+    document.getElementById(
+        "score-input"
+    );
+
 
 const submitScoreBtn =
-    document.getElementById("submit-score");
+    document.getElementById(
+        "submit-score"
+    );
+
+
+const gameBackBtn =
+    document.getElementById(
+        "game-back"
+    );
+
 
 
 /* =========================================================
@@ -94,16 +209,22 @@ const submitScoreBtn =
 ========================================================= */
 
 const methodButtons =
-    document.querySelectorAll(".method-button");
+    document.querySelectorAll(
+        ".method-button"
+    );
+
 
 const tapScoringSection =
-    document.getElementById("tap-scoring-section");
+    document.getElementById(
+        "tap-scoring-section"
+    );
+
 
 const manualScoringSection =
-    document.getElementById("manual-scoring-section");
+    document.getElementById(
+        "manual-scoring-section"
+    );
 
-const cameraScoringSection =
-    document.getElementById("camera-scoring-section");
 
 
 /* =========================================================
@@ -111,248 +232,417 @@ const cameraScoringSection =
 ========================================================= */
 
 const cricketTeamA =
-    document.getElementById("cricket-team-a");
+    document.getElementById(
+        "cricket-team-a"
+    );
+
 
 const cricketTeamB =
-    document.getElementById("cricket-team-b");
+    document.getElementById(
+        "cricket-team-b"
+    );
+
 
 const cricketBattingName =
-    document.getElementById("cricket-batting-name");
+    document.getElementById(
+        "cricket-batting-name"
+    );
+
 
 const cricketBowlingName =
-    document.getElementById("cricket-bowling-name");
+    document.getElementById(
+        "cricket-bowling-name"
+    );
+
 
 const cricketInningsDisplay =
-    document.getElementById("cricket-innings");
+    document.getElementById(
+        "cricket-innings"
+    );
+
 
 const cricketTotalWicketsInput =
-    document.getElementById("cricket-total-wickets");
+    document.getElementById(
+        "cricket-total-wickets"
+    );
+
 
 const cricketRunsDisplay =
-    document.getElementById("cricket-runs");
+    document.getElementById(
+        "cricket-runs"
+    );
+
 
 const cricketWicketsDisplay =
-    document.getElementById("cricket-wickets");
+    document.getElementById(
+        "cricket-wickets"
+    );
+
 
 const cricketDangerDisplay =
-    document.getElementById("cricket-danger");
+    document.getElementById(
+        "cricket-danger"
+    );
+
 
 const cricketTargetDisplay =
-    document.getElementById("cricket-target");
+    document.getElementById(
+        "cricket-target"
+    );
+
 
 const cricketPhaseDisplay =
-    document.getElementById("cricket-phase");
+    document.getElementById(
+        "cricket-phase"
+    );
+
 
 const cricketDartsLeftDisplay =
-    document.getElementById("cricket-darts-left");
+    document.getElementById(
+        "cricket-darts-left"
+    );
+
 
 const cricketStartMatchBtn =
-    document.getElementById("cricket-start-match");
+    document.getElementById(
+        "cricket-start-match"
+    );
+
 
 const cricketDeclareBtn =
-    document.getElementById("cricket-declare");
+    document.getElementById(
+        "cricket-declare"
+    );
+
 
 const cricketMissBoardBtn =
-    document.getElementById("cricket-miss-board");
+    document.getElementById(
+        "cricket-miss-board"
+    );
+
 
 const cricketFallOutBtn =
-    document.getElementById("cricket-fall-out");
+    document.getElementById(
+        "cricket-fall-out"
+    );
+
 
 const cricketBackBtn =
-    document.getElementById("cricket-back");
+    document.getElementById(
+        "cricket-back"
+    );
+
 
 
 /* =========================================================
-   MODE SELECTION
+   GAME MODE
 ========================================================= */
 
-let selectedMode = "501";
+let selectedMode =
+    "501";
 
 
-modeButtons.forEach(button => {
+modeButtons.forEach(
+    button => {
 
-    button.addEventListener("click", () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-        selectedMode = button.dataset.mode;
+                selectedMode =
+                    button.dataset.mode;
 
-        modeScreen.classList.add("hidden");
+
+                modeScreen.classList.add(
+                    "hidden"
+                );
 
 
-        if (selectedMode === "cricket") {
+                if (
+                    selectedMode ===
+                    "cricket"
+                ) {
 
-            nameScreenTitle.textContent =
-                "Enter Team Names";
+                    nameScreenTitle.textContent =
+                        "Enter Team Names";
 
-            p1Label.textContent = "Team A:";
-            p2Label.textContent = "Team B:";
 
-            p1NameInput.placeholder =
-                "Team A";
+                    p1Label.textContent =
+                        "Team A:";
 
-            p2NameInput.placeholder =
-                "Team B";
+
+                    p2Label.textContent =
+                        "Team B:";
+
+
+                    p1NameInput.placeholder =
+                        "Team A";
+
+
+                    p2NameInput.placeholder =
+                        "Team B";
+
+
+                } else {
+
+                    nameScreenTitle.textContent =
+                        "Enter Player Names";
+
+
+                    p1Label.textContent =
+                        "Player 1:";
+
+
+                    p2Label.textContent =
+                        "Player 2:";
+
+
+                    p1NameInput.placeholder =
+                        "Player 1";
+
+
+                    p2NameInput.placeholder =
+                        "Player 2";
+                }
+
+
+                nameScreen.classList.remove(
+                    "hidden"
+                );
+            }
+        );
+    }
+);
+
+
+
+/* =========================================================
+   PLAYER / TEAM NAMES
+========================================================= */
+
+continueToSetupBtn.addEventListener(
+    "click",
+    () => {
+
+        const name1 =
+            p1NameInput.value.trim() ||
+            (
+                selectedMode ===
+                "cricket"
+                    ? "Team A"
+                    : "Player 1"
+            );
+
+
+        const name2 =
+            p2NameInput.value.trim() ||
+            (
+                selectedMode ===
+                "cricket"
+                    ? "Team B"
+                    : "Player 2"
+            );
+
+
+        if (
+            selectedMode ===
+            "cricket"
+        ) {
+
+            cricketTeamA.textContent =
+                name1;
+
+
+            cricketTeamB.textContent =
+                name2;
+
+
+            /*
+            Innings 1:
+            Team A bowls.
+            Team B bats.
+            */
+
+            cricketBattingName.textContent =
+                name2;
+
+
+            cricketBowlingName.textContent =
+                name1;
+
+
+            nameScreen.classList.add(
+                "hidden"
+            );
+
+
+            cricketScreen.classList.remove(
+                "hidden"
+            );
+
+
+            initCricketBoard();
+
+
+            resetCricketMatch();
+
 
         } else {
 
-            nameScreenTitle.textContent =
-                "Enter Player Names";
+            p1NameDisplay.textContent =
+                name1;
 
-            p1Label.textContent =
-                "Player 1:";
 
-            p2Label.textContent =
-                "Player 2:";
+            p2NameDisplay.textContent =
+                name2;
 
-            p1NameInput.placeholder =
-                "Player 1";
 
-            p2NameInput.placeholder =
-                "Player 2";
+            nameScreen.classList.add(
+                "hidden"
+            );
+
+
+            setupScreen.classList.remove(
+                "hidden"
+            );
         }
-
-        nameScreen.classList.remove("hidden");
-    });
-});
-
-
-/* =========================================================
-   NAME SCREEN
-========================================================= */
-
-continueToSetupBtn.addEventListener("click", () => {
-
-    const name1 =
-        p1NameInput.value.trim() ||
-        (
-            selectedMode === "cricket"
-                ? "Team A"
-                : "Player 1"
-        );
-
-    const name2 =
-        p2NameInput.value.trim() ||
-        (
-            selectedMode === "cricket"
-                ? "Team B"
-                : "Player 2"
-        );
-
-
-    if (selectedMode === "cricket") {
-
-        cricketTeamA.textContent =
-            name1;
-
-        cricketTeamB.textContent =
-            name2;
-
-        cricketBattingName.textContent =
-            name2;
-
-        cricketBowlingName.textContent =
-            name1;
-
-        nameScreen.classList.add(
-            "hidden"
-        );
-
-        cricketScreen.classList.remove(
-            "hidden"
-        );
-
-        initCricketBoard();
-        resetCricketMatch();
-
-    } else {
-
-        p1NameDisplay.textContent =
-            name1;
-
-        p2NameDisplay.textContent =
-            name2;
-
-        nameScreen.classList.add(
-            "hidden"
-        );
-
-        setupScreen.classList.remove(
-            "hidden"
-        );
     }
-});
+);
+
 
 
 /* =========================================================
    501 / SETS VARIABLES
 ========================================================= */
 
-let gameMode = "legs";
+let gameMode =
+    "legs";
 
-let legsPerSet = 3;
-let setsToWin = 3;
 
-let startingScore = 501;
+let legsPerSet =
+    3;
 
-let p1Score = 501;
-let p2Score = 501;
 
-let p1Legs = 0;
-let p2Legs = 0;
+let setsToWin =
+    3;
 
-let p1Sets = 0;
-let p2Sets = 0;
 
-let currentSet = 1;
-let currentLeg = 1;
+let startingScore =
+    501;
 
-let currentPlayer = 1;
 
-let dartsLeft = 3;
+let p1Score =
+    501;
 
-let turnStartScoreP1 = 501;
-let turnStartScoreP2 = 501;
+
+let p2Score =
+    501;
+
+
+let p1Legs =
+    0;
+
+
+let p2Legs =
+    0;
+
+
+let p1Sets =
+    0;
+
+
+let p2Sets =
+    0;
+
+
+let currentSet =
+    1;
+
+
+let currentLeg =
+    1;
+
+
+let currentPlayer =
+    1;
+
+
+let dartsLeft =
+    3;
+
+
+let turnStartScoreP1 =
+    501;
+
+
+let turnStartScoreP2 =
+    501;
+
 
 
 /* =========================================================
-   START MATCH
+   START 501 / SETS MATCH
 ========================================================= */
 
-startMatchBtn.addEventListener("click", () => {
+startMatchBtn.addEventListener(
+    "click",
+    () => {
 
-    gameMode =
-        selectedMode === "sets"
-            ? "sets"
-            : "legs";
+        if (
+            selectedMode ===
+            "sets"
+        ) {
 
-    legsPerSet =
-        parseInt(
-            legsPerSetInput.value
-        ) || 3;
+            gameMode =
+                "sets";
 
-    setsToWin =
-        parseInt(
-            setsToWinInput.value
-        ) || 3;
+        } else {
 
-    startingScore =
-        parseInt(
-            startingScoreInput.value
-        ) || 501;
+            gameMode =
+                "legs";
+        }
 
-    resetMatch();
 
-    setupScreen.classList.add(
-        "hidden"
-    );
+        legsPerSet =
+            parseInt(
+                legsPerSetInput.value
+            ) || 3;
 
-    gameScreen.classList.remove(
-        "hidden"
-    );
 
-    selectScoringMethod("tap");
+        setsToWin =
+            parseInt(
+                setsToWinInput.value
+            ) || 3;
 
-    updateDisplay();
-});
+
+        startingScore =
+            parseInt(
+                startingScoreInput.value
+            ) || 501;
+
+
+        resetMatch();
+
+
+        setupScreen.classList.add(
+            "hidden"
+        );
+
+
+        gameScreen.classList.remove(
+            "hidden"
+        );
+
+
+        selectScoringMethod(
+            "tap"
+        );
+
+
+        updateDisplay();
+    }
+);
+
 
 
 /* =========================================================
@@ -361,162 +651,269 @@ startMatchBtn.addEventListener("click", () => {
 
 function resetMatch() {
 
-    p1Score = startingScore;
-    p2Score = startingScore;
+    p1Score =
+        startingScore;
 
-    p1Legs = 0;
-    p2Legs = 0;
 
-    p1Sets = 0;
-    p2Sets = 0;
+    p2Score =
+        startingScore;
 
-    currentSet = 1;
-    currentLeg = 1;
 
-    currentPlayer = 1;
+    p1Legs =
+        0;
 
-    dartsLeft = 3;
+
+    p2Legs =
+        0;
+
+
+    p1Sets =
+        0;
+
+
+    p2Sets =
+        0;
+
+
+    currentSet =
+        1;
+
+
+    currentLeg =
+        1;
+
+
+    currentPlayer =
+        1;
+
+
+    dartsLeft =
+        3;
+
 
     turnStartScoreP1 =
         startingScore;
 
+
     turnStartScoreP2 =
         startingScore;
 
-    modeLabel.textContent =
-        gameMode === "legs"
-            ? `Legs Only - First to ${setsToWin}`
-            : `${legsPerSet} legs per set - First to ${setsToWin} sets`;
+
+    if (
+        gameMode ===
+        "legs"
+    ) {
+
+        modeLabel.textContent =
+            `Legs Only · First to ${setsToWin} legs`;
+
+    } else {
+
+        modeLabel.textContent =
+            `${legsPerSet} legs per set · First to ${setsToWin} sets`;
+    }
 }
+
 
 
 /* =========================================================
    SCORING METHOD
 ========================================================= */
 
-methodButtons.forEach(button => {
+methodButtons.forEach(
+    button => {
 
-    button.addEventListener("click", () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-        selectScoringMethod(
-            button.dataset.method
+                selectScoringMethod(
+                    button.dataset.method
+                );
+            }
         );
-    });
-});
+    }
+);
 
 
-function selectScoringMethod(method) {
+function selectScoringMethod(
+    method
+) {
 
-    methodButtons.forEach(button => {
+    methodButtons.forEach(
+        button => {
 
-        button.classList.toggle(
-            "active-method",
-            button.dataset.method === method
-        );
-    });
+            button.classList.toggle(
+
+                "active-method",
+
+                button.dataset.method ===
+                    method
+            );
+        }
+    );
+
 
     tapScoringSection.classList.add(
         "hidden"
     );
 
+
     manualScoringSection.classList.add(
         "hidden"
     );
 
-    cameraScoringSection.classList.add(
-        "hidden"
-    );
 
-
-    if (method === "tap") {
-
-        tapScoringSection.classList.remove(
-            "hidden"
-        );
-
-    } else if (method === "manual") {
+    if (
+        method ===
+        "manual"
+    ) {
 
         manualScoringSection.classList.remove(
             "hidden"
         );
 
+
+        setTimeout(
+            () => {
+
+                scoreInput.focus();
+
+            },
+            100
+        );
+
+
     } else {
 
-        cameraScoringSection.classList.remove(
+        tapScoringSection.classList.remove(
             "hidden"
         );
-    }
-
-
-    if (
-        method !== "camera" &&
-        window.DartsCamera
-    ) {
-
-        window.DartsCamera.stop();
     }
 }
 
 
+
 /* =========================================================
-   CREATE DART BUTTONS
+   CREATE 501 DART BUTTONS
 ========================================================= */
 
 function createButtons501() {
 
     const singles =
-        document.getElementById("singles");
+        document.getElementById(
+            "singles"
+        );
+
 
     const doubles =
-        document.getElementById("doubles");
+        document.getElementById(
+            "doubles"
+        );
+
 
     const trebles =
-        document.getElementById("trebles");
+        document.getElementById(
+            "trebles"
+        );
 
 
-    for (let i = 1; i <= 20; i++) {
+    /*
+    Prevent accidental duplication
+    if script is ever reloaded.
+    */
+
+    singles.innerHTML =
+        "";
+
+
+    doubles.innerHTML =
+        "";
+
+
+    trebles.innerHTML =
+        "";
+
+
+    for (
+        let i = 1;
+        i <= 20;
+        i++
+    ) {
+
+        /* SINGLE */
 
         const single =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
+
 
         single.className =
             "segment btn-score";
 
-        single.dataset.score = i;
 
-        single.textContent = i;
+        single.dataset.score =
+            i;
 
-        singles.appendChild(single);
 
+        single.textContent =
+            i;
+
+
+        singles.appendChild(
+            single
+        );
+
+
+        /* DOUBLE */
 
         const double =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
+
 
         double.className =
             "segment btn-score";
 
+
         double.dataset.score =
             i * 2;
+
 
         double.textContent =
             "D" + i;
 
-        doubles.appendChild(double);
 
+        doubles.appendChild(
+            double
+        );
+
+
+        /* TREBLE */
 
         const treble =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
+
 
         treble.className =
             "segment btn-score";
 
+
         treble.dataset.score =
             i * 3;
+
 
         treble.textContent =
             "T" + i;
 
-        trebles.appendChild(treble);
+
+        trebles.appendChild(
+            treble
+        );
     }
 
 
@@ -524,34 +921,48 @@ function createButtons501() {
         .querySelectorAll(
             "#game-screen .segment"
         )
-        .forEach(button => {
+        .forEach(
+            button => {
 
-            button.addEventListener(
-                "click",
-                () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                    handleDart501(
-                        parseInt(
-                            button.dataset.score
-                        )
-                    );
-                }
-            );
-        });
+                        const value =
+                            parseInt(
+                                button.dataset.score
+                            );
+
+
+                        handleDart501(
+                            value
+                        );
+                    }
+                );
+            }
+        );
 }
 
 
 createButtons501();
 
 
+
 /* =========================================================
-   HANDLE ONE DART
+   HANDLE INDIVIDUAL 501 DART
 ========================================================= */
 
-function handleDart501(value) {
+function handleDart501(
+    value
+) {
 
-    if (dartsLeft <= 0)
+    if (
+        dartsLeft <=
+        0
+    ) {
+
         return;
+    }
 
 
     if (
@@ -574,9 +985,13 @@ function handleDart501(value) {
     }
 
 
-    if (currentPlayer === 1) {
+    if (
+        currentPlayer ===
+        1
+    ) {
 
-        p1Score -= value;
+        p1Score -=
+            value;
 
 
         if (
@@ -587,27 +1002,40 @@ function handleDart501(value) {
             p1Score =
                 turnStartScoreP1;
 
-            endTurn501("Bust!");
+
+            endTurn501(
+                "Bust!"
+            );
+
 
         } else if (
             p1Score === 0
         ) {
 
-            handleLegWin(1);
+            handleLegWin(
+                1
+            );
+
 
         } else {
 
             dartsLeft--;
 
-            if (dartsLeft === 0) {
+
+            if (
+                dartsLeft ===
+                0
+            ) {
 
                 endTurn501();
             }
         }
 
+
     } else {
 
-        p2Score -= value;
+        p2Score -=
+            value;
 
 
         if (
@@ -618,19 +1046,30 @@ function handleDart501(value) {
             p2Score =
                 turnStartScoreP2;
 
-            endTurn501("Bust!");
+
+            endTurn501(
+                "Bust!"
+            );
+
 
         } else if (
             p2Score === 0
         ) {
 
-            handleLegWin(2);
+            handleLegWin(
+                2
+            );
+
 
         } else {
 
             dartsLeft--;
 
-            if (dartsLeft === 0) {
+
+            if (
+                dartsLeft ===
+                0
+            ) {
 
                 endTurn501();
             }
@@ -642,49 +1081,67 @@ function handleDart501(value) {
 }
 
 
-/*
-Expose the dart-scoring function to camera.js.
-camera.js does not need to know anything about the rest
-of the 501 game.
-*/
-
-window.scoreDetectedDart501 =
-    function(points) {
-
-        handleDart501(points);
-    };
-
 
 /* =========================================================
-   MANUAL SCORE
+   MANUAL VISIT SCORE
 ========================================================= */
 
-submitScoreBtn.addEventListener("click", () => {
+submitScoreBtn.addEventListener(
+    "click",
+    submitManualVisit
+);
+
+
+scoreInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Enter"
+        ) {
+
+            submitManualVisit();
+        }
+    }
+);
+
+
+function submitManualVisit() {
 
     const visitScore =
-        parseInt(scoreInput.value);
+        parseInt(
+            scoreInput.value
+        );
 
 
     if (
-        isNaN(visitScore) ||
+        isNaN(
+            visitScore
+        ) ||
         visitScore < 0 ||
         visitScore > 180
     ) {
 
         alert(
-            "Enter a valid visit score (0–180)"
+            "Enter a valid visit score from 0 to 180."
         );
 
         return;
     }
 
 
-    if (currentPlayer === 1) {
+    if (
+        currentPlayer ===
+        1
+    ) {
 
         turnStartScoreP1 =
             p1Score;
 
-        p1Score -= visitScore;
+
+        p1Score -=
+            visitScore;
 
 
         if (
@@ -695,25 +1152,35 @@ submitScoreBtn.addEventListener("click", () => {
             p1Score =
                 turnStartScoreP1;
 
-            endTurn501("Bust!");
+
+            endTurn501(
+                "Bust!"
+            );
+
 
         } else if (
             p1Score === 0
         ) {
 
-            handleLegWin(1);
+            handleLegWin(
+                1
+            );
+
 
         } else {
 
             endTurn501();
         }
 
+
     } else {
 
         turnStartScoreP2 =
             p2Score;
 
-        p2Score -= visitScore;
+
+        p2Score -=
+            visitScore;
 
 
         if (
@@ -724,13 +1191,20 @@ submitScoreBtn.addEventListener("click", () => {
             p2Score =
                 turnStartScoreP2;
 
-            endTurn501("Bust!");
+
+            endTurn501(
+                "Bust!"
+            );
+
 
         } else if (
             p2Score === 0
         ) {
 
-            handleLegWin(2);
+            handleLegWin(
+                2
+            );
+
 
         } else {
 
@@ -739,33 +1213,30 @@ submitScoreBtn.addEventListener("click", () => {
     }
 
 
-    scoreInput.value = "";
+    scoreInput.value =
+        "";
+
 
     updateDisplay();
-});
+}
 
-
-scoreInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (event.key === "Enter") {
-
-            submitScoreBtn.click();
-        }
-    }
-);
 
 
 /* =========================================================
    END TURN
 ========================================================= */
 
-function endTurn501(message) {
+function endTurn501(
+    message
+) {
 
-    if (message) {
+    if (
+        message
+    ) {
 
-        alert(message);
+        alert(
+            message
+        );
     }
 
 
@@ -774,17 +1245,25 @@ function endTurn501(message) {
             ? 2
             : 1;
 
-    dartsLeft = 3;
+
+    dartsLeft =
+        3;
 }
 
 
+
 /* =========================================================
-   LEG WIN
+   LEG / SET WIN
 ========================================================= */
 
-function handleLegWin(player) {
+function handleLegWin(
+    player
+) {
 
-    if (player === 1) {
+    if (
+        player ===
+        1
+    ) {
 
         p1Legs++;
 
@@ -794,14 +1273,31 @@ function handleLegWin(player) {
     }
 
 
-    if (gameMode === "sets") {
+    let matchWon =
+        false;
+
+
+    /*
+    SETS MODE
+    */
+
+    if (
+        gameMode ===
+        "sets"
+    ) {
 
         if (
-            p1Legs >= legsPerSet ||
-            p2Legs >= legsPerSet
+            p1Legs >=
+                legsPerSet ||
+
+            p2Legs >=
+                legsPerSet
         ) {
 
-            if (p1Legs > p2Legs) {
+            if (
+                p1Legs >
+                p2Legs
+            ) {
 
                 p1Sets++;
 
@@ -810,85 +1306,141 @@ function handleLegWin(player) {
                 p2Sets++;
             }
 
-            p1Legs = 0;
-            p2Legs = 0;
+
+            p1Legs =
+                0;
+
+
+            p2Legs =
+                0;
+
 
             currentSet++;
         }
+
+
+        if (
+            p1Sets >=
+            setsToWin
+        ) {
+
+            alert(
+                `${p1NameDisplay.textContent} wins the match!`
+            );
+
+
+            matchWon =
+                true;
+
+
+        } else if (
+            p2Sets >=
+            setsToWin
+        ) {
+
+            alert(
+                `${p2NameDisplay.textContent} wins the match!`
+            );
+
+
+            matchWon =
+                true;
+        }
+
+
+    /*
+    LEGS MODE
+    */
+
+    } else {
+
+        if (
+            p1Legs >=
+            setsToWin
+        ) {
+
+            alert(
+                `${p1NameDisplay.textContent} wins the match!`
+            );
+
+
+            matchWon =
+                true;
+
+
+        } else if (
+            p2Legs >=
+            setsToWin
+        ) {
+
+            alert(
+                `${p2NameDisplay.textContent} wins the match!`
+            );
+
+
+            matchWon =
+                true;
+        }
+    }
+
+
+    if (
+        matchWon
+    ) {
+
+        resetMatch();
+
+        updateDisplay();
+
+        return;
     }
 
 
     currentLeg++;
 
 
-    if (gameMode === "legs") {
-
-        if (p1Legs >= setsToWin) {
-
-            alert(
-                `${p1NameDisplay.textContent} wins the match!`
-            );
-
-            resetMatch();
-
-        } else if (
-            p2Legs >= setsToWin
-        ) {
-
-            alert(
-                `${p2NameDisplay.textContent} wins the match!`
-            );
-
-            resetMatch();
-        }
-
-    } else {
-
-        if (p1Sets >= setsToWin) {
-
-            alert(
-                `${p1NameDisplay.textContent} wins the match!`
-            );
-
-            resetMatch();
-
-        } else if (
-            p2Sets >= setsToWin
-        ) {
-
-            alert(
-                `${p2NameDisplay.textContent} wins the match!`
-            );
-
-            resetMatch();
-        }
-    }
-
-
     p1Score =
         startingScore;
+
 
     p2Score =
         startingScore;
 
-    dartsLeft = 3;
 
+    dartsLeft =
+        3;
+
+
+    /*
+    Winner of previous leg
+    throws second in next leg.
+    */
 
     currentPlayer =
         player === 1
             ? 2
             : 1;
+
+
+    turnStartScoreP1 =
+        startingScore;
+
+
+    turnStartScoreP2 =
+        startingScore;
 }
 
 
+
 /* =========================================================
-   DISPLAY
+   UPDATE 501 DISPLAY
 ========================================================= */
 
 function updateDisplay() {
 
     p1ScoreDisplay.textContent =
         p1Score;
+
 
     p2ScoreDisplay.textContent =
         p2Score;
@@ -897,6 +1449,7 @@ function updateDisplay() {
     p1LegsDisplay.textContent =
         `Legs: ${p1Legs}`;
 
+
     p2LegsDisplay.textContent =
         `Legs: ${p2Legs}`;
 
@@ -904,29 +1457,58 @@ function updateDisplay() {
     p1SetsDisplay.textContent =
         `Sets: ${p1Sets}`;
 
+
     p2SetsDisplay.textContent =
         `Sets: ${p2Sets}`;
 
 
-    legSetStatus.textContent =
-        gameMode === "sets"
-            ? `Set ${currentSet} · Leg ${currentLeg}`
-            : `Leg ${currentLeg}`;
+    if (
+        gameMode ===
+        "sets"
+    ) {
+
+        legSetStatus.textContent =
+            `Set ${currentSet} · Leg ${currentLeg}`;
+
+    } else {
+
+        legSetStatus.textContent =
+            `Leg ${currentLeg}`;
+    }
 
 
     dartsStatus.textContent =
         `Darts: ${dartsLeft}`;
 
 
-    if (currentPlayer === 1) {
+    updateTurnHighlight();
+
+
+    updateCheckoutSuggestion();
+}
+
+
+
+/* =========================================================
+   ACTIVE PLAYER
+========================================================= */
+
+function updateTurnHighlight() {
+
+    if (
+        currentPlayer ===
+        1
+    ) {
 
         p1Box.classList.add(
             "active"
         );
 
+
         p2Box.classList.remove(
             "active"
         );
+
 
     } else {
 
@@ -934,18 +1516,17 @@ function updateDisplay() {
             "active"
         );
 
+
         p1Box.classList.remove(
             "active"
         );
     }
-
-
-    updateCheckoutSuggestion();
 }
 
 
+
 /* =========================================================
-   CHECKOUT
+   CHECKOUT SUGGESTION
 ========================================================= */
 
 function updateCheckoutSuggestion() {
@@ -955,96 +1536,207 @@ function updateCheckoutSuggestion() {
             ? p1Score
             : p2Score;
 
+
     checkoutText.textContent =
-        getCheckoutRoute(score);
+        getCheckoutRoute(
+            score
+        );
 }
 
 
-function getCheckoutRoute(score) {
+
+function getCheckoutRoute(
+    score
+) {
 
     if (
         score > 170 ||
         score < 2
     ) {
 
-        return "No checkout available";
+        return (
+            "No checkout available"
+        );
     }
 
 
     const routes = {
 
-        170: "T20, T20, Bull",
-        167: "T20, T19, Bull",
-        164: "T20, T18, Bull",
-        161: "T20, T17, Bull",
+        170:
+            "T20, T20, Bull",
 
-        160: "T20, T20, D20",
-        158: "T20, T20, D19",
-        157: "T20, T19, D20",
-        156: "T20, T20, D18",
+        167:
+            "T20, T19, Bull",
 
-        155: "T20, T19, D19",
-        154: "T20, T18, D20",
-        153: "T20, T19, D18",
-        152: "T20, T20, D16",
+        164:
+            "T20, T18, Bull",
 
-        151: "T20, T17, D20",
-        150: "T20, T18, D18",
+        161:
+            "T20, T17, Bull",
 
-        149: "T20, T19, D16",
-        148: "T20, T16, D20",
+        160:
+            "T20, T20, D20",
 
-        147: "T20, T17, D18",
-        146: "T20, T18, D16",
-        145: "T20, T15, D20",
-        144: "T20, T20, D12",
+        158:
+            "T20, T20, D19",
 
-        141: "T20, T19, D12",
-        140: "T20, T20, D10",
+        157:
+            "T20, T19, D20",
 
-        121: "T20, T11, D14",
-        120: "T20, 20, D20",
+        156:
+            "T20, T20, D18",
 
-        100: "T20, D20",
+        155:
+            "T20, T19, D19",
 
-        80: "T20, D10",
+        154:
+            "T20, T18, D20",
 
-        40: "D20",
-        32: "D16",
-        24: "D12",
-        16: "D8"
+        153:
+            "T20, T19, D18",
+
+        152:
+            "T20, T20, D16",
+
+        151:
+            "T20, T17, D20",
+
+        150:
+            "T20, T18, D18",
+
+        149:
+            "T20, T19, D16",
+
+        148:
+            "T20, T16, D20",
+
+        147:
+            "T20, T17, D18",
+
+        146:
+            "T20, T18, D16",
+
+        145:
+            "T20, T15, D20",
+
+        144:
+            "T20, T20, D12",
+
+        141:
+            "T20, T19, D12",
+
+        140:
+            "T20, T20, D10",
+
+        121:
+            "T20, T11, D14",
+
+        120:
+            "T20, 20, D20",
+
+        100:
+            "T20, D20",
+
+        80:
+            "T20, D10",
+
+        40:
+            "D20",
+
+        32:
+            "D16",
+
+        24:
+            "D12",
+
+        16:
+            "D8"
     };
 
 
-    return routes[score] ||
-        "Standard route";
+    if (
+        routes[
+            score
+        ]
+    ) {
+
+        return routes[
+            score
+        ];
+    }
+
+
+    return (
+        "Standard route"
+    );
 }
 
 
+
 /* =========================================================
-   CRICKET
+   BACK TO MENU - 501
 ========================================================= */
 
-let cricketInnings = 1;
+gameBackBtn.addEventListener(
+    "click",
+    () => {
 
-let cricketTotalWickets = 11;
+        gameScreen.classList.add(
+            "hidden"
+        );
 
-let cricketRuns = 0;
 
-let cricketWicketsLost = 0;
+        modeScreen.classList.remove(
+            "hidden"
+        );
+    }
+);
 
-let cricketNextWicket = 1;
 
-let cricketTarget = null;
 
-let cricketDartsLeft = 3;
+/* =========================================================
+   CRICKET VARIABLES
+========================================================= */
+
+let cricketInnings =
+    1;
+
+
+let cricketTotalWickets =
+    11;
+
+
+let cricketRuns =
+    0;
+
+
+let cricketWicketsLost =
+    0;
+
+
+let cricketNextWicket =
+    1;
+
+
+let cricketTarget =
+    null;
+
+
+let cricketDartsLeft =
+    3;
+
 
 let cricketPhase =
     "bowling";
 
 
+let cricketMatchFinished =
+    false;
+
+
+
 /* =========================================================
-   CREATE CRICKET BUTTONS
+   CREATE CRICKET BOARD
 ========================================================= */
 
 function initCricketBoard() {
@@ -1054,25 +1746,30 @@ function initCricketBoard() {
             "cricket-bowl-singles"
         );
 
+
     const bowlDoubles =
         document.getElementById(
             "cricket-bowl-doubles"
         );
+
 
     const bowlTrebles =
         document.getElementById(
             "cricket-bowl-trebles"
         );
 
+
     const batSingles =
         document.getElementById(
             "cricket-bat-singles"
         );
 
+
     const batDoubles =
         document.getElementById(
             "cricket-bat-doubles"
         );
+
 
     const batTrebles =
         document.getElementById(
@@ -1080,62 +1777,109 @@ function initCricketBoard() {
         );
 
 
+    /*
+    Already generated.
+    */
+
     if (
-        bowlSingles.children.length > 0
+        bowlSingles.children.length >
+        0
     ) {
 
         return;
     }
 
 
-    for (let i = 1; i <= 20; i++) {
+    for (
+        let i = 1;
+        i <= 20;
+        i++
+    ) {
 
         createCricketButton(
+
             bowlSingles,
+
             i,
+
             1,
+
             "bowl",
-            String(i)
+
+            String(
+                i
+            )
         );
 
+
         createCricketButton(
+
             bowlDoubles,
+
             i,
+
             2,
+
             "bowl",
+
             "D" + i
         );
 
+
         createCricketButton(
+
             bowlTrebles,
+
             i,
+
             3,
+
             "bowl",
+
             "T" + i
         );
 
 
         createCricketButton(
+
             batSingles,
+
             i,
+
             1,
+
             "bat",
-            String(i)
+
+            String(
+                i
+            )
         );
 
+
         createCricketButton(
+
             batDoubles,
+
             i,
+
             2,
+
             "bat",
+
             "D" + i
         );
 
+
         createCricketButton(
+
             batTrebles,
+
             i,
+
             3,
+
             "bat",
+
             "T" + i
         );
     }
@@ -1145,47 +1889,74 @@ function initCricketBoard() {
         .querySelectorAll(
             "#cricket-screen .segment"
         )
-        .forEach(button => {
+        .forEach(
+            button => {
 
-            button.addEventListener(
-                "click",
-                () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                    const role =
-                        button.dataset.role;
-
-                    if (!role)
-                        return;
+                        const role =
+                            button.dataset.role;
 
 
-                    handleCricketDart(
+                        /*
+                        Bull buttons only
+                        apply to batting.
+                        */
 
-                        role,
+                        if (
+                            !role
+                        ) {
 
-                        parseInt(
-                            button.dataset.base
-                        ),
+                            return;
+                        }
 
-                        parseInt(
-                            button.dataset.mult
-                        ),
 
-                        parseInt(
-                            button.dataset.score
-                        )
-                    );
-                }
-            );
-        });
+                        const base =
+                            parseInt(
+                                button.dataset.base
+                            );
+
+
+                        const mult =
+                            parseInt(
+                                button.dataset.mult
+                            );
+
+
+                        const score =
+                            parseInt(
+                                button.dataset.score
+                            );
+
+
+                        handleCricketDart(
+
+                            role,
+
+                            base,
+
+                            mult,
+
+                            score
+                        );
+                    }
+                );
+            }
+        );
 }
 
 
+
 function createCricketButton(
+
     container,
     base,
     mult,
     role,
     label
+
 ) {
 
     const button =
@@ -1193,28 +1964,36 @@ function createCricketButton(
             "button"
         );
 
+
     button.className =
         "segment btn-score";
+
 
     button.dataset.base =
         base;
 
+
     button.dataset.mult =
         mult;
+
 
     button.dataset.role =
         role;
 
+
     button.dataset.score =
         base * mult;
 
+
     button.textContent =
         label;
+
 
     container.appendChild(
         button
     );
 }
+
 
 
 /* =========================================================
@@ -1223,28 +2002,81 @@ function createCricketButton(
 
 function resetCricketMatch() {
 
-    cricketInnings = 1;
+    cricketInnings =
+        1;
+
 
     cricketTotalWickets =
         parseInt(
             cricketTotalWicketsInput.value
         ) || 11;
 
-    cricketRuns = 0;
 
-    cricketWicketsLost = 0;
+    if (
+        cricketTotalWickets <
+        1
+    ) {
 
-    cricketNextWicket = 1;
+        cricketTotalWickets =
+            1;
+    }
 
-    cricketTarget = null;
 
-    cricketDartsLeft = 3;
+    if (
+        cricketTotalWickets >
+        20
+    ) {
+
+        cricketTotalWickets =
+            20;
+    }
+
+
+    cricketRuns =
+        0;
+
+
+    cricketWicketsLost =
+        0;
+
+
+    cricketNextWicket =
+        1;
+
+
+    cricketTarget =
+        null;
+
+
+    cricketDartsLeft =
+        3;
+
 
     cricketPhase =
         "bowling";
 
+
+    cricketMatchFinished =
+        false;
+
+
+    /*
+    Innings 1:
+    Team B bats.
+    Team A bowls.
+    */
+
+    cricketBattingName.textContent =
+        cricketTeamB.textContent;
+
+
+    cricketBowlingName.textContent =
+        cricketTeamA.textContent;
+
+
     updateCricketDisplay();
 }
+
 
 
 cricketStartMatchBtn.addEventListener(
@@ -1253,8 +2085,9 @@ cricketStartMatchBtn.addEventListener(
 );
 
 
+
 /* =========================================================
-   CRICKET DECLARE
+   DECLARE
 ========================================================= */
 
 cricketDeclareBtn.addEventListener(
@@ -1262,42 +2095,31 @@ cricketDeclareBtn.addEventListener(
     () => {
 
         if (
-            cricketInnings === 1
+            cricketMatchFinished
         ) {
 
-            cricketTarget =
-                cricketRuns + 1;
-
-            cricketInnings = 2;
+            return;
+        }
 
 
-            cricketBattingName.textContent =
-                cricketTeamA.textContent;
+        if (
+            cricketInnings ===
+            1
+        ) {
 
-            cricketBowlingName.textContent =
-                cricketTeamB.textContent;
-
-
-            cricketRuns = 0;
-
-            cricketWicketsLost = 0;
-
-            cricketNextWicket = 1;
-
-            cricketDartsLeft = 3;
-
-            cricketPhase =
-                "bowling";
-
-
-            alert(
-                `Innings declared.\nTarget: ${cricketTarget}`
+            startSecondInnings(
+                "declared"
             );
+
 
         } else {
 
+            cricketMatchFinished =
+                true;
+
+
             alert(
-                `Second innings declared at ${cricketRuns}.`
+                `${cricketBattingName.textContent} declared on ${cricketRuns}.`
             );
         }
 
@@ -1307,8 +2129,9 @@ cricketDeclareBtn.addEventListener(
 );
 
 
+
 /* =========================================================
-   CRICKET SPECIAL BUTTONS
+   MISS SCORING ZONE
 ========================================================= */
 
 cricketMissBoardBtn.addEventListener(
@@ -1316,6 +2139,7 @@ cricketMissBoardBtn.addEventListener(
     () => {
 
         if (
+            cricketMatchFinished ||
             cricketPhase !==
             "batting"
         ) {
@@ -1324,34 +2148,52 @@ cricketMissBoardBtn.addEventListener(
         }
 
 
-        cricketRuns++;
+        /*
+        Miss scoring zone but
+        dart remains in board:
+        one run.
+        */
+
+        cricketRuns +=
+            1;
+
 
         cricketDartsLeft--;
 
 
         if (
-            cricketDartsLeft <= 0
+            cricketDartsLeft <=
+            0
         ) {
 
             cricketPhase =
                 "bowling";
 
-            cricketDartsLeft = 3;
+
+            cricketDartsLeft =
+                3;
         }
 
 
         checkCricketResult();
 
+
         updateCricketDisplay();
     }
 );
 
+
+
+/* =========================================================
+   DART FALLS OUT
+========================================================= */
 
 cricketFallOutBtn.addEventListener(
     "click",
     () => {
 
         if (
+            cricketMatchFinished ||
             cricketPhase !==
             "batting"
         ) {
@@ -1360,41 +2202,91 @@ cricketFallOutBtn.addEventListener(
         }
 
 
-        cricketRuns++;
-
-
         /*
-        Extra dart:
-        darts-left is NOT reduced.
+        Dart falls out:
+        +1 run
+        AND extra dart.
+
+        Therefore darts-left does
+        not decrease.
         */
 
+        cricketRuns +=
+            1;
+
+
         checkCricketResult();
+
 
         updateCricketDisplay();
     }
 );
 
 
+
 /* =========================================================
-   CRICKET DART
+   HANDLE CRICKET DART
 ========================================================= */
 
 function handleCricketDart(
+
     role,
     base,
     mult,
     score
+
 ) {
 
     if (
-        cricketDartsLeft <= 0
+        cricketMatchFinished ||
+        cricketDartsLeft <=
+        0
     ) {
 
         return;
     }
 
 
-    if (role === "bowl") {
+    /*
+    Ignore bowling buttons when
+    it is batting phase.
+    */
+
+    if (
+        cricketPhase ===
+            "batting" &&
+        role !==
+            "bat"
+    ) {
+
+        return;
+    }
+
+
+    /*
+    Ignore batting buttons when
+    it is bowling phase.
+    */
+
+    if (
+        cricketPhase ===
+            "bowling" &&
+        role !==
+            "bowl"
+    ) {
+
+        return;
+    }
+
+
+    /* =====================================================
+       BOWLING
+    ===================================================== */
+
+    if (
+        role ===
+        "bowl"
+    ) {
 
         if (
             base ===
@@ -1410,17 +2302,36 @@ function handleCricketDart(
         cricketDartsLeft--;
 
 
+        /*
+        After bowling turn:
+        batting turn immediately.
+        */
+
         if (
-            cricketDartsLeft <= 0
+            cricketDartsLeft <=
+            0
         ) {
 
             cricketPhase =
                 "batting";
 
-            cricketDartsLeft = 3;
+
+            cricketDartsLeft =
+                3;
         }
 
+
+    /* =====================================================
+       BATTING
+    ===================================================== */
+
     } else {
+
+        /*
+        If batter hits the current
+        wicket number, wickets are
+        lost rather than runs.
+        */
 
         if (
             base ===
@@ -1430,6 +2341,7 @@ function handleCricketDart(
             takeCricketWickets(
                 mult
             );
+
 
         } else {
 
@@ -1441,23 +2353,37 @@ function handleCricketDart(
         cricketDartsLeft--;
 
 
+        /*
+        After batting:
+        back to bowling.
+        */
+
         if (
-            cricketDartsLeft <= 0
+            cricketDartsLeft <=
+            0
         ) {
 
             cricketPhase =
                 "bowling";
 
-            cricketDartsLeft = 3;
+
+            cricketDartsLeft =
+                3;
         }
     }
 
 
     checkCricketResult();
 
+
     updateCricketDisplay();
 }
 
+
+
+/* =========================================================
+   TAKE WICKETS
+========================================================= */
 
 function takeCricketWickets(
     amount
@@ -1467,18 +2393,107 @@ function takeCricketWickets(
         cricketTotalWickets -
         cricketWicketsLost;
 
+
     const actual =
         Math.min(
             amount,
             remaining
         );
 
+
     cricketWicketsLost +=
         actual;
 
+
     cricketNextWicket +=
         actual;
+
+
+    if (
+        cricketNextWicket >
+        cricketTotalWickets
+    ) {
+
+        cricketNextWicket =
+            cricketTotalWickets;
+    }
 }
+
+
+
+/* =========================================================
+   START SECOND INNINGS
+========================================================= */
+
+function startSecondInnings(
+    reason
+) {
+
+    const firstInningsRuns =
+        cricketRuns;
+
+
+    cricketTarget =
+        firstInningsRuns +
+        1;
+
+
+    cricketInnings =
+        2;
+
+
+    /*
+    Swap:
+    Team A now bats.
+    Team B bowls.
+    */
+
+    cricketBattingName.textContent =
+        cricketTeamA.textContent;
+
+
+    cricketBowlingName.textContent =
+        cricketTeamB.textContent;
+
+
+    cricketRuns =
+        0;
+
+
+    cricketWicketsLost =
+        0;
+
+
+    cricketNextWicket =
+        1;
+
+
+    cricketDartsLeft =
+        3;
+
+
+    cricketPhase =
+        "bowling";
+
+
+    if (
+        reason ===
+        "declared"
+    ) {
+
+        alert(
+            `Innings declared at ${firstInningsRuns} runs.\nTarget: ${cricketTarget}`
+        );
+
+
+    } else {
+
+        alert(
+            `All wickets down.\nFirst innings: ${firstInningsRuns} runs.\nTarget: ${cricketTarget}`
+        );
+    }
+}
+
 
 
 /* =========================================================
@@ -1488,80 +2503,93 @@ function takeCricketWickets(
 function checkCricketResult() {
 
     if (
+        cricketMatchFinished
+    ) {
+
+        return;
+    }
+
+
+    /*
+    All wickets lost.
+    */
+
+    if (
         cricketWicketsLost >=
         cricketTotalWickets
     ) {
 
         if (
-            cricketInnings === 1
+            cricketInnings ===
+            1
         ) {
 
-            cricketTarget =
-                cricketRuns + 1;
-
-            cricketInnings = 2;
-
-
-            cricketBattingName.textContent =
-                cricketTeamA.textContent;
-
-            cricketBowlingName.textContent =
-                cricketTeamB.textContent;
+            startSecondInnings(
+                "allout"
+            );
 
 
-            cricketRuns = 0;
+            return;
+        }
 
-            cricketWicketsLost = 0;
 
-            cricketNextWicket = 1;
+        /*
+        Second innings all out.
+        */
 
-            cricketDartsLeft = 3;
+        cricketMatchFinished =
+            true;
 
-            cricketPhase =
-                "bowling";
 
+        if (
+            cricketRuns >=
+            cricketTarget
+        ) {
 
             alert(
-                `All out.\nTarget: ${cricketTarget}`
+                `${cricketBattingName.textContent} wins!`
             );
+
 
         } else {
 
-            if (
-                cricketRuns >=
-                cricketTarget
-            ) {
-
-                alert(
-                    `${cricketBattingName.textContent} wins!`
-                );
-
-            } else {
-
-                alert(
-                    `${cricketBowlingName.textContent} wins!`
-                );
-            }
+            alert(
+                `${cricketBowlingName.textContent} wins!\n${cricketBattingName.textContent} all out for ${cricketRuns}.\nTarget was ${cricketTarget}.`
+            );
         }
+
+
+        return;
     }
 
 
+    /*
+    Target reached.
+    */
+
     if (
-        cricketInnings === 2 &&
-        cricketTarget !== null &&
+        cricketInnings ===
+            2 &&
+        cricketTarget !==
+            null &&
         cricketRuns >=
-        cricketTarget
+            cricketTarget
     ) {
 
+        cricketMatchFinished =
+            true;
+
+
         alert(
-            `${cricketBattingName.textContent} wins!`
+            `${cricketBattingName.textContent} wins!\nTarget ${cricketTarget} reached.`
         );
     }
 }
 
 
+
 /* =========================================================
-   CRICKET DISPLAY
+   UPDATE CRICKET DISPLAY
 ========================================================= */
 
 function updateCricketDisplay() {
@@ -1569,38 +2597,71 @@ function updateCricketDisplay() {
     cricketInningsDisplay.textContent =
         cricketInnings;
 
+
     cricketTotalWicketsInput.value =
         cricketTotalWickets;
+
 
     cricketRunsDisplay.textContent =
         cricketRuns;
 
+
     cricketWicketsDisplay.textContent =
         cricketWicketsLost;
 
-    cricketDangerDisplay.textContent =
-        cricketNextWicket <=
+
+    if (
+        cricketWicketsLost >=
         cricketTotalWickets
-            ? cricketNextWicket
-            : "–";
+    ) {
+
+        cricketDangerDisplay.textContent =
+            "–";
+
+    } else {
+
+        cricketDangerDisplay.textContent =
+            cricketNextWicket;
+    }
+
 
     cricketTargetDisplay.textContent =
-        cricketTarget === null
+        cricketTarget ===
+        null
             ? "–"
             : cricketTarget;
 
-    cricketPhaseDisplay.textContent =
-        cricketPhase === "bowling"
-            ? "Bowling Turn"
-            : "Batting Turn";
 
-    cricketDartsLeftDisplay.textContent =
-        cricketDartsLeft;
+    if (
+        cricketMatchFinished
+    ) {
+
+        cricketPhaseDisplay.textContent =
+            "Match Finished";
+
+
+        cricketDartsLeftDisplay.textContent =
+            "–";
+
+
+    } else {
+
+        cricketPhaseDisplay.textContent =
+            cricketPhase ===
+            "bowling"
+                ? "Bowling Turn"
+                : "Batting Turn";
+
+
+        cricketDartsLeftDisplay.textContent =
+            cricketDartsLeft;
+    }
 }
 
 
+
 /* =========================================================
-   BACK
+   CRICKET BACK
 ========================================================= */
 
 cricketBackBtn.addEventListener(
@@ -1611,11 +2672,17 @@ cricketBackBtn.addEventListener(
             "hidden"
         );
 
+
         modeScreen.classList.remove(
             "hidden"
         );
     }
 );
 
+
+
+/* =========================================================
+   INITIAL DISPLAY
+========================================================= */
 
 updateDisplay();
