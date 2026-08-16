@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -11,362 +9,217 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Dart Hub Camera Calibration
-    </title>
-
+    <title>Dart Hub Live Calibration</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-
         html,
         body {
-
             margin: 0;
-
             min-height: 100%;
-
             background:
                 radial-gradient(
                     circle at top,
                     #162733,
                     #050708 55%
                 );
-
             color: white;
-
-            font-family:
-                Arial,
-                sans-serif;
+            font-family: Arial, sans-serif;
         }
 
-
         body {
-
             padding: 12px;
-
             text-align: center;
         }
 
-
-        h1 {
-            color: #00aaff;
-        }
-
-
+        h1,
         h2 {
             color: #00aaff;
         }
 
-
         .card {
-
-            max-width: 1150px;
-
-            margin:
-                12px auto;
-
+            max-width: 1200px;
+            margin: 12px auto;
             padding: 12px;
-
-            border:
-                1px solid #293941;
-
+            border: 1px solid #293941;
             border-radius: 12px;
-
             background: #0b1013;
         }
 
-
         .join-row {
-
             display: grid;
-
-            grid-template-columns:
-                1fr auto;
-
+            grid-template-columns: 1fr auto;
             gap: 8px;
-
             max-width: 500px;
-
             margin: auto;
         }
 
-
         input {
-
             min-height: 50px;
-
             padding: 10px;
-
-            border:
-                1px solid #44545b;
-
+            border: 1px solid #44545b;
             border-radius: 8px;
-
             background: #020303;
-
             color: white;
-
             font-size: 21px;
-
             font-weight: bold;
-
             text-align: center;
-
             text-transform: uppercase;
-
             letter-spacing: 4px;
         }
 
-
         button {
-
-            min-height: 48px;
-
-            padding:
-                8px 14px;
-
+            min-height: 46px;
+            padding: 8px 12px;
             border: none;
-
             border-radius: 8px;
-
             background: #0078b8;
-
             color: white;
-
             font-weight: bold;
-
             cursor: pointer;
         }
 
+        button.active {
+            outline: 3px solid #ffffff;
+        }
 
         .secondary {
             background: #087247;
         }
 
-
         .warning {
             background: #782323;
         }
 
-
-        .image-wrap {
-
-            position: relative;
-
-            overflow: auto;
-
-            max-height: 74vh;
-
-            background: black;
-
-            border-radius: 10px;
-        }
-
-
-        #calibration-canvas {
-
-            display: block;
-
-            max-width: 100%;
-
-            margin: auto;
-
-            cursor: crosshair;
-        }
-
-
-        .controls {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 7px;
-
-            margin-top: 9px;
-        }
-
-
         .status {
-
             margin-top: 8px;
-
             color: #96a8b0;
         }
 
-
-        .current-point {
-
-            margin: 9px 0;
-
+        .live-status {
             color: #00ff9d;
-
-            font-size: 20px;
-
             font-weight: 900;
         }
 
+        .tool-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .outer-double {
+            background: #0078b8;
+        }
+
+        .inner-double {
+            background: #6e42b5;
+        }
+
+        .outer-treble {
+            background: #0b8753;
+        }
+
+        .inner-treble {
+            background: #bb7118;
+        }
+
+        .bull-tool {
+            background: #aa245b;
+        }
+
+        .calibration-layout {
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1fr) 270px;
+            gap: 10px;
+            align-items: start;
+        }
+
+        .image-wrap {
+            position: relative;
+            overflow: auto;
+            max-height: 78vh;
+            background: black;
+            border-radius: 10px;
+        }
+
+        #calibration-canvas {
+            display: block;
+            max-width: 100%;
+            margin: auto;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .side-panel {
+            text-align: left;
+        }
+
+        .side-panel h3 {
+            margin-top: 0;
+            color: #00aaff;
+        }
 
         .help {
-
             color: #9fb0b7;
-
-            font-size: 13px;
-
-            line-height: 1.55;
-
-            text-align: left;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
-
-        .help strong {
-            color: white;
-        }
-
-
-        .point-list {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 5px;
-
-            text-align: left;
-        }
-
-
-        .point-row {
-
-            display: grid;
-
-            grid-template-columns:
-                28px 1fr 24px;
-
-            gap: 6px;
-
-            align-items: center;
-
+        .legend-item {
             padding: 7px;
-
+            margin: 5px 0;
             border-radius: 7px;
-
-            background: #11181b;
-
-            color: #83949c;
+            background: #101719;
+            font-size: 12px;
         }
 
-
-        .point-row.done {
-
-            color: white;
-
-            border:
-                1px solid #155e46;
-
-            background: #0a241b;
+        .legend-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 7px;
+            border-radius: 50%;
+            vertical-align: middle;
         }
 
-
-        .point-row span {
-
-            color: #00aaff;
-
-            font-weight: 900;
-        }
-
-
-        .point-row em {
-
-            color: #00ff9d;
-
-            font-style: normal;
-
-            font-weight: 900;
-        }
-
-
-        .ring-values {
-
+        .controls {
             display: grid;
-
             grid-template-columns:
-                repeat(4, 1fr);
-
+                repeat(3, 1fr);
             gap: 7px;
+            margin-top: 9px;
         }
-
-
-        .ring-values div {
-
-            padding: 9px;
-
-            border-radius: 7px;
-
-            background: #11181b;
-
-            color: #9aaab1;
-        }
-
-
-        .ring-values strong {
-
-            display: block;
-
-            margin-top: 4px;
-
-            color: #00ff9d;
-
-            font-size: 18px;
-        }
-
 
         .detected {
-
             color: #00ff9d;
-
             font-size: 30px;
-
             font-weight: 900;
         }
 
-
-        @media (
-            max-width: 700px
-        ) {
+        @media (max-width: 800px) {
 
             .join-row,
             .controls,
-            .point-list,
-            .ring-values {
-
-                grid-template-columns:
-                    1fr;
+            .calibration-layout {
+                grid-template-columns: 1fr;
             }
 
+            .tool-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
         }
-
     </style>
-
 </head>
 
+<body data-camera-page="calibrate">
 
-<body
-    data-camera-page="calibrate"
->
-
-
-<h1>
-    🎯 Dart Hub 17-Point Camera Calibration
-</h1>
-
+<h1>🎯 Dart Hub Live Calibration</h1>
 
 <div class="card">
 
@@ -378,48 +231,81 @@
             placeholder="ABC123"
         >
 
-
-        <button
-            id="connect-camera"
-        >
+        <button id="connect-camera">
             Connect
         </button>
 
     </div>
 
-
     <div
         id="calibration-status"
         class="status"
     >
-
         Enter the code shown on the phone.
-
     </div>
 
 </div>
 
+<div
+    id="calibration-tools"
+    class="card"
+    style="display:none"
+>
 
-<div class="card help">
+    <div
+        id="live-feed-status"
+        class="live-status"
+    >
+        Waiting for live phone image…
+    </div>
 
-    <strong>
-        Calibration:
-    </strong>
+    <p class="help">
+        Keep the phone completely still. Choose a ring below,
+        then drag its eight coloured points onto the matching
+        physical edge of the dartboard. The scoring grid updates
+        immediately while you drag.
+    </p>
 
-    click the bull first, then the
-    inner and outer edges of the treble and double
-    for 20, 6, 3 and 14.
+    <div class="tool-grid">
 
-    <br><br>
+        <button
+            class="ring-tool outer-double active"
+            data-ring="outerDouble"
+        >
+            Outer Double
+        </button>
 
-    Click along the
-    <strong>centre line of the number</strong>,
-    not near the wire between two numbers.
+        <button
+            class="ring-tool inner-double"
+            data-ring="innerDouble"
+        >
+            Inner Double
+        </button>
 
-    The image is frozen, so take your time.
+        <button
+            class="ring-tool outer-treble"
+            data-ring="outerTreble"
+        >
+            Outer Treble
+        </button>
+
+        <button
+            class="ring-tool inner-treble"
+            data-ring="innerTreble"
+        >
+            Inner Treble
+        </button>
+
+        <button
+            class="ring-tool bull-tool"
+            data-ring="bull"
+        >
+            Bull Centre
+        </button>
+
+    </div>
 
 </div>
-
 
 <div
     id="calibration-area"
@@ -427,100 +313,106 @@
     style="display:none"
 >
 
-    <div
-        id="current-point"
-        class="current-point"
-    >
-        Waiting for picture…
-    </div>
+    <div class="calibration-layout">
 
+        <div class="image-wrap">
 
-    <div class="image-wrap">
+            <canvas
+                id="calibration-canvas"
+            ></canvas>
 
-        <canvas
-            id="calibration-canvas"
-        ></canvas>
+        </div>
 
-    </div>
+        <div class="side-panel">
 
+            <h3>
+                Calibration
+            </h3>
 
-    <div class="controls">
+            <div class="legend-item">
+                <span
+                    class="legend-dot"
+                    style="background:#00d9ff"
+                ></span>
+                Outer Double
+            </div>
 
-        <button
-            id="undo-point"
-            class="warning"
-        >
-            ↶ Undo Last Point
-        </button>
+            <div class="legend-item">
+                <span
+                    class="legend-dot"
+                    style="background:#ae78ff"
+                ></span>
+                Inner Double
+            </div>
 
+            <div class="legend-item">
+                <span
+                    class="legend-dot"
+                    style="background:#00ff88"
+                ></span>
+                Outer Treble
+            </div>
 
-        <button
-            id="reset-points"
-            class="warning"
-        >
-            Reset All 17 Points
-        </button>
+            <div class="legend-item">
+                <span
+                    class="legend-dot"
+                    style="background:#ff9d2e"
+                ></span>
+                Inner Treble
+            </div>
 
+            <div class="legend-item">
+                <span
+                    class="legend-dot"
+                    style="background:#ff3d91"
+                ></span>
+                Bull Centre
+            </div>
 
-        <button
-            id="preview-grid"
-            class="secondary"
-        >
-            👁 Preview Grid
-        </button>
+            <p
+                id="calibration-help"
+                class="help"
+            >
+                Drag the Outer Double points first.
+            </p>
 
-    </div>
+            <button
+                id="reset-handles"
+                class="warning"
+                style="width:100%;"
+            >
+                Reset Handles
+            </button>
 
-</div>
-
-
-<div
-    id="calibration-summary"
-    class="card"
-    style="display:none"
->
-
-    <h2>
-        Calibration Points
-    </h2>
-
-
-    <div
-        id="point-list"
-        class="point-list"
-    ></div>
-
-
-    <h2>
-        Calculated Ring Positions
-    </h2>
-
-
-    <div
-        id="ring-values"
-        class="ring-values"
-    >
-
-        <div>
-            Complete all 17 points first.
         </div>
 
     </div>
 
+    <div class="controls">
 
-    <button
-        id="save-calibration"
-        class="secondary"
-        style="
-            width:100%;
-            margin-top:12px;
-        "
-    >
-        💾 Save Calibration to Phone
-    </button>
+        <button
+            id="toggle-grid"
+            class="secondary"
+        >
+            👁 Hide Grid
+        </button>
+
+        <button
+            id="save-calibration"
+            class="secondary"
+        >
+            💾 Save Calibration
+        </button>
+
+        <button
+            id="request-frame"
+        >
+            📷 Request Fresh Frame
+        </button>
+
+    </div>
 
 </div>
-
 
 <div
     id="live-detection"
@@ -532,14 +424,12 @@
         PHONE DETECTION
     </div>
 
-
     <div
         id="pc-detected-dart"
         class="detected"
     >
         Waiting…
     </div>
-
 
     <div
         id="pc-detected-confidence"
@@ -548,17 +438,8 @@
 
 </div>
 
-
-<script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-></script>
-
-
-<script
-    src="camera.js?v=3"
-></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="camera.js?v=4"></script>
 
 </body>
-
 </html>
