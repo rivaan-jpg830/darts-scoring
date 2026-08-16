@@ -2,9 +2,11 @@
 
 
 /* =========================================================
-   DART HUB CAMERA V4
-   LIVE PC CALIBRATION + DRAGGABLE RING HANDLES
-   + EXPERIMENTAL DART IMPACT DETECTION
+   DART HUB CAMERA V5
+   LIVE CALIBRATION
+   REMOTE CAMERA CONTROL
+   PHONE + PC ZOOM
+   AUTOMATIC DART DETECTION
 ========================================================= */
 
 
@@ -40,7 +42,7 @@ let cameraChannel =
 
 
 /* =========================================================
-   DARTBOARD
+   BOARD
 ========================================================= */
 
 const DART_SEGMENTS = [
@@ -68,13 +70,6 @@ const DART_SEGMENTS = [
 
 ];
 
-
-/*
-   Eight calibration directions.
-
-   These are known dartboard segment centres
-   distributed around the whole board.
-*/
 
 const CALIBRATION_ANCHORS = [
 
@@ -191,6 +186,33 @@ function mean(
 }
 
 
+function roundToStep(
+    value,
+    step
+) {
+
+    if (
+        !step
+    ) {
+
+        return value;
+    }
+
+
+    return (
+
+        Math.round(
+            value /
+            step
+        )
+
+        *
+
+        step
+    );
+}
+
+
 /* =========================================================
    AUTH
 ========================================================= */
@@ -210,7 +232,6 @@ async function requireCameraLogin() {
     ) {
 
         alert(
-
             "Open normal Dart Hub in this browser and sign in first."
         );
 
@@ -445,22 +466,18 @@ function computeLeastSquaresHomography(
     }
 
 
-    /*
-       Least squares:
-
-       (Aᵀ A) h = Aᵀ b
-    */
-
     const size =
         8;
 
 
     const normal =
         Array.from(
+
             {
                 length:
                     size
             },
+
             () =>
                 Array(
                     size
@@ -491,6 +508,7 @@ function computeLeastSquaresHomography(
         ) {
 
             rhs[i] +=
+
                 A[row][i] *
                 b[row];
 
@@ -827,7 +845,7 @@ function scoreBoardPoint(
 
     if (
         radius >=
-            rings.innerDouble
+        rings.innerDouble
     ) {
 
         return {
@@ -895,7 +913,7 @@ function scoreBoardPoint(
 
 
 /* =========================================================
-   PHONE
+   PHONE STATE
 ========================================================= */
 
 let phoneVideo;
@@ -905,6 +923,10 @@ let phoneCanvas;
 let phoneContext;
 
 let phoneStream =
+    null;
+
+
+let phoneVideoTrack =
     null;
 
 
@@ -918,6 +940,10 @@ let phoneLiveFeed =
 
 let phoneCalibration =
     null;
+
+
+let phoneCalibrationValid =
+    false;
 
 
 let phoneBaseline =
@@ -950,6 +976,25 @@ let phoneDartsInVisit =
 
 let phoneLastDetectionTime =
     0;
+
+
+let phoneZoom = {
+
+    supported:
+        false,
+
+    min:
+        1,
+
+    max:
+        1,
+
+    step:
+        0.1,
+
+    value:
+        1
+};
 
 
 /* =========================================================
@@ -1022,13 +1067,66 @@ async function initialisePhone() {
 
     document
         .getElementById(
+            "stop-detection"
+        )
+        .onclick =
+            stopAutomaticDetection;
+
+
+    document
+        .getElementById(
             "stop-camera"
         )
         .onclick =
             stopPhoneCamera;
 
 
+    document
+        .getElementById(
+            "phone-zoom-slider"
+        )
+        .addEventListener(
+            "input",
+            event => {
+
+                setPhoneZoom(
+                    Number(
+                        event.target.value
+                    ),
+                    true
+                );
+            }
+        );
+
+
+    document
+        .getElementById(
+            "phone-zoom-out"
+        )
+        .onclick =
+            () =>
+                stepPhoneZoom(
+                    -1
+                );
+
+
+    document
+        .getElementById(
+            "phone-zoom-in"
+        )
+        .onclick =
+            () =>
+                stepPhoneZoom(
+                    1
+                );
+
+
     await requireCameraLogin();
+
+
+    setPhoneState(
+        "READY"
+    );
 
 
     setPhoneStatus(
@@ -1038,7 +1136,7 @@ async function initialisePhone() {
 
 
 /* =========================================================
-   CAMERA
+   START CAMERA
 ========================================================= */
 
 async function startPhoneCamera() {
@@ -1076,6 +1174,11 @@ async function startPhoneCamera() {
             phoneStream;
 
 
+        phoneVideoTrack =
+            phoneStream
+                .getVideoTracks()[0];
+
+
         await new Promise(
             resolve => {
 
@@ -1083,6 +1186,9 @@ async function startPhoneCamera() {
                     resolve;
             }
         );
+
+
+        configurePhoneZoom();
 
 
         document
@@ -1093,8 +1199,13 @@ async function startPhoneCamera() {
                 false;
 
 
+        setPhoneState(
+            "CAMERA READY"
+        );
+
+
         setPhoneStatus(
-            "Camera ready. Put the phone in its final position now."
+            "Put the phone in its final position now. You should not need to touch it again."
         );
 
 
@@ -1107,6 +1218,11 @@ async function startPhoneCamera() {
         );
 
 
+        setPhoneState(
+            "CAMERA ERROR"
+        );
+
+
         setPhoneStatus(
             "Camera could not start. Check Chrome camera permission."
         );
@@ -1115,7 +1231,374 @@ async function startPhoneCamera() {
 
 
 /* =========================================================
-   SESSION
+   ZOOM CAPABILITY
+========================================================= */
+
+function configurePhoneZoom() {
+
+    if (
+        !phoneVideoTrack
+    ) {
+
+        return;
+    }
+
+
+    let capabilities =
+        {};
+
+
+    let settings =
+        {};
+
+
+    try {
+
+        capabilities =
+            phoneVideoTrack
+                .getCapabilities
+                ? phoneVideoTrack.getCapabilities()
+                : {};
+
+
+        settings =
+            phoneVideoTrack
+                .getSettings
+                ? phoneVideoTrack.getSettings()
+                : {};
+
+    } catch (
+        error
+    ) {
+
+        console.warn(
+            "Camera capabilities:",
+            error
+        );
+    }
+
+
+    if (
+        !capabilities.zoom
+    ) {
+
+        phoneZoom.supported =
+            false;
+
+
+        setPhoneZoomUI();
+
+
+        return;
+    }
+
+
+    phoneZoom = {
+
+        supported:
+            true,
+
+        min:
+            Number(
+                capabilities.zoom.min ??
+                1
+            ),
+
+        max:
+            Number(
+                capabilities.zoom.max ??
+                1
+            ),
+
+        step:
+            Number(
+                capabilities.zoom.step ??
+                0.1
+            ),
+
+        value:
+            Number(
+                settings.zoom ??
+                capabilities.zoom.min ??
+                1
+            )
+    };
+
+
+    setPhoneZoomUI();
+}
+
+
+/* =========================================================
+   APPLY PHONE ZOOM
+========================================================= */
+
+async function setPhoneZoom(
+    requestedValue,
+    localChange =
+        false
+) {
+
+    if (
+        !phoneZoom.supported ||
+        !phoneVideoTrack
+    ) {
+
+        return;
+    }
+
+
+    const value =
+        clamp(
+
+            roundToStep(
+
+                requestedValue,
+
+                phoneZoom.step
+            ),
+
+            phoneZoom.min,
+
+            phoneZoom.max
+        );
+
+
+    try {
+
+        await phoneVideoTrack
+            .applyConstraints({
+
+                advanced: [
+
+                    {
+                        zoom:
+                            value
+                    }
+                ]
+            });
+
+
+        const settings =
+            phoneVideoTrack
+                .getSettings();
+
+
+        phoneZoom.value =
+            Number(
+                settings.zoom ??
+                value
+            );
+
+
+        setPhoneZoomUI();
+
+
+        /*
+           Any zoom movement changes
+           calibration geometry.
+        */
+
+        if (
+            localChange ||
+            phoneCalibration
+        ) {
+
+            invalidateCalibrationForZoom();
+        }
+
+
+        broadcastCameraStatus();
+
+
+    } catch (
+        error
+    ) {
+
+        console.warn(
+            "Zoom failed:",
+            error
+        );
+
+
+        setPhoneStatus(
+            "This camera did not accept the requested zoom."
+        );
+    }
+}
+
+
+function stepPhoneZoom(
+    direction
+) {
+
+    if (
+        !phoneZoom.supported
+    ) {
+
+        return;
+    }
+
+
+    setPhoneZoom(
+
+        phoneZoom.value
+
+        +
+
+        phoneZoom.step *
+        direction,
+
+        true
+    );
+}
+
+
+/* =========================================================
+   PHONE ZOOM UI
+========================================================= */
+
+function setPhoneZoomUI() {
+
+    const slider =
+        document.getElementById(
+            "phone-zoom-slider"
+        );
+
+
+    const value =
+        document.getElementById(
+            "phone-zoom-value"
+        );
+
+
+    const status =
+        document.getElementById(
+            "phone-zoom-status"
+        );
+
+
+    const out =
+        document.getElementById(
+            "phone-zoom-out"
+        );
+
+
+    const zoomIn =
+        document.getElementById(
+            "phone-zoom-in"
+        );
+
+
+    if (
+        !phoneZoom.supported
+    ) {
+
+        slider.disabled =
+            true;
+
+
+        out.disabled =
+            true;
+
+
+        zoomIn.disabled =
+            true;
+
+
+        value.textContent =
+            "Not available";
+
+
+        status.textContent =
+            "This phone/browser camera does not expose browser zoom controls.";
+
+
+        return;
+    }
+
+
+    slider.min =
+        String(
+            phoneZoom.min
+        );
+
+
+    slider.max =
+        String(
+            phoneZoom.max
+        );
+
+
+    slider.step =
+        String(
+            phoneZoom.step
+        );
+
+
+    slider.value =
+        String(
+            phoneZoom.value
+        );
+
+
+    slider.disabled =
+        false;
+
+
+    out.disabled =
+        false;
+
+
+    zoomIn.disabled =
+        false;
+
+
+    value.textContent =
+
+        `${phoneZoom.value.toFixed(1)}×`;
+
+
+    status.textContent =
+
+        `Available ${phoneZoom.min.toFixed(1)}× – ${phoneZoom.max.toFixed(1)}×`;
+}
+
+
+/* =========================================================
+   INVALIDATE CALIBRATION
+========================================================= */
+
+function invalidateCalibrationForZoom() {
+
+    if (
+        !phoneCalibration
+    ) {
+
+        return;
+    }
+
+
+    phoneCalibrationValid =
+        false;
+
+
+    stopAutomaticDetection();
+
+
+    setPhoneState(
+        "RECALIBRATION REQUIRED"
+    );
+
+
+    setPhoneStatus(
+        "Zoom changed. Recalibrate on the PC before automatic scoring."
+    );
+}
+
+
+/* =========================================================
+   CREATE SESSION
 ========================================================= */
 
 async function createPhoneSession() {
@@ -1175,6 +1658,9 @@ async function createPhoneSession() {
         startPhoneLiveFeed();
 
 
+        broadcastCameraStatus();
+
+
     } catch (
         error
     ) {
@@ -1192,7 +1678,7 @@ async function createPhoneSession() {
 
 
 /* =========================================================
-   PHONE BROADCAST
+   PHONE REALTIME CHANNEL
 ========================================================= */
 
 async function openPhoneBroadcastChannel() {
@@ -1232,13 +1718,182 @@ async function openPhoneBroadcastChannel() {
         );
 
 
+    cameraChannel
+        .on(
+
+            "broadcast",
+
+            {
+                event:
+                    "camera-command"
+            },
+
+            message => {
+
+                handlePCCommand(
+                    message.payload
+                );
+            }
+        );
+
+
     await cameraChannel
         .subscribe();
 }
 
 
 /* =========================================================
-   LIVE CAMERA FEED
+   HANDLE PC COMMAND
+========================================================= */
+
+async function handlePCCommand(
+    command
+) {
+
+    if (
+        !command ||
+        !command.action
+    ) {
+
+        return;
+    }
+
+
+    if (
+        command.action ===
+        "start-detection"
+    ) {
+
+        startAutomaticDetection();
+
+
+        return;
+    }
+
+
+    if (
+        command.action ===
+        "reset-baseline"
+    ) {
+
+        captureBoardBaseline();
+
+
+        broadcastCameraStatus();
+
+
+        return;
+    }
+
+
+    if (
+        command.action ===
+        "stop-detection"
+    ) {
+
+        stopAutomaticDetection();
+
+
+        return;
+    }
+
+
+    if (
+        command.action ===
+        "set-zoom"
+    ) {
+
+        await setPhoneZoom(
+            Number(
+                command.value
+            )
+        );
+
+
+        return;
+    }
+
+
+    if (
+        command.action ===
+        "start-live-feed"
+    ) {
+
+        startPhoneLiveFeed();
+
+
+        return;
+    }
+}
+
+
+/* =========================================================
+   CAMERA STATUS BROADCAST
+========================================================= */
+
+async function broadcastCameraStatus() {
+
+    if (
+        !cameraChannel
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        await cameraChannel.send({
+
+            type:
+                "broadcast",
+
+            event:
+                "camera-status",
+
+            payload: {
+
+                detecting:
+                    phoneDetecting,
+
+                calibrationValid:
+                    phoneCalibrationValid,
+
+                dartsInVisit:
+                    phoneDartsInVisit,
+
+                zoom:
+                    phoneZoom,
+
+                state:
+
+                    document
+                        .getElementById(
+                            "phone-state"
+                        )
+                        ?.textContent
+
+                    ||
+
+                    ""
+            }
+        });
+
+
+    } catch (
+        error
+    ) {
+
+        console.warn(
+            "Camera status:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   LIVE FEED
 ========================================================= */
 
 function togglePhoneLiveFeed() {
@@ -1300,11 +1955,6 @@ function startPhoneLiveFeed() {
             sendLiveCameraFrame,
             650
         );
-
-
-    setPhoneStatus(
-        "Live calibration feed running. Do not move the phone."
-    );
 }
 
 
@@ -1345,7 +1995,7 @@ function stopPhoneLiveFeed() {
 
 
 /* =========================================================
-   CAPTURE PHONE IMAGE
+   CAPTURE FRAME
 ========================================================= */
 
 function capturePhoneFrame(
@@ -1414,6 +2064,10 @@ function capturePhoneFrame(
 }
 
 
+/* =========================================================
+   SEND LIVE FRAME
+========================================================= */
+
 async function sendLiveCameraFrame() {
 
     if (
@@ -1435,7 +2089,7 @@ async function sendLiveCameraFrame() {
     const image =
         phoneCanvas.toDataURL(
             "image/jpeg",
-            0.48
+            0.5
         );
 
 
@@ -1519,11 +2173,15 @@ function subscribePhoneDatabase() {
                     if (
                         calibration &&
                         calibration.version ===
-                            4
+                            5
                     ) {
 
                         phoneCalibration =
                             calibration;
+
+
+                        phoneCalibrationValid =
+                            true;
 
 
                         document
@@ -1542,9 +2200,17 @@ function subscribePhoneDatabase() {
                                 false;
 
 
-                        setPhoneStatus(
-                            "Calibration received ✓ Ready for scoring."
+                        setPhoneState(
+                            "CALIBRATED"
                         );
+
+
+                        setPhoneStatus(
+                            "Calibration received ✓ You can start detection from the PC."
+                        );
+
+
+                        broadcastCameraStatus();
                     }
                 }
             );
@@ -1658,6 +2324,14 @@ function cloneAnalysisFrame(
 
 function captureBoardBaseline() {
 
+    if (
+        !phoneStream
+    ) {
+
+        return;
+    }
+
+
     const frame =
         captureAnalysisFrame();
 
@@ -1686,14 +2360,22 @@ function captureBoardBaseline() {
         0;
 
 
-    setPhoneStatus(
-        "Board baseline captured. Ready for Dart 1."
+    setPhoneState(
+        "READY — DART 1"
     );
+
+
+    setPhoneStatus(
+        "Board baseline captured."
+    );
+
+
+    broadcastCameraStatus();
 }
 
 
 /* =========================================================
-   IMAGE DIFFERENCE
+   DIFFERENCE
 ========================================================= */
 
 function compareFrames(
@@ -1789,7 +2471,7 @@ function compareFrames(
 
 
 /* =========================================================
-   CAMERA PIXEL -> BOARD
+   IMAGE PIXEL -> BOARD
 ========================================================= */
 
 function imagePixelToBoard(
@@ -1864,7 +2546,7 @@ function imagePixelToBoard(
 
 
 /* =========================================================
-   CHANGED COMPONENTS
+   COMPONENTS
 ========================================================= */
 
 function findComponents(
@@ -2144,7 +2826,7 @@ function principalAxis(
 
 
 /* =========================================================
-   FIND DART TIP
+   FIND DART IMPACT
 ========================================================= */
 
 function findImpactPoint(
@@ -2268,15 +2950,7 @@ function findImpactPoint(
             ];
 
 
-        /*
-           The impact end is normally the end
-           closer to the board centre.
-
-           This works well with a camera viewing
-           the dart from outside the board.
-        */
-
-        const impact =
+        return (
 
             Math.hypot(
                 end1.x,
@@ -2292,10 +2966,8 @@ function findImpactPoint(
 
                 ? end1
 
-                : end2;
-
-
-        return impact;
+                : end2
+        );
     }
 
 
@@ -2304,7 +2976,7 @@ function findImpactPoint(
 
 
 /* =========================================================
-   SCORE CONFIDENCE
+   CONFIDENCE
 ========================================================= */
 
 function scoreConfidence(
@@ -2435,18 +3107,27 @@ function scoreConfidence(
 
 
 /* =========================================================
-   DETECTION LOOP
+   START AUTO DETECTION
 ========================================================= */
 
 function startAutomaticDetection() {
 
     if (
-        !phoneCalibration
+        !phoneCalibration ||
+        !phoneCalibrationValid
     ) {
 
-        alert(
-            "Save calibration on the PC first."
+        setPhoneState(
+            "CALIBRATION REQUIRED"
         );
+
+
+        setPhoneStatus(
+            "Save the current calibration from the PC first."
+        );
+
+
+        broadcastCameraStatus();
 
 
         return;
@@ -2471,6 +3152,14 @@ function startAutomaticDetection() {
             "🎯 Automatic Detection ON";
 
 
+    document
+        .getElementById(
+            "stop-detection"
+        )
+        .disabled =
+            false;
+
+
     if (
         phoneDetectionTimer
     ) {
@@ -2486,8 +3175,88 @@ function startAutomaticDetection() {
             detectionTick,
             350
         );
+
+
+    setPhoneState(
+        "READY — DART 1"
+    );
+
+
+    broadcastCameraStatus();
 }
 
+
+/* =========================================================
+   STOP DETECTION
+========================================================= */
+
+function stopAutomaticDetection() {
+
+    phoneDetecting =
+        false;
+
+
+    if (
+        phoneDetectionTimer
+    ) {
+
+        clearInterval(
+            phoneDetectionTimer
+        );
+    }
+
+
+    phoneDetectionTimer =
+        null;
+
+
+    const startButton =
+        document.getElementById(
+            "start-detection"
+        );
+
+
+    const stopButton =
+        document.getElementById(
+            "stop-detection"
+        );
+
+
+    if (
+        startButton
+    ) {
+
+        startButton.textContent =
+            "🎯 Start Automatic Detection";
+    }
+
+
+    if (
+        stopButton
+    ) {
+
+        stopButton.disabled =
+            true;
+    }
+
+
+    if (
+        phoneCalibrationValid
+    ) {
+
+        setPhoneState(
+            "DETECTION STOPPED"
+        );
+    }
+
+
+    broadcastCameraStatus();
+}
+
+
+/* =========================================================
+   DETECTION LOOP
+========================================================= */
 
 async function detectionTick() {
 
@@ -2505,8 +3274,7 @@ async function detectionTick() {
 
 
     /*
-       THREE DARTS ON BOARD:
-       wait for removal.
+       WAIT FOR DART REMOVAL
     */
 
     if (
@@ -2545,9 +3313,17 @@ async function detectionTick() {
                 0;
 
 
-            setPhoneStatus(
-                "Board cleared ✓ Ready for next player."
+            setPhoneState(
+                "READY — DART 1"
             );
+
+
+            setPhoneStatus(
+                "Darts removed ✓ Ready for next player."
+            );
+
+
+            broadcastCameraStatus();
         }
 
 
@@ -2573,7 +3349,7 @@ async function detectionTick() {
 
 
     /*
-       Person / arm moving in frame.
+       LARGE MOVEMENT
     */
 
     if (
@@ -2589,14 +3365,21 @@ async function detectionTick() {
             difference.count;
 
 
-        setPhoneStatus(
-            "Movement detected…"
+        setPhoneState(
+            "MOVEMENT DETECTED"
         );
+
+
+        broadcastCameraStatus();
 
 
         return;
     }
 
+
+    /*
+       NO MEANINGFUL CHANGE
+    */
 
     if (
         difference.count <
@@ -2633,9 +3416,10 @@ async function detectionTick() {
     ) {
 
         phoneStableFrames++;
+    }
 
 
-    } else {
+    else {
 
         phoneStableFrames =
             0;
@@ -2647,9 +3431,12 @@ async function detectionTick() {
         3
     ) {
 
-        setPhoneStatus(
-            "Dart detected… waiting for it to settle."
+        setPhoneState(
+            "WAITING FOR DART TO SETTLE…"
         );
+
+
+        broadcastCameraStatus();
 
 
         return;
@@ -2682,9 +3469,12 @@ async function detectionTick() {
         !impact
     ) {
 
-        setPhoneStatus(
-            "Change detected but dart tip could not be identified."
+        setPhoneState(
+            "DART FOUND — IMPACT UNCLEAR"
         );
+
+
+        broadcastCameraStatus();
 
 
         return;
@@ -2727,6 +3517,11 @@ async function detectionTick() {
     };
 
 
+    setPhoneState(
+        "DART LOCKED ✓"
+    );
+
+
     await publishDetection(
         detection
     );
@@ -2749,14 +3544,21 @@ async function detectionTick() {
         );
 
 
+    setPhoneState(
+
+        `DART ${phoneDartsInVisit}: ` +
+
+        `${detection.label} = ${detection.score}`
+    );
+
+
     setPhoneStatus(
 
-        `Dart ${phoneDartsInVisit}: ` +
-
-        `${detection.label} = ` +
-
-        `${detection.score}`
+        `${detection.confidence}% confidence`
     );
+
+
+    broadcastCameraStatus();
 }
 
 
@@ -2822,52 +3624,26 @@ async function publishDetection(
 
 
 /* =========================================================
-   PHONE STOP
+   PHONE STATE
 ========================================================= */
 
-function stopPhoneCamera() {
+function setPhoneState(
+    text
+) {
 
-    phoneDetecting =
-        false;
-
-
-    stopPhoneLiveFeed();
-
-
-    if (
-        phoneDetectionTimer
-    ) {
-
-        clearInterval(
-            phoneDetectionTimer
+    const element =
+        document.getElementById(
+            "phone-state"
         );
-    }
-
-
-    phoneDetectionTimer =
-        null;
 
 
     if (
-        phoneStream
+        element
     ) {
 
-        phoneStream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
+        element.textContent =
+            text;
     }
-
-
-    phoneStream =
-        null;
-
-
-    setPhoneStatus(
-        "Camera stopped."
-    );
 }
 
 
@@ -2892,7 +3668,51 @@ function setPhoneStatus(
 
 
 /* =========================================================
-   PC CALIBRATION STATE
+   STOP CAMERA
+========================================================= */
+
+function stopPhoneCamera() {
+
+    stopAutomaticDetection();
+
+
+    stopPhoneLiveFeed();
+
+
+    if (
+        phoneStream
+    ) {
+
+        phoneStream
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+    }
+
+
+    phoneStream =
+        null;
+
+
+    phoneVideoTrack =
+        null;
+
+
+    setPhoneState(
+        "CAMERA STOPPED"
+    );
+
+
+    setPhoneStatus(
+        "Camera stopped."
+    );
+}
+
+
+/* =========================================================
+   PC STATE
 ========================================================= */
 
 let pcCanvas;
@@ -2929,6 +3749,29 @@ let pcDragging =
 
 let pcCalibration =
     null;
+
+
+let pcNeedsRecalibration =
+    true;
+
+
+let pcPhoneZoom = {
+
+    supported:
+        false,
+
+    min:
+        1,
+
+    max:
+        1,
+
+    step:
+        0.1,
+
+    value:
+        1
+};
 
 
 let pcHandles = {
@@ -3006,6 +3849,86 @@ async function initialisePC() {
         )
         .onclick =
             requestFreshFrame;
+
+
+    document
+        .getElementById(
+            "pc-start-detection"
+        )
+        .onclick =
+            () =>
+                sendPhoneCommand(
+                    "start-detection"
+                );
+
+
+    document
+        .getElementById(
+            "pc-reset-baseline"
+        )
+        .onclick =
+            () =>
+                sendPhoneCommand(
+                    "reset-baseline"
+                );
+
+
+    document
+        .getElementById(
+            "pc-stop-detection"
+        )
+        .onclick =
+            () =>
+                sendPhoneCommand(
+                    "stop-detection"
+                );
+
+
+    document
+        .getElementById(
+            "pc-zoom-slider"
+        )
+        .addEventListener(
+            "input",
+            event => {
+
+                requestPCZoom(
+                    Number(
+                        event.target.value
+                    )
+                );
+            }
+        );
+
+
+    document
+        .getElementById(
+            "pc-zoom-out"
+        )
+        .onclick =
+            () => {
+
+                requestPCZoom(
+
+                    pcPhoneZoom.value -
+                    pcPhoneZoom.step
+                );
+            };
+
+
+    document
+        .getElementById(
+            "pc-zoom-in"
+        )
+        .onclick =
+            () => {
+
+                requestPCZoom(
+
+                    pcPhoneZoom.value +
+                    pcPhoneZoom.step
+                );
+            };
 
 
     document
@@ -3134,33 +4057,15 @@ async function connectToPhone() {
 
     document
         .getElementById(
-            "calibration-tools"
+            "calibration-workspace"
         )
-        .style
-        .display =
-            "block";
-
-
-    document
-        .getElementById(
-            "calibration-area"
-        )
-        .style
-        .display =
-            "block";
-
-
-    document
-        .getElementById(
-            "live-detection"
-        )
-        .style
-        .display =
-            "block";
+        .classList.remove(
+            "hidden"
+        );
 
 
     setCalibrationStatus(
-        "Connected ✓ Waiting for live feed…"
+        "Connected ✓ Waiting for live camera…"
     );
 
 
@@ -3170,12 +4075,17 @@ async function connectToPhone() {
     subscribePCDatabase();
 
 
-    requestFreshFrame();
+    await sendPhoneCommand(
+        "start-live-feed"
+    );
+
+
+    await requestFreshFrame();
 }
 
 
 /* =========================================================
-   PC BROADCAST
+   PC REALTIME
 ========================================================= */
 
 async function openPCBroadcastChannel() {
@@ -3217,10 +4127,72 @@ async function openPCBroadcastChannel() {
         );
 
 
+    cameraChannel
+        .on(
+
+            "broadcast",
+
+            {
+                event:
+                    "camera-status"
+            },
+
+            message => {
+
+                receiveCameraStatus(
+                    message.payload
+                );
+            }
+        );
+
+
     await cameraChannel
         .subscribe();
 }
 
+
+/* =========================================================
+   SEND COMMAND TO PHONE
+========================================================= */
+
+async function sendPhoneCommand(
+    action,
+    extra =
+        {}
+) {
+
+    if (
+        !cameraChannel
+    ) {
+
+        return;
+    }
+
+
+    await cameraChannel.send({
+
+        type:
+            "broadcast",
+
+        event:
+            "camera-command",
+
+        payload: {
+
+            action,
+
+            ...extra,
+
+            timestamp:
+                Date.now()
+        }
+    });
+}
+
+
+/* =========================================================
+   REQUEST FRAME
+========================================================= */
 
 async function requestFreshFrame() {
 
@@ -3241,10 +4213,261 @@ async function requestFreshFrame() {
             "request-frame",
 
         payload: {
+
             timestamp:
                 Date.now()
         }
     });
+}
+
+
+/* =========================================================
+   CAMERA STATUS FROM PHONE
+========================================================= */
+
+function receiveCameraStatus(
+    status
+) {
+
+    if (
+        !status
+    ) {
+
+        return;
+    }
+
+
+    const state =
+        document.getElementById(
+            "pc-camera-state"
+        );
+
+
+    if (
+        state &&
+        status.state
+    ) {
+
+        state.textContent =
+            status.state;
+    }
+
+
+    if (
+        status.zoom
+    ) {
+
+        pcPhoneZoom =
+            status.zoom;
+
+
+        updatePCZoomUI();
+    }
+
+
+    if (
+        status.calibrationValid ===
+        false &&
+        pcCalibration
+    ) {
+
+        setPCNeedsRecalibration(
+            true
+        );
+    }
+}
+
+
+/* =========================================================
+   PC ZOOM
+========================================================= */
+
+function requestPCZoom(
+    requestedValue
+) {
+
+    if (
+        !pcPhoneZoom.supported
+    ) {
+
+        return;
+    }
+
+
+    const value =
+        clamp(
+
+            roundToStep(
+                requestedValue,
+                pcPhoneZoom.step
+            ),
+
+            pcPhoneZoom.min,
+
+            pcPhoneZoom.max
+        );
+
+
+    /*
+       Immediately show requested value.
+    */
+
+    pcPhoneZoom.value =
+        value;
+
+
+    updatePCZoomUI();
+
+
+    setPCNeedsRecalibration(
+        true
+    );
+
+
+    sendPhoneCommand(
+        "set-zoom",
+        {
+            value
+        }
+    );
+}
+
+
+/* =========================================================
+   PC ZOOM UI
+========================================================= */
+
+function updatePCZoomUI() {
+
+    const slider =
+        document.getElementById(
+            "pc-zoom-slider"
+        );
+
+
+    const value =
+        document.getElementById(
+            "pc-zoom-value"
+        );
+
+
+    const status =
+        document.getElementById(
+            "pc-zoom-status"
+        );
+
+
+    const out =
+        document.getElementById(
+            "pc-zoom-out"
+        );
+
+
+    const zoomIn =
+        document.getElementById(
+            "pc-zoom-in"
+        );
+
+
+    if (
+        !pcPhoneZoom.supported
+    ) {
+
+        slider.disabled =
+            true;
+
+
+        out.disabled =
+            true;
+
+
+        zoomIn.disabled =
+            true;
+
+
+        value.textContent =
+            "N/A";
+
+
+        status.textContent =
+            "Phone camera does not expose browser zoom controls.";
+
+
+        return;
+    }
+
+
+    slider.min =
+        String(
+            pcPhoneZoom.min
+        );
+
+
+    slider.max =
+        String(
+            pcPhoneZoom.max
+        );
+
+
+    slider.step =
+        String(
+            pcPhoneZoom.step
+        );
+
+
+    slider.value =
+        String(
+            pcPhoneZoom.value
+        );
+
+
+    slider.disabled =
+        false;
+
+
+    out.disabled =
+        false;
+
+
+    zoomIn.disabled =
+        false;
+
+
+    value.textContent =
+
+        `${Number(
+            pcPhoneZoom.value
+        ).toFixed(1)}×`;
+
+
+    status.textContent =
+
+        `${pcPhoneZoom.min.toFixed(1)}× – ` +
+
+        `${pcPhoneZoom.max.toFixed(1)}×`;
+}
+
+
+/* =========================================================
+   RECALIBRATION WARNING
+========================================================= */
+
+function setPCNeedsRecalibration(
+    value
+) {
+
+    pcNeedsRecalibration =
+        value;
+
+
+    document
+        .getElementById(
+            "recalibration-warning"
+        )
+        .classList.toggle(
+            "hidden",
+            !value
+        );
 }
 
 
@@ -3305,14 +4528,6 @@ function receiveLiveFrame(
 
 
             drawPCScene();
-
-
-            document
-                .getElementById(
-                    "live-feed-status"
-                )
-                .textContent =
-                    "● LIVE PHONE CAMERA";
         };
 
 
@@ -3322,7 +4537,7 @@ function receiveLiveFrame(
 
 
 /* =========================================================
-   INITIAL HANDLE POSITIONS
+   INITIAL HANDLES
 ========================================================= */
 
 function seedCalibrationHandles() {
@@ -3394,6 +4609,11 @@ function seedCalibrationHandles() {
 
 
     rebuildPCCalibration();
+
+
+    setPCNeedsRecalibration(
+        true
+    );
 }
 
 
@@ -3477,22 +4697,22 @@ function selectCalibrationRing(
         );
 
 
-    const names = {
+    const messages = {
 
         outerDouble:
-            "Drag each cyan point onto the OUTER edge of the double ring.",
+            "Drag the cyan points onto the OUTER edge of the double ring.",
 
         innerDouble:
-            "Drag each purple point onto the INNER edge of the double ring.",
+            "Drag the purple points onto the INNER edge of the double ring.",
 
         outerTreble:
-            "Drag each green point onto the OUTER edge of the treble ring.",
+            "Drag the green points onto the OUTER edge of the treble ring.",
 
         innerTreble:
-            "Drag each orange point onto the INNER edge of the treble ring.",
+            "Drag the orange points onto the INNER edge of the treble ring.",
 
         bull:
-            "Drag the pink point onto the exact centre of the bull."
+            "Drag the pink point onto the exact bull centre."
     };
 
 
@@ -3501,7 +4721,7 @@ function selectCalibrationRing(
             "calibration-help"
         )
         .textContent =
-            names[ring];
+            messages[ring];
 
 
     drawPCScene();
@@ -3509,7 +4729,7 @@ function selectCalibrationRing(
 
 
 /* =========================================================
-   POINTER COORDINATE
+   POINTER POSITION
 ========================================================= */
 
 function canvasPointer(
@@ -3549,7 +4769,7 @@ function canvasPointer(
 
 
 /* =========================================================
-   DRAG HANDLES
+   HANDLE DRAGGING
 ========================================================= */
 
 function beginHandleDrag(
@@ -3669,11 +4889,12 @@ function moveHandle(
         pointer.y;
 
 
-    /*
-       The whole preview changes immediately.
-    */
-
     rebuildPCCalibration();
+
+
+    setPCNeedsRecalibration(
+        true
+    );
 
 
     drawPCScene();
@@ -3723,11 +4944,6 @@ function rebuildPCCalibration() {
 
 
     try {
-
-        /*
-           OUTER DOUBLE HANDLES DEFINE
-           PERSPECTIVE + ROTATION.
-        */
 
         const source =
             pcHandles.outerDouble;
@@ -3805,16 +5021,14 @@ function rebuildPCCalibration() {
         }
 
 
-        const outerDoubleRaw =
-            pcHandles.outerDouble
-                .map(
-                    mappedRadius
-                );
-
-
         const scale =
+
             mean(
-                outerDoubleRaw
+
+                pcHandles.outerDouble
+                    .map(
+                        mappedRadius
+                    )
             );
 
 
@@ -3842,7 +5056,7 @@ function rebuildPCCalibration() {
         pcCalibration = {
 
             version:
-                4,
+                5,
 
             homography,
 
@@ -3856,6 +5070,13 @@ function rebuildPCCalibration() {
 
             imageHeight:
                 pcImageHeight,
+
+            zoom:
+
+                Number(
+                    pcPhoneZoom.value ||
+                    1
+                ),
 
             rings: {
 
@@ -3877,10 +5098,6 @@ function rebuildPCCalibration() {
                         "innerTreble"
                     ),
 
-                /*
-                   Bull can be tuned later.
-                */
-
                 outerBull:
                     0.095,
 
@@ -3889,6 +5106,7 @@ function rebuildPCCalibration() {
             },
 
             controlPoints:
+
                 JSON.parse(
                     JSON.stringify(
                         pcHandles
@@ -3936,38 +5154,37 @@ function boardToImage(
         );
 
 
-    const mapped = {
-
-        x:
-
-            x *
-            pcCalibration.scale
-
-            +
-
-            pcCalibration.centre.x,
-
-
-        y:
-
-            y *
-            pcCalibration.scale
-
-            +
-
-            pcCalibration.centre.y
-    };
-
-
     return transformPoint(
+
         inverse,
-        mapped
+
+        {
+
+            x:
+
+                x *
+                pcCalibration.scale
+
+                +
+
+                pcCalibration.centre.x,
+
+
+            y:
+
+                y *
+                pcCalibration.scale
+
+                +
+
+                pcCalibration.centre.y
+        }
     );
 }
 
 
 /* =========================================================
-   DRAW LIVE IMAGE + GRID
+   DRAW SCENE
 ========================================================= */
 
 function drawPCScene() {
@@ -4016,7 +5233,7 @@ function drawPCScene() {
 
 
 /* =========================================================
-   DRAW SCORING GRID
+   DRAW GRID
 ========================================================= */
 
 function drawScoringGrid() {
@@ -4086,14 +5303,6 @@ function drawScoringGrid() {
 
 
                 if (
-                    !point
-                ) {
-
-                    continue;
-                }
-
-
-                if (
                     degree ===
                     0
                 ) {
@@ -4102,9 +5311,10 @@ function drawScoringGrid() {
                         point.x,
                         point.y
                     );
+                }
 
 
-                } else {
+                else {
 
                     pcContext.lineTo(
                         point.x,
@@ -4118,10 +5328,6 @@ function drawScoringGrid() {
         }
     );
 
-
-    /*
-       20 segment boundaries.
-    */
 
     pcContext.strokeStyle =
         "#00aaff";
@@ -4231,20 +5437,11 @@ function drawCalibrationHandles() {
                 pcActiveRing;
 
 
-            const colour =
-                RING_COLOURS[
-                    ring
-                ];
-
-
             pcHandles[
                 ring
             ]
                 .forEach(
-                    (
-                        handle,
-                        index
-                    ) => {
+                    handle => {
 
                         pcContext.beginPath();
 
@@ -4266,20 +5463,22 @@ function drawCalibrationHandles() {
 
 
                         pcContext.fillStyle =
-                            colour;
+                            RING_COLOURS[
+                                ring
+                            ];
 
 
                         pcContext.fill();
+
+
+                        pcContext.strokeStyle =
+                            "#000";
 
 
                         pcContext.lineWidth =
                             active
                                 ? 3
                                 : 1;
-
-
-                        pcContext.strokeStyle =
-                            "#000000";
 
 
                         pcContext.stroke();
@@ -4292,11 +5491,11 @@ function drawCalibrationHandles() {
                         ) {
 
                             pcContext.fillStyle =
-                                "#ffffff";
+                                "#fff";
 
 
                             pcContext.font =
-                                "bold 13px Arial";
+                                "bold 12px Arial";
 
 
                             pcContext.fillText(
@@ -4306,10 +5505,10 @@ function drawCalibrationHandles() {
                                 ),
 
                                 handle.x +
-                                    11,
+                                    10,
 
                                 handle.y -
-                                    8
+                                    7
                             );
                         }
                     }
@@ -4347,7 +5546,7 @@ function toggleGrid() {
 
 
 /* =========================================================
-   SAVE PC CALIBRATION
+   SAVE CALIBRATION
 ========================================================= */
 
 async function savePCCalibration() {
@@ -4390,10 +5589,7 @@ async function savePCCalibration() {
     ) {
 
         alert(
-
-            "One or more rings are out of order. " +
-
-            "Check the calibration handles."
+            "The multiplier rings are out of order. Check the handles."
         );
 
 
@@ -4439,11 +5635,13 @@ async function savePCCalibration() {
         }
 
 
+        setPCNeedsRecalibration(
+            false
+        );
+
+
         setCalibrationStatus(
-
-            "Calibration saved ✓ " +
-
-            "The phone is ready for dart detection."
+            "Calibration saved ✓ You can start automatic detection from the right-hand controls."
         );
 
 
@@ -4464,7 +5662,7 @@ async function savePCCalibration() {
 
 
 /* =========================================================
-   PC DATABASE DETECTION LISTENER
+   PC DATABASE DETECTIONS
 ========================================================= */
 
 function subscribePCDatabase() {
@@ -4520,7 +5718,7 @@ function subscribePCDatabase() {
 
 
 /* =========================================================
-   PC DETECTION
+   SHOW DETECTION
 ========================================================= */
 
 function showPCDetection(
@@ -4535,9 +5733,7 @@ function showPCDetection(
 
             `Dart ${detection.dartNumber}: ` +
 
-            `${detection.label} — ` +
-
-            `${detection.score}`;
+            `${detection.label} — ${detection.score}`;
 
 
     document
@@ -4575,7 +5771,7 @@ function setCalibrationStatus(
 
 
 /* =========================================================
-   START CAMERA SYSTEM
+   START
 ========================================================= */
 
 async function startDartHubCamera() {

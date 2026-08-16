@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -12,146 +13,330 @@
     <title>Dart Hub Camera</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
+
         html,
         body {
+
             margin: 0;
+
             min-height: 100%;
+
             background: #030303;
+
             color: white;
-            font-family: Arial, sans-serif;
+
+            font-family:
+                Arial,
+                sans-serif;
         }
 
+
         body {
+
             padding: 10px;
+
             text-align: center;
         }
 
+
         h1 {
+
+            margin:
+                6px
+                0
+                12px;
+
             color: #00aaff;
-            margin: 6px 0 12px;
         }
 
+
         .card {
+
             width: 100%;
+
             max-width: 850px;
-            margin: 10px auto;
+
+            margin:
+                10px auto;
+
             padding: 12px;
-            border: 1px solid #293941;
+
+            border:
+                1px solid
+                #293941;
+
             border-radius: 12px;
+
             background: #0b1013;
         }
 
+
         .camera-wrap {
+
             position: relative;
+
             overflow: hidden;
+
             width: 100%;
+
             background: black;
+
             border-radius: 10px;
         }
 
+
         video {
+
             display: block;
+
             width: 100%;
+
             height: auto;
         }
 
+
         canvas {
+
             display: none;
         }
 
+
         button {
+
             width: 100%;
+
             min-height: 50px;
+
             margin-top: 7px;
+
             border: none;
+
             border-radius: 8px;
+
             background: #0078b8;
+
             color: white;
+
             font-size: 16px;
+
             font-weight: bold;
+
+            cursor: pointer;
         }
 
+
         button:disabled {
+
             opacity: 0.35;
+
+            cursor: default;
         }
+
 
         .secondary {
             background: #087247;
         }
 
+
         .warning {
             background: #7a2222;
         }
 
-        .live {
-            background: #7b3fc5;
+
+        .purple {
+            background: #6e42b5;
         }
 
+
         .code {
+
             margin: 8px 0;
+
             color: #c597ff;
+
             font-size: 34px;
+
             font-weight: 900;
+
             letter-spacing: 5px;
         }
 
+
         .status {
+
             margin-top: 10px;
+
             color: #9bb0ba;
+
             line-height: 1.5;
         }
 
-        .detection {
-            margin-top: 12px;
-            padding: 16px;
-            border: 2px solid #00aaff;
-            border-radius: 10px;
-            background: #07151c;
-        }
 
-        .dart-label {
+        .phone-state {
+
+            margin-top: 10px;
+
+            padding: 11px;
+
+            border:
+                1px solid
+                #294755;
+
+            border-radius: 9px;
+
+            background: #071116;
+
             color: #00ff9d;
-            font-size: 35px;
+
+            font-size: 18px;
+
             font-weight: 900;
         }
 
+
+        .zoom-card {
+
+            margin-top: 10px;
+
+            padding: 10px;
+
+            border:
+                1px solid
+                #34424a;
+
+            border-radius: 9px;
+
+            background: #101619;
+        }
+
+
+        .zoom-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .zoom-value {
+
+            color: #00ff9d;
+
+            font-size: 20px;
+
+            font-weight: 900;
+        }
+
+
+        #phone-zoom-slider {
+
+            width: 100%;
+        }
+
+
+        .zoom-buttons {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 7px;
+        }
+
+
+        .zoom-buttons button {
+
+            margin: 0;
+        }
+
+
+        .detection {
+
+            border:
+                2px solid
+                #00aaff;
+
+            background: #07151c;
+        }
+
+
+        .dart-label {
+
+            color: #00ff9d;
+
+            font-size: 35px;
+
+            font-weight: 900;
+        }
+
+
         .score {
+
             color: white;
+
             font-size: 55px;
+
             font-weight: 1000;
         }
 
+
         .small {
+
             color: #87989f;
+
             font-size: 12px;
         }
+
     </style>
+
 </head>
+
 
 <body data-camera-page="phone">
 
-<h1>📷 Dart Hub Camera</h1>
+
+<h1>
+    📷 Dart Hub Camera
+</h1>
+
 
 <div class="card">
 
     <div class="camera-wrap">
+
         <video
             id="camera-video"
             autoplay
             playsinline
             muted
         ></video>
+
     </div>
 
-    <canvas id="camera-canvas"></canvas>
 
-    <button id="start-camera">
+    <canvas
+        id="camera-canvas"
+    ></canvas>
+
+
+    <button
+        id="start-camera"
+    >
         📷 Start Camera
     </button>
+
 
     <button
         id="create-session"
@@ -161,17 +346,20 @@
         🔗 Create Camera Session
     </button>
 
+
     <button
         id="toggle-live-feed"
-        class="live"
+        class="purple"
         disabled
     >
         📡 Start Live Calibration Feed
     </button>
 
+
     <div class="status">
         Camera Session Code
     </div>
+
 
     <div
         id="session-code"
@@ -179,6 +367,15 @@
     >
         ------
     </div>
+
+
+    <div
+        id="phone-state"
+        class="phone-state"
+    >
+        CAMERA NOT STARTED
+    </div>
+
 
     <div
         id="phone-status"
@@ -189,11 +386,81 @@
 
 </div>
 
+
+
+<div
+    id="phone-zoom-card"
+    class="card zoom-card"
+>
+
+    <div class="zoom-top">
+
+        <strong>
+            🔍 Camera Zoom
+        </strong>
+
+
+        <span
+            id="phone-zoom-value"
+            class="zoom-value"
+        >
+            1.0×
+        </span>
+
+    </div>
+
+
+    <input
+        id="phone-zoom-slider"
+        type="range"
+        min="1"
+        max="1"
+        step="0.1"
+        value="1"
+        disabled
+    >
+
+
+    <div class="zoom-buttons">
+
+        <button
+            id="phone-zoom-out"
+            class="secondary"
+            disabled
+        >
+            − Zoom
+        </button>
+
+
+        <button
+            id="phone-zoom-in"
+            class="secondary"
+            disabled
+        >
+            + Zoom
+        </button>
+
+    </div>
+
+
+    <div
+        id="phone-zoom-status"
+        class="small"
+        style="margin-top:8px;"
+    >
+        Zoom capability will be checked when the camera starts.
+    </div>
+
+</div>
+
+
+
 <div class="card detection">
 
     <div class="small">
         LAST DETECTED DART
     </div>
+
 
     <div
         id="detected-dart"
@@ -202,6 +469,7 @@
         Waiting…
     </div>
 
+
     <div
         id="detected-score"
         class="score"
@@ -209,12 +477,15 @@
         –
     </div>
 
+
     <div
         id="detected-confidence"
         class="small"
     ></div>
 
 </div>
+
+
 
 <div class="card">
 
@@ -225,6 +496,7 @@
         🎯 Start Automatic Detection
     </button>
 
+
     <button
         id="reset-baseline"
         class="secondary"
@@ -232,6 +504,16 @@
     >
         🔄 Reset Board Baseline
     </button>
+
+
+    <button
+        id="stop-detection"
+        class="warning"
+        disabled
+    >
+        ⏹ Stop Detection
+    </button>
+
 
     <button
         id="stop-camera"
@@ -242,8 +524,18 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="camera.js?v=4"></script>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script
+    src="camera.js?v=5"
+></script>
+
 
 </body>
+
 </html>
