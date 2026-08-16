@@ -3,12 +3,12 @@
 
 /* =========================================================
    DART HUB SERVICE WORKER
-   VERSION 22
+   VERSION 25
 ========================================================= */
 
 
 const CACHE_NAME =
-    "dart-hub-v22";
+    "dart-hub-v25";
 
 
 const APP_FILES = [
@@ -26,6 +26,12 @@ const APP_FILES = [
     "./auth-core.js",
 
     "./players.js",
+
+    "./v23.js",
+
+    "./v24.js",
+
+    "./v25.js",
 
     "./manifest.json",
 
@@ -76,7 +82,6 @@ self.addEventListener(
 
             caches
                 .keys()
-
                 .then(
                     cacheNames => {
 
@@ -105,12 +110,9 @@ self.addEventListener(
                         );
                     }
                 )
-
                 .then(
-                    () => {
-
-                        return self.clients.claim();
-                    }
+                    () =>
+                        self.clients.claim()
                 )
         );
     }
@@ -126,14 +128,7 @@ self.addEventListener(
     event => {
 
         if (
-            !event.data
-        ) {
-
-            return;
-        }
-
-
-        if (
+            event.data &&
             event.data.type ===
             "SKIP_WAITING"
         ) {
@@ -168,7 +163,7 @@ self.addEventListener(
 
 
         /*
-           SUPABASE REQUESTS ARE ALWAYS LIVE.
+           SUPABASE STAYS LIVE.
         */
 
         if (
@@ -181,10 +176,6 @@ self.addEventListener(
         }
 
 
-        /*
-           PAGE NAVIGATION
-        */
-
         if (
             event.request.mode ===
             "navigate"
@@ -195,7 +186,6 @@ self.addEventListener(
                 fetch(
                     event.request
                 )
-
                     .then(
                         response => {
 
@@ -207,7 +197,6 @@ self.addEventListener(
                                 .open(
                                     CACHE_NAME
                                 )
-
                                 .then(
                                     cache => {
 
@@ -222,7 +211,6 @@ self.addEventListener(
                             return response;
                         }
                     )
-
                     .catch(
                         async () => {
 
@@ -252,16 +240,11 @@ self.addEventListener(
         }
 
 
-        /*
-           APP FILES
-        */
-
         event.respondWith(
 
             fetch(
                 event.request
             )
-
                 .then(
                     response => {
 
@@ -283,7 +266,6 @@ self.addEventListener(
                                 .open(
                                     CACHE_NAME
                                 )
-
                                 .then(
                                     cache => {
 
@@ -299,7 +281,6 @@ self.addEventListener(
                         return response;
                     }
                 )
-
                 .catch(
                     async () => {
 
