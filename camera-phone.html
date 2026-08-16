@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Dart Hub Camera
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+
+            margin: 0;
+
+            min-height: 100%;
+
+            background: #030303;
+
+            color: white;
+
+            font-family:
+                Arial,
+                sans-serif;
+        }
+
+
+        body {
+
+            padding: 10px;
+
+            text-align: center;
+        }
+
+
+        h1 {
+
+            color: #00aaff;
+
+            margin:
+                6px 0 12px;
+        }
+
+
+        .card {
+
+            width: 100%;
+
+            max-width: 850px;
+
+            margin:
+                10px auto;
+
+            padding: 12px;
+
+            border:
+                1px solid #293941;
+
+            border-radius: 12px;
+
+            background: #0b1013;
+        }
+
+
+        .camera-wrap {
+
+            position: relative;
+
+            overflow: hidden;
+
+            width: 100%;
+
+            background: black;
+
+            border-radius: 10px;
+        }
+
+
+        video {
+
+            display: block;
+
+            width: 100%;
+
+            height: auto;
+        }
+
+
+        canvas {
+
+            display: none;
+        }
+
+
+        button {
+
+            width: 100%;
+
+            min-height: 50px;
+
+            margin-top: 7px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #0078b8;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+        }
+
+
+        .secondary {
+
+            background: #087247;
+        }
+
+
+        .warning {
+
+            background: #7a2222;
+        }
+
+
+        .code {
+
+            margin: 8px 0;
+
+            color: #c597ff;
+
+            font-size: 34px;
+
+            font-weight: 900;
+
+            letter-spacing: 5px;
+        }
+
+
+        .status {
+
+            margin-top: 10px;
+
+            color: #9bb0ba;
+
+            line-height: 1.5;
+        }
+
+
+        .detection {
+
+            margin-top: 12px;
+
+            padding: 16px;
+
+            border:
+                2px solid #00aaff;
+
+            border-radius: 10px;
+
+            background: #07151c;
+        }
+
+
+        .dart-label {
+
+            color: #00ff9d;
+
+            font-size: 35px;
+
+            font-weight: 900;
+        }
+
+
+        .score {
+
+            color: white;
+
+            font-size: 55px;
+
+            font-weight: 1000;
+        }
+
+
+        .small {
+
+            color: #87989f;
+
+            font-size: 12px;
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    data-camera-page="phone"
+>
+
+
+<h1>
+    📷 Dart Hub Camera
+</h1>
+
+
+<div class="card">
+
+    <div class="camera-wrap">
+
+        <video
+            id="camera-video"
+            autoplay
+            playsinline
+            muted
+        ></video>
+
+    </div>
+
+
+    <canvas
+        id="camera-canvas"
+    ></canvas>
+
+
+    <button
+        id="start-camera"
+    >
+        📷 Start Camera
+    </button>
+
+
+    <button
+        id="create-session"
+        class="secondary"
+        disabled
+    >
+        🔗 Create Camera Session
+    </button>
+
+
+    <button
+        id="send-snapshot"
+        class="secondary"
+        disabled
+    >
+        📸 Send Calibration Picture
+    </button>
+
+
+    <div class="status">
+
+        Camera Session Code
+
+    </div>
+
+
+    <div
+        id="session-code"
+        class="code"
+    >
+        ------
+    </div>
+
+
+    <div
+        id="phone-status"
+        class="status"
+    >
+
+        Start the rear camera first.
+
+    </div>
+
+</div>
+
+
+<div
+    id="detection-card"
+    class="card detection"
+>
+
+    <div class="small">
+
+        LAST DETECTED DART
+
+    </div>
+
+
+    <div
+        id="detected-dart"
+        class="dart-label"
+    >
+
+        Waiting…
+
+    </div>
+
+
+    <div
+        id="detected-score"
+        class="score"
+    >
+
+        –
+
+    </div>
+
+
+    <div
+        id="detected-confidence"
+        class="small"
+    ></div>
+
+</div>
+
+
+<div class="card">
+
+    <button
+        id="start-detection"
+        disabled
+    >
+        🎯 Start Automatic Detection
+    </button>
+
+
+    <button
+        id="reset-baseline"
+        class="secondary"
+        disabled
+    >
+        🔄 Reset Empty Board
+    </button>
+
+
+    <button
+        id="stop-camera"
+        class="warning"
+    >
+        Stop Camera
+    </button>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script
+    src="camera.js"
+></script>
+
+
+</body>
+
+</html>
