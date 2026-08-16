@@ -2,30 +2,40 @@
 
 
 /* =========================================================
+   DART HUB - FULL SCRIPT
+   VERSION 16
+========================================================= */
+
+
+/* =========================================================
    STORAGE
 ========================================================= */
 
 const STORAGE_MATCH =
-    "darts-current-match-v14";
+    "dart-hub-current-match-v16";
 
 const STORAGE_PROFILES =
-    "darts-player-profiles-v14";
+    "dart-hub-player-profiles-v16";
 
 const STORAGE_SETTINGS =
-    "darts-settings-v14";
+    "dart-hub-settings-v16";
 
 const MAX_HISTORY =
     150;
 
 
 /* =========================================================
-   DOM
+   DOM HELPER
 ========================================================= */
 
 const $ =
     id =>
         document.getElementById(id);
 
+
+/* =========================================================
+   MAIN DOM
+========================================================= */
 
 const modeScreen =
     $("mode-screen");
@@ -55,11 +65,13 @@ const p1NameDisplay =
 const p2NameDisplay =
     $("p2-name");
 
+
 const p1ScoreDisplay =
     $("p1-score");
 
 const p2ScoreDisplay =
     $("p2-score");
+
 
 const p1LegsDisplay =
     $("p1-legs");
@@ -67,11 +79,13 @@ const p1LegsDisplay =
 const p2LegsDisplay =
     $("p2-legs");
 
+
 const p1SetsDisplay =
     $("p1-sets");
 
 const p2SetsDisplay =
     $("p2-sets");
+
 
 const p1Box =
     $("p1-box");
@@ -164,6 +178,7 @@ const profileBtn =
 const newMatchBtn =
     $("new-match-btn");
 
+
 const finishedBanner =
     $("match-finished-banner");
 
@@ -178,7 +193,7 @@ const visitHistoryList =
 
 
 /* =========================================================
-   CALLER DOM
+   CALLER MODE DOM
 ========================================================= */
 
 const callerScreen =
@@ -200,11 +215,13 @@ const callerP1 =
 const callerP2 =
     $("caller-p2");
 
+
 const callerP1Name =
     $("caller-p1-name");
 
 const callerP2Name =
     $("caller-p2-name");
+
 
 const callerP1Score =
     $("caller-p1-score");
@@ -212,11 +229,13 @@ const callerP1Score =
 const callerP2Score =
     $("caller-p2-score");
 
+
 const callerP1Sets =
     $("caller-p1-sets");
 
 const callerP2Sets =
     $("caller-p2-sets");
+
 
 const callerP1Legs =
     $("caller-p1-legs");
@@ -224,11 +243,13 @@ const callerP1Legs =
 const callerP2Legs =
     $("caller-p2-legs");
 
+
 const callerP1Last =
     $("caller-p1-last");
 
 const callerP2Last =
     $("caller-p2-last");
+
 
 const callerMatchInfo =
     $("caller-match-info");
@@ -263,6 +284,7 @@ const callerDartType =
 
 const callerDartNumber =
     $("caller-dart-number");
+
 
 const callerCelebration =
     $("caller-celebration");
@@ -332,6 +354,10 @@ let callerView =
 let visitCounter =
     1;
 
+
+/* =========================================================
+   HISTORY
+========================================================= */
 
 const normalHistory =
     [];
@@ -514,7 +540,7 @@ document
                                     "active",
 
                                     other ===
-                                    button
+                                        button
                                 );
                             }
                         );
@@ -525,7 +551,7 @@ document
 
 
 /* =========================================================
-   MODE
+   GAME MODE
 ========================================================= */
 
 document
@@ -556,11 +582,21 @@ document
                         nameScreenTitle.textContent =
                             "Enter Team Names";
 
+
                         p1Label.textContent =
                             "Team A:";
 
+
                         p2Label.textContent =
                             "Team B:";
+
+
+                        p1NameInput.placeholder =
+                            "Team A";
+
+
+                        p2NameInput.placeholder =
+                            "Team B";
 
 
                     } else {
@@ -568,11 +604,21 @@ document
                         nameScreenTitle.textContent =
                             "Enter Player Names";
 
+
                         p1Label.textContent =
                             "Player 1:";
 
+
                         p2Label.textContent =
                             "Player 2:";
+
+
+                        p1NameInput.placeholder =
+                            "Player 1";
+
+
+                        p2NameInput.placeholder =
+                            "Player 2";
                     }
 
 
@@ -584,6 +630,10 @@ document
         }
     );
 
+
+/* =========================================================
+   NAMES
+========================================================= */
 
 $("continue-to-setup")
     .addEventListener(
@@ -627,6 +677,7 @@ $("continue-to-setup")
             players[0].name =
                 name1;
 
+
             players[1].name =
                 name2;
 
@@ -640,6 +691,7 @@ $("continue-to-setup")
                 "hidden"
             );
 
+
             setupScreen.classList.remove(
                 "hidden"
             );
@@ -652,13 +704,14 @@ function updateNameDisplays() {
     p1NameDisplay.textContent =
         players[0].name;
 
+
     p2NameDisplay.textContent =
         players[1].name;
 }
 
 
 /* =========================================================
-   START PLAYER
+   FIRST PLAYER
 ========================================================= */
 
 startP1Btn.onclick =
@@ -695,11 +748,12 @@ function setStartingPlayer(
         startP2Btn,
         startRandomBtn
     ].forEach(
-        button =>
+        button => {
 
             button.classList.remove(
                 "active-start"
-            )
+            );
+        }
     );
 
 
@@ -711,6 +765,7 @@ function setStartingPlayer(
         startP1Btn.classList.add(
             "active-start"
         );
+
 
         firstPlayerStatus.textContent =
             `${players[0].name} will throw first.`;
@@ -725,6 +780,7 @@ function setStartingPlayer(
             "active-start"
         );
 
+
         firstPlayerStatus.textContent =
             `${players[1].name} will throw first.`;
 
@@ -734,6 +790,7 @@ function setStartingPlayer(
         startRandomBtn.classList.add(
             "active-start"
         );
+
 
         firstPlayerStatus.textContent =
             "Random / bull-off winner will throw first.";
@@ -745,6 +802,7 @@ function updateStartingPlayerButtons() {
 
     startP1Btn.textContent =
         players[0].name;
+
 
     startP2Btn.textContent =
         players[1].name;
@@ -763,156 +821,213 @@ function updateStartingPlayerButtons() {
 $("start-match")
     .addEventListener(
         "click",
-        () => {
-
-            gameMode =
-                selectedMode ===
-                "sets"
-                    ? "sets"
-                    : "legs";
+        startMatch
+    );
 
 
-            startingScore =
-                Math.max(
-                    2,
-                    parseInt(
-                        startingScoreInput.value
-                    ) ||
-                    501
-                );
+function startMatch() {
+
+    gameMode =
+        selectedMode ===
+        "sets"
+            ? "sets"
+            : "legs";
 
 
-            legsPerSet =
-                Math.max(
-                    1,
-                    parseInt(
-                        legsPerSetInput.value
-                    ) ||
-                    3
-                );
+    startingScore =
+        Math.max(
+
+            2,
+
+            parseInt(
+                startingScoreInput.value
+            ) ||
+            501
+        );
 
 
-            setsToWin =
-                Math.max(
-                    1,
-                    parseInt(
-                        setsToWinInput.value
-                    ) ||
-                    3
-                );
+    legsPerSet =
+        Math.max(
+
+            1,
+
+            parseInt(
+                legsPerSetInput.value
+            ) ||
+            3
+        );
 
 
-            const names = [
+    setsToWin =
+        Math.max(
 
-                players[0].name,
+            1,
 
-                players[1].name
-
-            ];
-
-
-            players = [
-
-                createPlayer(
-                    names[0]
-                ),
-
-                createPlayer(
-                    names[1]
-                )
-
-            ];
+            parseInt(
+                setsToWinInput.value
+            ) ||
+            3
+        );
 
 
-            players.forEach(
-                p =>
-                    p.score =
-                        startingScore
-            );
+    const names = [
+
+        players[0].name,
+
+        players[1].name
+
+    ];
 
 
-            currentSet =
-                1;
+    players = [
 
-            currentLeg =
-                1;
+        createPlayer(
+            names[0]
+        ),
 
+        createPlayer(
+            names[1]
+        )
 
-            currentPlayer =
-                selectedStartingPlayer ===
-                "random"
-
-                    ? (
-                        Math.random() <
-                        .5
-                            ? 1
-                            : 2
-                    )
-
-                    : selectedStartingPlayer;
+    ];
 
 
-            legStartingPlayer =
-                currentPlayer;
+    players.forEach(
+        player => {
 
-
-            dartsLeft =
-                3;
-
-
-            currentVisitDarts =
-                [];
-
-
-            matchFinished =
-                false;
-
-
-            winnerPlayer =
-                null;
-
-
-            visitCounter =
-                1;
-
-
-            normalHistory.length =
-                0;
-
-
-            visitRestoreSnapshots.clear();
-
-
-            setupScreen.classList.add(
-                "hidden"
-            );
-
-
-            gameScreen.classList.remove(
-                "hidden"
-            );
-
-
-            document.body.dataset.gameTab =
-                "score";
-
-
-            selectScoringMethod(
-                "tap"
-            );
-
-
-            updateEverything();
-
-            saveMatch();
-
-
-            setTimeout(
-                announceTurnStatus,
-                300
-            );
+            player.score =
+                startingScore;
         }
     );
+
+
+    currentSet =
+        1;
+
+
+    currentLeg =
+        1;
+
+
+    currentPlayer =
+        selectedStartingPlayer ===
+        "random"
+
+            ? (
+                Math.random() <
+                0.5
+                    ? 1
+                    : 2
+            )
+
+            : selectedStartingPlayer;
+
+
+    legStartingPlayer =
+        currentPlayer;
+
+
+    dartsLeft =
+        3;
+
+
+    currentVisitDarts =
+        [];
+
+
+    currentVisitStartSnapshot =
+        null;
+
+
+    matchFinished =
+        false;
+
+
+    winnerPlayer =
+        null;
+
+
+    visitCounter =
+        1;
+
+
+    normalHistory.length =
+        0;
+
+
+    visitRestoreSnapshots.clear();
+
+
+    finishedBanner.classList.add(
+        "hidden"
+    );
+
+
+    setupScreen.classList.add(
+        "hidden"
+    );
+
+
+    gameScreen.classList.remove(
+        "hidden"
+    );
+
+
+    document.body.dataset.gameTab =
+        "score";
+
+
+    activateMobileTab(
+        "score"
+    );
+
+
+    selectScoringMethod(
+        "tap"
+    );
+
+
+    updateEverything();
+
+    saveMatch();
+
+
+    setTimeout(
+        announceTurnStatus,
+        350
+    );
+}
+
+
+/* =========================================================
+   MOBILE TAB HELPER
+========================================================= */
+
+function activateMobileTab(
+    name
+) {
+
+    document.body.dataset.gameTab =
+        name;
+
+
+    document
+        .querySelectorAll(
+            ".mobile-game-tab"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+
+                    "active",
+
+                    button.dataset.gameTab ===
+                        name
+                );
+            }
+        );
+}
 
 
 /* =========================================================
@@ -928,10 +1043,12 @@ document
 
             button.addEventListener(
                 "click",
-                () =>
+                () => {
+
                     selectScoringMethod(
                         button.dataset.method
-                    )
+                    );
+                }
             );
         }
     );
@@ -953,7 +1070,7 @@ function selectScoringMethod(
                     "active-method",
 
                     button.dataset.method ===
-                    method
+                        method
                 );
             }
         );
@@ -963,9 +1080,11 @@ function selectScoringMethod(
         "hidden"
     );
 
+
     visitScoringSection.classList.add(
         "hidden"
     );
+
 
     individualScoringSection.classList.add(
         "hidden"
@@ -991,6 +1110,13 @@ function selectScoringMethod(
         visitScoringSection.classList.remove(
             "hidden"
         );
+
+
+        setTimeout(
+            () =>
+                scoreInput.focus(),
+            100
+        );
     }
 
 
@@ -1002,12 +1128,19 @@ function selectScoringMethod(
         individualScoringSection.classList.remove(
             "hidden"
         );
+
+
+        setTimeout(
+            () =>
+                individualDartInput.focus(),
+            100
+        );
     }
 }
 
 
 /* =========================================================
-   DARTS
+   DART OBJECT
 ========================================================= */
 
 function makeDart(
@@ -1096,6 +1229,8 @@ function makeDart(
 
         type,
 
+        number,
+
         score:
             number *
             multiplier,
@@ -1113,7 +1248,8 @@ function makeDart(
                         ? "T"
 
                         : ""
-            ) +
+            )
+            +
             number,
 
         isDouble:
@@ -1124,7 +1260,7 @@ function makeDart(
 
 
 /* =========================================================
-   TAP BUTTONS
+   BUILD TAP BOARD
 ========================================================= */
 
 function buildTapBoard() {
@@ -1132,28 +1268,42 @@ function buildTapBoard() {
     const singles =
         $("singles");
 
+
     const doubles =
         $("doubles");
+
 
     const trebles =
         $("trebles");
 
 
+    if (
+        !singles ||
+        singles.children.length >
+        0
+    ) {
+
+        return;
+    }
+
+
     for (
-        let n = 1;
-        n <= 20;
-        n++
+        let number = 1;
+        number <= 20;
+        number++
     ) {
 
         addDartButton(
 
             singles,
 
-            String(n),
+            String(
+                number
+            ),
 
             makeDart(
                 "single",
-                n
+                number
             )
         );
 
@@ -1162,11 +1312,12 @@ function buildTapBoard() {
 
             doubles,
 
-            "D" + n,
+            "D" +
+            number,
 
             makeDart(
                 "double",
-                n
+                number
             )
         );
 
@@ -1175,44 +1326,63 @@ function buildTapBoard() {
 
             trebles,
 
-            "T" + n,
+            "T" +
+            number,
 
             makeDart(
                 "treble",
-                n
+                number
             )
         );
     }
 
 
-    $("tap-outer-bull").onclick =
-        () =>
-            applyDart(
-                makeDart(
-                    "outerbull",
-                    25
-                )
-            );
+    if (
+        $("tap-outer-bull")
+    ) {
+
+        $("tap-outer-bull").onclick =
+            () =>
+                applyDart(
+
+                    makeDart(
+                        "outerbull",
+                        25
+                    )
+                );
+    }
 
 
-    $("tap-bull").onclick =
-        () =>
-            applyDart(
-                makeDart(
-                    "bull",
-                    25
-                )
-            );
+    if (
+        $("tap-bull")
+    ) {
+
+        $("tap-bull").onclick =
+            () =>
+                applyDart(
+
+                    makeDart(
+                        "bull",
+                        25
+                    )
+                );
+    }
 
 
-    $("tap-miss").onclick =
-        () =>
-            applyDart(
-                makeDart(
-                    "miss",
-                    0
-                )
-            );
+    if (
+        $("tap-miss")
+    ) {
+
+        $("tap-miss").onclick =
+            () =>
+                applyDart(
+
+                    makeDart(
+                        "miss",
+                        0
+                    )
+                );
+    }
 }
 
 
@@ -1239,7 +1409,9 @@ function addDartButton(
     button.onclick =
         () =>
             applyDart(
-                dart
+                clone(
+                    dart
+                )
             );
 
 
@@ -1272,15 +1444,18 @@ function beginVisit() {
 function visitTotal() {
 
     return currentVisitDarts.reduce(
+
         (
             total,
             dart
         ) =>
+
             total +
             (
                 dart.score ||
                 0
             ),
+
         0
     );
 }
@@ -1309,16 +1484,17 @@ function applyDart(
 
     const player =
         players[
-            currentPlayer - 1
+            currentPlayer -
+            1
         ];
 
 
-    const before =
+    const scoreBefore =
         player.score;
 
 
-    const after =
-        before -
+    const scoreAfter =
+        scoreBefore -
         dart.score;
 
 
@@ -1332,36 +1508,47 @@ function applyDart(
     dartsLeft--;
 
 
+    /*
+       Checkout attempt if the dart
+       could finish the score.
+    */
+
     if (
         dart.isDouble &&
         dart.score ===
-        before
+        scoreBefore
     ) {
 
         player.stats.checkoutAttempts++;
     }
 
 
+    /*
+       BUST CONDITIONS
+    */
+
     if (
-        after <
+        scoreAfter <
             0 ||
-        after ===
+
+        scoreAfter ===
             1 ||
+
         (
-            after ===
+            scoreAfter ===
                 0 &&
             !dart.isDouble
         )
     ) {
 
-        showCallerEvent(
-            "NO SCORE",
-            1200
+        announceVisitScore(
+            0
         );
 
 
-        announceVisitScore(
-            0
+        showCallerEvent(
+            "NO SCORE",
+            1500
         );
 
 
@@ -1377,18 +1564,25 @@ function applyDart(
 
 
     player.score =
-        after;
+        scoreAfter;
 
+
+    /*
+       CHECKOUT
+    */
 
     if (
-        after ===
+        scoreAfter ===
             0 &&
         dart.isDouble
     ) {
 
         completeVisit(
+
             visitTotal(),
+
             true,
+
             false
         );
 
@@ -1397,14 +1591,21 @@ function applyDart(
     }
 
 
+    /*
+       END OF 3 DARTS
+    */
+
     if (
         dartsLeft <=
         0
     ) {
 
         completeVisit(
+
             visitTotal(),
+
             false,
+
             false
         );
 
@@ -1420,28 +1621,73 @@ function applyDart(
 
 
 /* =========================================================
-   INDIVIDUAL ENTRY
+   INDIVIDUAL DART ENTRY
 ========================================================= */
 
-$("submit-individual-dart")
-    .onclick =
-        submitIndividualDart;
+if (
+    $("submit-individual-dart")
+) {
+
+    $("submit-individual-dart")
+        .onclick =
+            submitIndividualDart;
+}
 
 
-individualDartInput
-    .addEventListener(
-        "keydown",
-        e => {
+if (
+    individualDartInput
+) {
 
-            if (
-                e.key ===
-                "Enter"
-            ) {
+    individualDartInput
+        .addEventListener(
+            "keydown",
+            event => {
 
-                submitIndividualDart();
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    submitIndividualDart();
+                }
             }
-        }
-    );
+        );
+}
+
+
+if (
+    individualDartType
+) {
+
+    individualDartType
+        .addEventListener(
+            "change",
+            () => {
+
+                const fixed =
+                    [
+                        "bull",
+                        "outerbull",
+                        "miss"
+                    ].includes(
+                        individualDartType.value
+                    );
+
+
+                individualDartInput.disabled =
+                    fixed;
+
+
+                if (
+                    fixed
+                ) {
+
+                    individualDartInput.value =
+                        "";
+                }
+            }
+        );
+}
 
 
 function submitIndividualDart() {
@@ -1456,17 +1702,20 @@ function submitIndividualDart() {
 
 
     if (
-        dart
+        !dart
     ) {
 
-        applyDart(
-            dart
-        );
-
-
-        individualDartInput.value =
-            "";
+        return;
     }
+
+
+    applyDart(
+        dart
+    );
+
+
+    individualDartInput.value =
+        "";
 }
 
 
@@ -1532,31 +1781,24 @@ function dartFromInputs(
    MISSED DOUBLE
 ========================================================= */
 
-$("tap-missed-double")
-    .onclick =
-        missedDouble;
+if (
+    $("tap-missed-double")
+) {
+
+    $("tap-missed-double")
+        .onclick =
+            missedDouble;
+}
 
 
-$("missed-double-individual")
-    .onclick =
-        missedDouble;
+if (
+    $("missed-double-individual")
+) {
 
-
-$("tap-end-turn")
-    .onclick =
-        () => {
-
-            if (
-                currentVisitDarts.length
-            ) {
-
-                completeVisit(
-                    visitTotal(),
-                    false,
-                    false
-                );
-            }
-        };
+    $("missed-double-individual")
+        .onclick =
+            missedDouble;
+}
 
 
 function missedDouble() {
@@ -1575,11 +1817,15 @@ function missedDouble() {
 
 
     players[
-        currentPlayer - 1
+        currentPlayer -
+        1
     ].stats.checkoutAttempts++;
 
 
     currentVisitDarts.push({
+
+        type:
+            "misseddouble",
 
         score:
             0,
@@ -1601,8 +1847,11 @@ function missedDouble() {
     ) {
 
         completeVisit(
+
             visitTotal(),
+
             false,
+
             false
         );
 
@@ -1617,33 +1866,76 @@ function missedDouble() {
 
 
 /* =========================================================
+   END TURN EARLY
+========================================================= */
+
+if (
+    $("tap-end-turn")
+) {
+
+    $("tap-end-turn")
+        .onclick =
+            () => {
+
+                if (
+                    currentVisitDarts.length ===
+                    0
+                ) {
+
+                    return;
+                }
+
+
+                completeVisit(
+
+                    visitTotal(),
+
+                    false,
+
+                    false
+                );
+            };
+}
+
+
+/* =========================================================
    WHOLE VISIT
 ========================================================= */
 
-$("submit-score")
-    .onclick =
-        () =>
-            submitWholeVisit(
-                scoreInput
-            );
+if (
+    $("submit-score")
+) {
 
-
-scoreInput
-    .addEventListener(
-        "keydown",
-        e => {
-
-            if (
-                e.key ===
-                "Enter"
-            ) {
-
+    $("submit-score")
+        .onclick =
+            () =>
                 submitWholeVisit(
                     scoreInput
                 );
+}
+
+
+if (
+    scoreInput
+) {
+
+    scoreInput
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    submitWholeVisit(
+                        scoreInput
+                    );
+                }
             }
-        }
-    );
+        );
+}
 
 
 function submitWholeVisit(
@@ -1690,23 +1982,28 @@ function submitWholeVisit(
 
     const player =
         players[
-            currentPlayer - 1
+            currentPlayer -
+            1
         ];
 
 
-    const before =
+    const scoreBefore =
         player.score;
 
 
-    const after =
-        before -
+    const scoreAfter =
+        scoreBefore -
         score;
 
 
+    /*
+       BUST
+    */
+
     if (
-        after <
+        scoreAfter <
             0 ||
-        after ===
+        scoreAfter ===
             1
     ) {
 
@@ -1735,19 +2032,29 @@ function submitWholeVisit(
         false;
 
 
+    /*
+       EXACT ZERO:
+       Ask if final dart was double.
+    */
+
     if (
-        after ===
+        scoreAfter ===
         0
     ) {
 
-        const valid =
+        const validDouble =
             confirm(
-                "Did the final dart hit a DOUBLE or BULL?\n\nOK = Yes\nCancel = No"
+
+                "Did the final dart hit a DOUBLE or BULL?\n\n" +
+
+                "OK = Yes, valid checkout\n" +
+
+                "Cancel = No, bust"
             );
 
 
         if (
-            !valid
+            !validDouble
         ) {
 
             announceVisitScore(
@@ -1780,12 +2087,15 @@ function submitWholeVisit(
 
 
     player.score =
-        after;
+        scoreAfter;
 
 
     currentVisitDarts = [
 
         {
+
+            type:
+                "wholevisit",
 
             score,
 
@@ -1794,16 +2104,19 @@ function submitWholeVisit(
 
             isDouble:
                 checkout
-
         }
 
     ];
 
 
     completeVisit(
+
         score,
+
         checkout,
+
         false,
+
         3
     );
 
@@ -1830,12 +2143,14 @@ function completeVisit(
 
     const player =
         players[
-            throwingPlayer - 1
+            throwingPlayer -
+            1
         ];
 
 
     const dartsUsed =
         dartsUsedOverride ||
+
         Math.max(
             1,
             currentVisitDarts.length
@@ -1843,8 +2158,11 @@ function completeVisit(
 
 
     updateVisitStats(
+
         player,
+
         score,
+
         dartsUsed
     );
 
@@ -1879,10 +2197,15 @@ function completeVisit(
         id:
             visitID,
 
+        player:
+            throwingPlayer,
+
         playerName:
             player.name,
 
         score,
+
+        dartsUsed,
 
         checkout,
 
@@ -1893,10 +2216,9 @@ function completeVisit(
 
         darts:
             currentVisitDarts.map(
-                d =>
-                    d.label
+                dart =>
+                    dart.label
             )
-
     });
 
 
@@ -1909,7 +2231,9 @@ function completeVisit(
 
         player.stats.bestCheckout =
             Math.max(
+
                 player.stats.bestCheckout,
+
                 score
             );
 
@@ -1982,7 +2306,7 @@ function completeVisit(
 
                     "ONE HUNDRED\nAND EIGHTY!",
 
-                    2800
+                    3000
                 );
             }
         }
@@ -2019,7 +2343,7 @@ function completeVisit(
 
         setTimeout(
             announceTurnStatus,
-            700
+            750
         );
     }
 }
@@ -2057,7 +2381,9 @@ function updateVisitStats(
 
     stats.highestVisit =
         Math.max(
+
             stats.highestVisit,
+
             score
         );
 
@@ -2105,7 +2431,9 @@ function updateVisitStats(
 
         const used =
             Math.min(
+
                 first9Remaining,
+
                 dartsUsed
             );
 
@@ -2115,6 +2443,7 @@ function updateVisitStats(
 
 
         stats.first9Points +=
+
             score *
             (
                 used /
@@ -2133,15 +2462,18 @@ function handleLegWin(
 ) {
 
     players.forEach(
-        p => {
+        player => {
 
-            p.stats.lastLegAverage =
-                p.stats.legDarts
+            player.stats.lastLegAverage =
+
+                player.stats.legDarts
+
                     ? (
-                        p.stats.legPoints /
-                        p.stats.legDarts
+                        player.stats.legPoints /
+                        player.stats.legDarts
                       ) *
                       3
+
                     : 0;
         }
     );
@@ -2149,7 +2481,8 @@ function handleLegWin(
 
     const winner =
         players[
-            playerNumber - 1
+            playerNumber -
+            1
         ];
 
 
@@ -2159,6 +2492,10 @@ function handleLegWin(
     let wonSet =
         false;
 
+
+    /*
+       SETS MODE
+    */
 
     if (
         gameMode ===
@@ -2172,6 +2509,7 @@ function handleLegWin(
 
         players[0].legs =
             0;
+
 
         players[1].legs =
             0;
@@ -2199,6 +2537,10 @@ function handleLegWin(
     }
 
 
+    /*
+       LEGS ONLY MODE
+    */
+
     if (
         gameMode ===
             "legs" &&
@@ -2215,25 +2557,33 @@ function handleLegWin(
     }
 
 
+    /*
+       NEXT LEG
+    */
+
     currentLeg++;
 
 
     players.forEach(
-        p => {
+        player => {
 
-            p.score =
+            player.score =
                 startingScore;
 
 
-            p.stats.legPoints =
+            player.stats.legPoints =
                 0;
 
 
-            p.stats.legDarts =
+            player.stats.legDarts =
                 0;
         }
     );
 
+
+    /*
+       Alternate first throw
+    */
 
     legStartingPlayer =
         legStartingPlayer ===
@@ -2343,7 +2693,8 @@ function getVoice() {
 
 function speak(
     text,
-    mode = "normal"
+    mode =
+        "normal"
 ) {
 
     if (
@@ -2358,7 +2709,7 @@ function speak(
     }
 
 
-    const u =
+    const utterance =
         new SpeechSynthesisUtterance(
             text
         );
@@ -2372,12 +2723,16 @@ function speak(
         voice
     ) {
 
-        u.voice =
+        utterance.voice =
             voice;
     }
 
 
-    u.volume =
+    /*
+       1 is browser maximum.
+    */
+
+    utterance.volume =
         1;
 
 
@@ -2386,11 +2741,12 @@ function speak(
         "180"
     ) {
 
-        u.rate =
-            .76;
+        utterance.rate =
+            0.76;
 
-        u.pitch =
-            1.38;
+
+        utterance.pitch =
+            1.4;
 
 
     } else if (
@@ -2398,25 +2754,40 @@ function speak(
         "game"
     ) {
 
-        u.rate =
-            .8;
+        utterance.rate =
+            0.80;
 
-        u.pitch =
+
+        utterance.pitch =
             1.18;
+
+
+    } else if (
+        mode ===
+        "require"
+    ) {
+
+        utterance.rate =
+            0.88;
+
+
+        utterance.pitch =
+            1.04;
 
 
     } else {
 
-        u.rate =
-            .9;
+        utterance.rate =
+            0.9;
 
-        u.pitch =
+
+        utterance.pitch =
             1.03;
     }
 
 
     speechSynthesis.speak(
-        u
+        utterance
     );
 }
 
@@ -2438,7 +2809,11 @@ function announceVisitScore(
         );
 
 
-    } else if (
+        return;
+    }
+
+
+    if (
         score ===
         0
     ) {
@@ -2449,14 +2824,15 @@ function announceVisitScore(
         );
 
 
-    } else {
-
-        speak(
-            numberWords(
-                score
-            )
-        );
+        return;
     }
+
+
+    speak(
+        numberWords(
+            score
+        )
+    );
 }
 
 
@@ -2472,7 +2848,8 @@ function announceTurnStatus() {
 
     const player =
         players[
-            currentPlayer - 1
+            currentPlayer -
+            1
         ];
 
 
@@ -2489,15 +2866,19 @@ function announceTurnStatus() {
 
         speak(
 
-            `${player.name}, you require ${numberWords(player.score)}`
+            `${player.name}, you require ${numberWords(player.score)}`,
 
+            "require"
         );
 
 
     } else {
 
         speak(
-            `${player.name}, to throw`
+
+            `${player.name}, to throw`,
+
+            "require"
         );
     }
 }
@@ -2513,7 +2894,9 @@ function announceGameResult(
     ) {
 
         speak(
+
             "GAME SHOT AND THE MATCH!",
+
             "game"
         );
 
@@ -2524,7 +2907,9 @@ function announceGameResult(
     ) {
 
         speak(
+
             "GAME SHOT AND THE SET!",
+
             "game"
         );
 
@@ -2532,70 +2917,103 @@ function announceGameResult(
     } else {
 
         speak(
+
             "GAME SHOT!",
+
             "game"
         );
     }
 }
 
 
+/* =========================================================
+   NUMBER TO WORDS
+========================================================= */
+
 function numberWords(
-    n
+    number
 ) {
 
     const small = [
 
-        "zero","one","two","three","four",
-        "five","six","seven","eight","nine",
-        "ten","eleven","twelve","thirteen",
-        "fourteen","fifteen","sixteen",
-        "seventeen","eighteen","nineteen"
+        "zero",
+        "one",
+        "two",
+        "three",
+        "four",
+        "five",
+        "six",
+        "seven",
+        "eight",
+        "nine",
+        "ten",
+        "eleven",
+        "twelve",
+        "thirteen",
+        "fourteen",
+        "fifteen",
+        "sixteen",
+        "seventeen",
+        "eighteen",
+        "nineteen"
 
     ];
 
 
     const tens = [
 
-        "","","twenty","thirty","forty",
-        "fifty","sixty","seventy",
-        "eighty","ninety"
+        "",
+        "",
+        "twenty",
+        "thirty",
+        "forty",
+        "fifty",
+        "sixty",
+        "seventy",
+        "eighty",
+        "ninety"
 
     ];
 
 
     if (
-        n <
+        number <
         20
     ) {
 
-        return small[n];
+        return small[
+            number
+        ];
     }
 
 
     if (
-        n <
+        number <
         100
     ) {
 
+        const ten =
+            Math.floor(
+                number /
+                10
+            );
+
+
+        const unit =
+            number %
+            10;
+
+
         return (
 
-            tens[
-                Math.floor(
-                    n /
-                    10
-                )
-            ]
+            tens[ten]
 
             +
 
             (
-                n %
-                10
+                unit
                     ? " " +
-                      small[
-                        n %
-                        10
-                      ]
+                      small[unit]
                     : ""
             )
         );
@@ -2603,63 +3021,87 @@ function numberWords(
 
 
     if (
-        n <
+        number <
         1000
     ) {
 
         const hundreds =
             Math.floor(
-                n /
+                number /
                 100
             );
 
 
         const remainder =
-            n %
+            number %
             100;
 
 
         return (
 
-            small[hundreds] +
+            small[hundreds]
 
-            " hundred" +
+            +
+
+            " hundred"
+
+            +
 
             (
                 remainder
-
                     ? " and " +
                       numberWords(
                           remainder
                       )
-
                     : ""
             )
         );
     }
 
 
-    return String(n);
+    return String(
+        number
+    );
 }
 
 
-toggleAnnouncerBtn.onclick =
-    () => {
+/* =========================================================
+   ANNOUNCER BUTTON
+========================================================= */
 
-        announcerEnabled =
-            !announcerEnabled;
+if (
+    toggleAnnouncerBtn
+) {
+
+    toggleAnnouncerBtn.onclick =
+        () => {
+
+            announcerEnabled =
+                !announcerEnabled;
 
 
-        toggleAnnouncerBtn.textContent =
-            announcerEnabled
+            toggleAnnouncerBtn.textContent =
 
-                ? "🔊 Announcer: On"
+                announcerEnabled
 
-                : "🔇 Announcer: Off";
+                    ? "🔊 Announcer: On"
+
+                    : "🔇 Announcer: Off";
 
 
-        saveSettings();
-    };
+            if (
+                !announcerEnabled &&
+                "speechSynthesis"
+                in window
+            ) {
+
+                speechSynthesis.cancel();
+            }
+
+
+            saveSettings();
+        };
+}
 
 
 /* =========================================================
@@ -2674,54 +3116,123 @@ const finishingDarts =
 
 
 for (
-    let n = 1;
-    n <= 20;
-    n++
+    let number = 1;
+    number <= 20;
+    number++
 ) {
 
     checkoutDarts.push(
+
         {
-            score:n,
-            label:String(n)
+
+            score:
+                number,
+
+            label:
+                String(
+                    number
+                )
         },
+
+
         {
-            score:n * 2,
-            label:"D" + n
+
+            score:
+                number *
+                2,
+
+            label:
+                "D" +
+                number
         },
+
+
         {
-            score:n * 3,
-            label:"T" + n
+
+            score:
+                number *
+                3,
+
+            label:
+                "T" +
+                number
         }
     );
 
 
     finishingDarts.push(
+
         {
-            score:n * 2,
-            label:"D" + n
+
+            score:
+                number *
+                2,
+
+            label:
+                "D" +
+                number
         }
     );
 }
 
 
 checkoutDarts.push(
+
     {
-        score:25,
-        label:"25"
+
+        score:
+            25,
+
+        label:
+            "25"
     },
+
+
     {
-        score:50,
-        label:"Bull"
+
+        score:
+            50,
+
+        label:
+            "Bull"
     }
+
 );
 
 
 finishingDarts.push(
+
     {
-        score:50,
-        label:"Bull"
+
+        score:
+            50,
+
+        label:
+            "Bull"
     }
 );
+
+
+/* =========================================================
+   CHECKOUT PREFERENCES
+========================================================= */
+
+const preferredDoubles = [
+
+    "D20",
+    "D16",
+    "D18",
+    "D12",
+    "D10",
+    "D8",
+    "D14",
+    "D6",
+    "D4",
+    "D2",
+    "D1",
+    "Bull"
+
+];
 
 
 function findBestCheckout(
@@ -2729,28 +3240,52 @@ function findBestCheckout(
     dartsAvailable
 ) {
 
+    if (
+        score <
+            2 ||
+        score >
+            170
+    ) {
+
+        return null;
+    }
+
+
     const routes =
         [];
 
 
-    for (
-        const finish
-        of finishingDarts
+    /*
+       ONE DART
+    */
+
+    if (
+        dartsAvailable >=
+        1
     ) {
 
-        if (
-            finish.score ===
-            score
-        ) {
+        finishingDarts.forEach(
+            finish => {
 
-            routes.push(
-                [
-                    finish.label
-                ]
-            );
-        }
+                if (
+                    finish.score ===
+                    score
+                ) {
+
+                    routes.push(
+                        [
+                            finish.label
+                        ]
+                    );
+                }
+            }
+        );
     }
 
+
+    /*
+       TWO DARTS
+    */
 
     if (
         dartsAvailable >=
@@ -2758,9 +3293,23 @@ function findBestCheckout(
     ) {
 
         for (
-            const a
+            const first
             of checkoutDarts
         ) {
+
+            const remainder =
+                score -
+                first.score;
+
+
+            if (
+                remainder <=
+                1
+            ) {
+
+                continue;
+            }
+
 
             for (
                 const finish
@@ -2768,14 +3317,14 @@ function findBestCheckout(
             ) {
 
                 if (
-                    a.score +
+                    first.score +
                     finish.score ===
                     score
                 ) {
 
                     routes.push(
                         [
-                            a.label,
+                            first.label,
                             finish.label
                         ]
                     );
@@ -2785,20 +3334,52 @@ function findBestCheckout(
     }
 
 
+    /*
+       THREE DARTS
+    */
+
     if (
         dartsAvailable >=
         3
     ) {
 
         for (
-            const a
+            const first
             of checkoutDarts
         ) {
 
+            const afterFirst =
+                score -
+                first.score;
+
+
+            if (
+                afterFirst <=
+                1
+            ) {
+
+                continue;
+            }
+
+
             for (
-                const b
+                const second
                 of checkoutDarts
             ) {
+
+                const afterSecond =
+                    afterFirst -
+                    second.score;
+
+
+                if (
+                    afterSecond <=
+                    1
+                ) {
+
+                    continue;
+                }
+
 
                 for (
                     const finish
@@ -2806,16 +3387,16 @@ function findBestCheckout(
                 ) {
 
                     if (
-                        a.score +
-                        b.score +
+                        first.score +
+                        second.score +
                         finish.score ===
                         score
                     ) {
 
                         routes.push(
                             [
-                                a.label,
-                                b.label,
+                                first.label,
+                                second.label,
                                 finish.label
                             ]
                         );
@@ -2835,36 +3416,91 @@ function findBestCheckout(
 
 
     routes.sort(
-        (
-            a,
-            b
-        ) => {
-
-            if (
-                a.length !==
-                b.length
-            ) {
-
-                return (
-                    a.length -
-                    b.length
-                );
-            }
-
-
-            return (
-                routePreference(
-                    b
-                ) -
-                routePreference(
-                    a
-                )
-            );
-        }
+        compareRoutes
     );
 
 
     return routes[0];
+}
+
+
+function compareRoutes(
+    a,
+    b
+) {
+
+    if (
+        a.length !==
+        b.length
+    ) {
+
+        return (
+            a.length -
+            b.length
+        );
+    }
+
+
+    const aFinish =
+        a[
+            a.length -
+            1
+        ];
+
+
+    const bFinish =
+        b[
+            b.length -
+            1
+        ];
+
+
+    const ai =
+        preferredDoubles.indexOf(
+            aFinish
+        );
+
+
+    const bi =
+        preferredDoubles.indexOf(
+            bFinish
+        );
+
+
+    const aRank =
+        ai ===
+        -1
+            ? 999
+            : ai;
+
+
+    const bRank =
+        bi ===
+        -1
+            ? 999
+            : bi;
+
+
+    if (
+        aRank !==
+        bRank
+    ) {
+
+        return (
+            aRank -
+            bRank
+        );
+    }
+
+
+    return (
+        routePreference(
+            b
+        ) -
+        routePreference(
+            a
+        )
+    );
 }
 
 
@@ -2873,6 +3509,7 @@ function routePreference(
 ) {
 
     return route.reduce(
+
         (
             total,
             label
@@ -2884,8 +3521,10 @@ function routePreference(
                 )
             ) {
 
-                return total +
-                    15;
+                return (
+                    total +
+                    20
+                );
             }
 
 
@@ -2895,18 +3534,39 @@ function routePreference(
                 )
             ) {
 
-                return total +
-                    7;
+                return (
+                    total +
+                    8
+                );
             }
 
 
-            return total +
-                4;
+            if (
+                label ===
+                "Bull"
+            ) {
+
+                return (
+                    total +
+                    6
+                );
+            }
+
+
+            return (
+                total +
+                5
+            );
         },
+
         0
     );
 }
 
+
+/* =========================================================
+   SETUP SUGGESTIONS
+========================================================= */
 
 function getSetupSuggestion(
     score,
@@ -2915,18 +3575,131 @@ function getSetupSuggestion(
 
     const options = [
 
-        {score:60,label:"T20"},
-        {score:57,label:"T19"},
-        {score:54,label:"T18"},
-        {score:51,label:"T17"},
-        {score:48,label:"T16"},
-        {score:45,label:"T15"},
-        {score:20,label:"20"},
-        {score:19,label:"19"},
-        {score:18,label:"18"},
-        {score:17,label:"17"},
-        {score:16,label:"16"}
+        {
+            score:
+                60,
+            label:
+                "T20"
+        },
 
+        {
+            score:
+                57,
+            label:
+                "T19"
+        },
+
+        {
+            score:
+                54,
+            label:
+                "T18"
+        },
+
+        {
+            score:
+                51,
+            label:
+                "T17"
+        },
+
+        {
+            score:
+                48,
+            label:
+                "T16"
+        },
+
+        {
+            score:
+                45,
+            label:
+                "T15"
+        },
+
+        {
+            score:
+                42,
+            label:
+                "T14"
+        },
+
+        {
+            score:
+                39,
+            label:
+                "T13"
+        },
+
+        {
+            score:
+                36,
+            label:
+                "T12"
+        },
+
+        {
+            score:
+                20,
+            label:
+                "20"
+        },
+
+        {
+            score:
+                19,
+            label:
+                "19"
+        },
+
+        {
+            score:
+                18,
+            label:
+                "18"
+        },
+
+        {
+            score:
+                17,
+            label:
+                "17"
+        },
+
+        {
+            score:
+                16,
+            label:
+                "16"
+        },
+
+        {
+            score:
+                15,
+            label:
+                "15"
+        },
+
+        {
+            score:
+                14,
+            label:
+                "14"
+        },
+
+        {
+            score:
+                13,
+            label:
+                "13"
+        },
+
+        {
+            score:
+                12,
+            label:
+                "12"
+        }
     ];
 
 
@@ -2953,7 +3726,7 @@ function getSetupSuggestion(
         }
 
 
-        const checkout =
+        const nextCheckout =
             leave <=
             170
 
@@ -2965,20 +3738,42 @@ function getSetupSuggestion(
                 : null;
 
 
-        const rank =
+        let rank =
+            leave;
 
-            (
-                checkout
-                    ? 0
-                    : 5000
+
+        if (
+            nextCheckout
+        ) {
+
+            rank -=
+                10000;
+        }
+
+
+        /*
+           Reward common doubles.
+        */
+
+        if (
+            [
+                40,
+                32,
+                36,
+                24,
+                20,
+                16
+            ].includes(
+                leave
             )
+        ) {
 
-            +
+            rank -=
+                500;
+        }
 
-            leave
 
-            -
-
+        rank -=
             total;
 
 
@@ -3024,10 +3819,12 @@ function getSetupSuggestion(
             ) {
 
                 consider(
+
                     [
                         a.label,
                         b.label
                     ],
+
                     a.score +
                     b.score
                 );
@@ -3044,11 +3841,13 @@ function getSetupSuggestion(
                     ) {
 
                         consider(
+
                             [
                                 a.label,
                                 b.label,
                                 c.label
                             ],
+
                             a.score +
                             b.score +
                             c.score
@@ -3070,15 +3869,12 @@ function getSuggestion(
 ) {
 
     const checkout =
-        score <=
-        170
+        findBestCheckout(
 
-            ? findBestCheckout(
-                score,
-                dartsAvailable
-            )
+            score,
 
-            : null;
+            dartsAvailable
+        );
 
 
     if (
@@ -3104,7 +3900,9 @@ function getSuggestion(
 
     const setup =
         getSetupSuggestion(
+
             score,
+
             dartsAvailable
         );
 
@@ -3130,7 +3928,9 @@ function getSuggestion(
 
                 setup.route.join(
                     " → "
-                ) +
+                )
+
+                +
 
                 " · Leave " +
 
@@ -3154,7 +3954,7 @@ function getSuggestion(
 
 
 /* =========================================================
-   DISPLAY
+   MAIN DISPLAY
 ========================================================= */
 
 function updateEverything() {
@@ -3165,12 +3965,14 @@ function updateEverything() {
     p1ScoreDisplay.textContent =
         players[0].score;
 
+
     p2ScoreDisplay.textContent =
         players[1].score;
 
 
     p1LegsDisplay.textContent =
         `Legs: ${players[0].legs}`;
+
 
     p2LegsDisplay.textContent =
         `Legs: ${players[1].legs}`;
@@ -3179,26 +3981,33 @@ function updateEverything() {
     p1SetsDisplay.textContent =
         `Sets: ${players[0].sets}`;
 
+
     p2SetsDisplay.textContent =
         `Sets: ${players[1].sets}`;
 
 
-    modeLabel.textContent =
+    if (
         gameMode ===
         "sets"
+    ) {
 
-            ? `${legsPerSet} legs per set · First to ${setsToWin} sets`
+        modeLabel.textContent =
+            `${legsPerSet} legs per set · First to ${setsToWin} sets`;
 
-            : `First to ${setsToWin} legs`;
+
+        legSetStatus.textContent =
+            `Set ${currentSet} · Leg ${currentLeg}`;
 
 
-    legSetStatus.textContent =
-        gameMode ===
-        "sets"
+    } else {
 
-            ? `Set ${currentSet} · Leg ${currentLeg}`
+        modeLabel.textContent =
+            `First to ${setsToWin} legs`;
 
-            : `Leg ${currentLeg}`;
+
+        legSetStatus.textContent =
+            `Leg ${currentLeg}`;
+    }
 
 
     dartsStatus.textContent =
@@ -3210,7 +4019,9 @@ function updateEverything() {
 
 
     p1Box.classList.toggle(
+
         "active",
+
         currentPlayer ===
             1 &&
         !matchFinished
@@ -3218,30 +4029,40 @@ function updateEverything() {
 
 
     p2Box.classList.toggle(
+
         "active",
+
         currentPlayer ===
             2 &&
         !matchFinished
     );
 
 
-    const suggestion =
-        getSuggestion(
-
-            players[
-                currentPlayer - 1
-            ].score,
-
-            dartsLeft
-        );
-
-
-    checkoutText.textContent =
+    if (
         matchFinished
+    ) {
 
-            ? "Match complete"
+        checkoutText.textContent =
+            "Match complete";
 
-            : suggestion.text;
+
+    } else {
+
+        const suggestion =
+            getSuggestion(
+
+                players[
+                    currentPlayer -
+                    1
+                ].score,
+
+                dartsLeft
+            );
+
+
+        checkoutText.textContent =
+            suggestion.text;
+    }
 
 
     updateIndividualStatus();
@@ -3258,12 +4079,31 @@ function updateEverything() {
 
 function updateIndividualStatus() {
 
-    individualDartStatus.textContent =
+    if (
+        !individualDartStatus
+    ) {
+
+        return;
+    }
+
+
+    if (
         matchFinished
+    ) {
 
-            ? "Match finished"
+        individualDartStatus.textContent =
+            "Match finished";
 
-            : `${players[currentPlayer - 1].name} · ${dartsLeft} darts remaining`;
+
+        return;
+    }
+
+
+    individualDartStatus.textContent =
+
+        `${players[currentPlayer - 1].name} · ` +
+
+        `${dartsLeft} dart${dartsLeft === 1 ? "" : "s"} remaining`;
 }
 
 
@@ -3273,8 +4113,17 @@ function updateIndividualStatus() {
 
 function updateCaller() {
 
+    if (
+        !callerScreen
+    ) {
+
+        return;
+    }
+
+
     callerP1Name.textContent =
         players[0].name;
+
 
     callerP2Name.textContent =
         players[1].name;
@@ -3283,12 +4132,14 @@ function updateCaller() {
     callerP1Score.textContent =
         players[0].score;
 
+
     callerP2Score.textContent =
         players[1].score;
 
 
     callerP1Sets.textContent =
         `Sets ${players[0].sets}`;
+
 
     callerP2Sets.textContent =
         `Sets ${players[1].sets}`;
@@ -3297,26 +4148,23 @@ function updateCaller() {
     callerP1Legs.textContent =
         `Legs ${players[0].legs}`;
 
+
     callerP2Legs.textContent =
         `Legs ${players[1].legs}`;
 
 
     callerP1Last.textContent =
-        `Last: ${
-            players[0].lastVisit ??
-            "–"
-        }`;
+        `Last: ${players[0].lastVisit ?? "–"}`;
 
 
     callerP2Last.textContent =
-        `Last: ${
-            players[1].lastVisit ??
-            "–"
-        }`;
+        `Last: ${players[1].lastVisit ?? "–"}`;
 
 
     callerP1.classList.toggle(
+
         "active",
+
         currentPlayer ===
             1 &&
         !matchFinished
@@ -3324,7 +4172,9 @@ function updateCaller() {
 
 
     callerP2.classList.toggle(
+
         "active",
+
         currentPlayer ===
             2 &&
         !matchFinished
@@ -3346,7 +4196,8 @@ function updateCaller() {
 
         const winner =
             players[
-                winnerPlayer - 1
+                winnerPlayer -
+                1
             ];
 
 
@@ -3366,13 +4217,16 @@ function updateCaller() {
 
         const player =
             players[
-                currentPlayer - 1
+                currentPlayer -
+                1
             ];
 
 
         const suggestion =
             getSuggestion(
+
                 player.score,
+
                 dartsLeft
             );
 
@@ -3387,6 +4241,7 @@ function updateCaller() {
         ) {
 
             callerRequire.textContent =
+
                 `${player.name.toUpperCase()} REQUIRES ${player.score}`;
 
 
@@ -3399,6 +4254,7 @@ function updateCaller() {
         } else {
 
             callerRequire.textContent =
+
                 `${player.name.toUpperCase()} — ${player.score}`;
 
 
@@ -3417,10 +4273,12 @@ function updateCaller() {
             "Current visit: " +
 
             currentVisitDarts
+
                 .map(
-                    d =>
-                        d.label
+                    dart =>
+                        dart.label
                 )
+
                 .join(
                     " • "
                 )
@@ -3441,29 +4299,49 @@ function updateCaller() {
 
 
 /* =========================================================
-   CALLER MODE CONTROLS
+   CALLER MODE
 ========================================================= */
 
-callerModeBtn.onclick =
-    openCaller;
+if (
+    callerModeBtn
+) {
+
+    callerModeBtn.onclick =
+        openCaller;
+}
 
 
-callerCloseBtn.onclick =
-    closeCaller;
+if (
+    callerCloseBtn
+) {
+
+    callerCloseBtn.onclick =
+        closeCaller;
+}
 
 
-callerDisplayBtn.onclick =
-    () =>
-        setCallerView(
-            "display"
-        );
+if (
+    callerDisplayBtn
+) {
+
+    callerDisplayBtn.onclick =
+        () =>
+            setCallerView(
+                "display"
+            );
+}
 
 
-callerScorerBtn.onclick =
-    () =>
-        setCallerView(
-            "scorer"
-        );
+if (
+    callerScorerBtn
+) {
+
+    callerScorerBtn.onclick =
+        () =>
+            setCallerView(
+                "scorer"
+            );
+}
 
 
 function openCaller() {
@@ -3505,13 +4383,19 @@ function closeCaller() {
         false;
 
 
-    callerScreen.classList.add(
-        "hidden"
-    );
+    if (
+        callerScreen
+    ) {
+
+        callerScreen.classList.add(
+            "hidden"
+        );
+    }
 
 
     if (
-        document.fullscreenElement
+        document.fullscreenElement &&
+        document.exitFullscreen
     ) {
 
         document
@@ -3532,21 +4416,27 @@ function setCallerView(
 
 
     callerDisplayBtn.classList.toggle(
+
         "active",
+
         view ===
         "display"
     );
 
 
     callerScorerBtn.classList.toggle(
+
         "active",
+
         view ===
         "scorer"
     );
 
 
     callerScorerControls.classList.toggle(
+
         "hidden",
+
         view !==
         "scorer"
     );
@@ -3554,7 +4444,7 @@ function setCallerView(
 
 
 /* =========================================================
-   CALLER SCORER
+   CALLER SCORER METHOD
 ========================================================= */
 
 document
@@ -3572,10 +4462,12 @@ document
                             ".caller-method"
                         )
                         .forEach(
-                            other =>
+                            other => {
+
                                 other.classList.remove(
                                     "active"
-                                )
+                                );
+                            }
                         );
 
 
@@ -3589,14 +4481,18 @@ document
 
 
                     callerVisitEntry.classList.toggle(
+
                         "hidden",
+
                         method !==
                         "visit"
                     );
 
 
                     callerDartEntry.classList.toggle(
+
                         "hidden",
+
                         method !==
                         "dart"
                     );
@@ -3605,51 +4501,71 @@ document
     );
 
 
-$("caller-submit-visit")
-    .onclick =
-        () =>
-            submitWholeVisit(
-                callerVisitInput
-            );
+if (
+    $("caller-submit-visit")
+) {
 
-
-callerVisitInput
-    .addEventListener(
-        "keydown",
-        e => {
-
-            if (
-                e.key ===
-                "Enter"
-            ) {
-
+    $("caller-submit-visit")
+        .onclick =
+            () =>
                 submitWholeVisit(
                     callerVisitInput
                 );
+}
+
+
+if (
+    callerVisitInput
+) {
+
+    callerVisitInput
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    submitWholeVisit(
+                        callerVisitInput
+                    );
+                }
             }
-        }
-    );
+        );
+}
 
 
-$("caller-submit-dart")
-    .onclick =
-        submitCallerDart;
+if (
+    $("caller-submit-dart")
+) {
+
+    $("caller-submit-dart")
+        .onclick =
+            submitCallerDart;
+}
 
 
-callerDartNumber
-    .addEventListener(
-        "keydown",
-        e => {
+if (
+    callerDartNumber
+) {
 
-            if (
-                e.key ===
-                "Enter"
-            ) {
+    callerDartNumber
+        .addEventListener(
+            "keydown",
+            event => {
 
-                submitCallerDart();
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    submitCallerDart();
+                }
             }
-        }
-    );
+        );
+}
 
 
 function submitCallerDart() {
@@ -3664,32 +4580,45 @@ function submitCallerDart() {
 
 
     if (
-        dart
+        !dart
     ) {
 
-        applyDart(
-            dart
-        );
-
-
-        callerDartNumber.value =
-            "";
+        return;
     }
+
+
+    applyDart(
+        dart
+    );
+
+
+    callerDartNumber.value =
+        "";
 }
 
 
-$("caller-missed-double")
-    .onclick =
-        missedDouble;
+if (
+    $("caller-missed-double")
+) {
+
+    $("caller-missed-double")
+        .onclick =
+            missedDouble;
+}
 
 
-$("caller-undo")
-    .onclick =
-        undoNormal;
+if (
+    $("caller-undo")
+) {
+
+    $("caller-undo")
+        .onclick =
+            undoNormal;
+}
 
 
 /* =========================================================
-   CALLER EVENT
+   CALLER CELEBRATION
 ========================================================= */
 
 let callerEventTimer =
@@ -3698,11 +4627,13 @@ let callerEventTimer =
 
 function showCallerEvent(
     text,
-    duration = 2200
+    duration =
+        2200
 ) {
 
     if (
-        !callerOpen
+        !callerOpen ||
+        !callerCelebration
     ) {
 
         return;
@@ -3741,7 +4672,7 @@ function showCallerEvent(
    STATS DISPLAY
 ========================================================= */
 
-function average(
+function calculateAverage(
     stats
 ) {
 
@@ -3751,7 +4682,9 @@ function average(
             stats.pointsScored /
             stats.dartsThrown *
             3
-          ).toFixed(2)
+          ).toFixed(
+              2
+          )
 
         : "0.00";
 }
@@ -3766,9 +4699,13 @@ function statRow(
 
         <div class="stat-row">
 
-            <span>${label}</span>
+            <span>
+                ${label}
+            </span>
 
-            <strong>${value}</strong>
+            <strong>
+                ${value}
+            </strong>
 
         </div>
     `;
@@ -3779,42 +4716,49 @@ function statsHTML(
     player
 ) {
 
-    const s =
+    const stats =
         player.stats;
 
 
-    const legAvg =
-        s.legDarts
+    const legAverage =
+        stats.legDarts
 
             ? (
-                s.legPoints /
-                s.legDarts *
+                stats.legPoints /
+                stats.legDarts *
                 3
-              ).toFixed(2)
+              ).toFixed(
+                  2
+              )
 
             : "0.00";
 
 
     const first9 =
-        s.first9Darts
+        stats.first9Darts
 
             ? (
-                s.first9Points /
-                s.first9Darts *
+                stats.first9Points /
+                stats.first9Darts *
                 3
-              ).toFixed(2)
+              ).toFixed(
+                  2
+              )
 
             : "0.00";
 
 
-    const checkout =
-        s.checkoutAttempts
+    const checkoutPercentage =
+        stats.checkoutAttempts
 
             ? (
-                s.checkouts /
-                s.checkoutAttempts *
+                stats.checkouts /
+                stats.checkoutAttempts *
                 100
-              ).toFixed(1) +
+              ).toFixed(
+                  1
+              )
+              +
               "%"
 
             : "0.0%";
@@ -3828,52 +4772,61 @@ function statsHTML(
 
         ${statRow(
             "Match Average",
-            average(s)
+            calculateAverage(
+                stats
+            )
         )}
 
         ${statRow(
             "Current Leg Avg",
-            legAvg
+            legAverage
         )}
 
         ${statRow(
-            "First 9",
+            "Last Leg Avg",
+            stats.lastLegAverage
+                ? stats.lastLegAverage.toFixed(2)
+                : "–"
+        )}
+
+        ${statRow(
+            "First 9 Average",
             first9
         )}
 
         ${statRow(
             "Highest Visit",
-            s.highestVisit
+            stats.highestVisit
         )}
 
         ${statRow(
             "100+",
-            s.scores100
+            stats.scores100
         )}
 
         ${statRow(
             "140+",
-            s.scores140
+            stats.scores140
         )}
 
         ${statRow(
             "180s",
-            s.scores180
+            stats.scores180
         )}
 
         ${statRow(
-            "Darts",
-            s.dartsThrown
+            "Darts Thrown",
+            stats.dartsThrown
         )}
 
         ${statRow(
             "Checkout %",
-            checkout
+            checkoutPercentage
         )}
 
         ${statRow(
             "Best Checkout",
-            s.bestCheckout ||
+            stats.bestCheckout ||
             "–"
         )}
     `;
@@ -3882,16 +4835,26 @@ function statsHTML(
 
 function updateStats() {
 
-    statsP1.innerHTML =
-        statsHTML(
-            players[0]
-        );
+    if (
+        statsP1
+    ) {
+
+        statsP1.innerHTML =
+            statsHTML(
+                players[0]
+            );
+    }
 
 
-    statsP2.innerHTML =
-        statsHTML(
-            players[1]
-        );
+    if (
+        statsP2
+    ) {
+
+        statsP2.innerHTML =
+            statsHTML(
+                players[1]
+            );
+    }
 }
 
 
@@ -3920,6 +4883,14 @@ function getAllVisits() {
 
 function updateHistory() {
 
+    if (
+        !visitHistoryList
+    ) {
+
+        return;
+    }
+
+
     const visits =
         getAllVisits();
 
@@ -3929,7 +4900,12 @@ function updateHistory() {
     ) {
 
         visitHistoryList.innerHTML =
-            '<div class="visit-meta">No completed visits yet.</div>';
+
+            '<div class="visit-meta">' +
+
+            'No completed visits yet.' +
+
+            '</div>';
 
 
         return;
@@ -3938,8 +4914,11 @@ function updateHistory() {
 
     visitHistoryList.innerHTML =
         visits
+
             .slice()
+
             .reverse()
+
             .map(
                 visit => `
 
@@ -3953,22 +4932,29 @@ function updateHistory() {
                         </span>
 
                         <span class="visit-meta">
+
                             ${escapeHTML(
-                                visit.darts.join(" • ")
+                                visit.darts.join(
+                                    " • "
+                                )
                             )}
+
                         </span>
 
                         <span class="visit-score">
+
                             ${
                                 visit.bust
                                     ? "BUST"
                                     : visit.score
                             }
+
                         </span>
 
                     </div>
                 `
             )
+
             .join(
                 ""
             );
@@ -3984,6 +4970,7 @@ function updateHistory() {
                 item.onclick =
                     () =>
                         restoreVisit(
+
                             parseInt(
                                 item.dataset.id
                             )
@@ -3997,18 +4984,19 @@ function restoreVisit(
     id
 ) {
 
-    const snap =
+    const snapshot =
         visitRestoreSnapshots.get(
             id
         );
 
 
     if (
-        !snap
+        !snapshot
     ) {
 
         alert(
-            "This visit cannot be restored after a page refresh."
+
+            "This visit cannot be restored after the page has been refreshed."
         );
 
 
@@ -4017,15 +5005,20 @@ function restoreVisit(
 
 
     if (
-        confirm(
-            "Restore to immediately before this visit?"
+        !confirm(
+            "Restore the match to immediately before this visit?"
         )
     ) {
 
-        restoreSnapshot(
-            snap
-        );
+        return;
     }
+
+
+    restoreSnapshot(
+        clone(
+            snapshot
+        )
+    );
 }
 
 
@@ -4068,7 +5061,6 @@ function makeSnapshot() {
         visitCounter,
 
         players
-
     });
 }
 
@@ -4096,21 +5088,40 @@ function pushUndo() {
 function undoNormal() {
 
     if (
-        !normalHistory.length
+        normalHistory.length ===
+        0
     ) {
 
         return;
     }
 
 
+    if (
+        "speechSynthesis"
+        in window
+    ) {
+
+        speechSynthesis.cancel();
+    }
+
+
+    const snapshot =
+        normalHistory.pop();
+
+
     restoreSnapshot(
-        normalHistory.pop()
+        snapshot
     );
 }
 
 
-normalUndoBtn.onclick =
-    undoNormal;
+if (
+    normalUndoBtn
+) {
+
+    normalUndoBtn.onclick =
+        undoNormal;
+}
 
 
 function restoreSnapshot(
@@ -4120,48 +5131,64 @@ function restoreSnapshot(
     selectedMode =
         snapshot.selectedMode;
 
+
     gameMode =
         snapshot.gameMode;
+
 
     startingScore =
         snapshot.startingScore;
 
+
     legsPerSet =
         snapshot.legsPerSet;
+
 
     setsToWin =
         snapshot.setsToWin;
 
+
     currentSet =
         snapshot.currentSet;
+
 
     currentLeg =
         snapshot.currentLeg;
 
+
     currentPlayer =
         snapshot.currentPlayer;
+
 
     legStartingPlayer =
         snapshot.legStartingPlayer;
 
+
     selectedStartingPlayer =
         snapshot.selectedStartingPlayer;
 
+
     dartsLeft =
         snapshot.dartsLeft;
+
 
     currentVisitDarts =
         snapshot.currentVisitDarts ||
         [];
 
+
     matchFinished =
         snapshot.matchFinished;
+
 
     winnerPlayer =
         snapshot.winnerPlayer;
 
+
     visitCounter =
-        snapshot.visitCounter;
+        snapshot.visitCounter ||
+        1;
+
 
     players =
         snapshot.players;
@@ -4179,25 +5206,47 @@ function restoreSnapshot(
 
 function updateUndoButtons() {
 
-    normalUndoBtn.disabled =
-        normalHistory.length ===
-        0;
+    if (
+        normalUndoBtn
+    ) {
+
+        normalUndoBtn.disabled =
+            normalHistory.length ===
+            0;
+    }
 
 
-    $("caller-undo").disabled =
-        normalHistory.length ===
-        0;
+    if (
+        $("caller-undo")
+    ) {
+
+        $("caller-undo").disabled =
+            normalHistory.length ===
+            0;
+    }
+
+
+    if (
+        $("undo-cricket")
+    ) {
+
+        $("undo-cricket").disabled =
+            cricketHistory.length ===
+            0;
+    }
 }
 
 
 /* =========================================================
-   SAVE / RESUME
+   SAVE MATCH
 ========================================================= */
 
 function saveMatch() {
 
     if (
-        matchFinished
+        matchFinished ||
+        selectedMode ===
+        "cricket"
     ) {
 
         return;
@@ -4215,83 +5264,154 @@ function saveMatch() {
             )
         );
 
-    } catch (_) {}
+
+    } catch (
+        error
+    ) {
+
+        console.warn(
+            "Could not save match:",
+            error
+        );
+    }
 }
 
 
 function checkSavedMatch() {
 
+    const banner =
+        $("resume-banner");
+
+
     if (
-        localStorage.getItem(
-            STORAGE_MATCH
-        )
+        !banner
     ) {
 
-        $("resume-banner")
-            .classList.remove(
+        return;
+    }
+
+
+    try {
+
+        if (
+            localStorage.getItem(
+                STORAGE_MATCH
+            )
+        ) {
+
+            banner.classList.remove(
                 "hidden"
             );
+        }
+
+
+    } catch (
+        error
+    ) {
+
+        console.warn(
+            error
+        );
     }
 }
 
 
-$("resume-match-btn")
-    .onclick =
-        () => {
+/* =========================================================
+   RESUME MATCH
+========================================================= */
 
-            try {
+if (
+    $("resume-match-btn")
+) {
 
-                const saved =
-                    JSON.parse(
+    $("resume-match-btn")
+        .onclick =
+            () => {
 
-                        localStorage.getItem(
-                            STORAGE_MATCH
-                        )
+                try {
+
+                    const saved =
+                        JSON.parse(
+
+                            localStorage.getItem(
+                                STORAGE_MATCH
+                            )
+                        );
+
+
+                    if (
+                        !saved
+                    ) {
+
+                        return;
+                    }
+
+
+                    modeScreen.classList.add(
+                        "hidden"
                     );
 
 
-                modeScreen.classList.add(
-                    "hidden"
+                    nameScreen.classList.add(
+                        "hidden"
+                    );
+
+
+                    setupScreen.classList.add(
+                        "hidden"
+                    );
+
+
+                    gameScreen.classList.remove(
+                        "hidden"
+                    );
+
+
+                    restoreSnapshot(
+                        saved
+                    );
+
+
+                    activateMobileTab(
+                        "score"
+                    );
+
+
+                } catch (
+                    error
+                ) {
+
+                    alert(
+                        "Could not restore the saved match."
+                    );
+                }
+            };
+}
+
+
+if (
+    $("discard-match-btn")
+) {
+
+    $("discard-match-btn")
+        .onclick =
+            () => {
+
+                localStorage.removeItem(
+                    STORAGE_MATCH
                 );
 
 
-                gameScreen.classList.remove(
-                    "hidden"
-                );
-
-
-                restoreSnapshot(
-                    saved
-                );
-
-
-            } catch (_) {
-
-                alert(
-                    "Could not restore saved match."
-                );
-            }
-        };
-
-
-$("discard-match-btn")
-    .onclick =
-        () => {
-
-            localStorage.removeItem(
-                STORAGE_MATCH
-            );
-
-
-            $("resume-banner")
-                .classList.add(
-                    "hidden"
-                );
-        };
+                $("resume-banner")
+                    .classList.add(
+                        "hidden"
+                    );
+            };
+}
 
 
 /* =========================================================
-   PROFILES
+   PLAYER PROFILES
 ========================================================= */
 
 function getProfiles() {
@@ -4302,11 +5422,15 @@ function getProfiles() {
 
             localStorage.getItem(
                 STORAGE_PROFILES
-            ) ||
+            )
+            ||
             "{}"
         );
 
-    } catch (_) {
+
+    } catch (
+        error
+    ) {
 
         return {};
     }
@@ -4327,12 +5451,17 @@ function saveProfiles() {
 
             const key =
                 player.name
-                    .toLowerCase()
-                    .trim();
+
+                    .trim()
+
+                    .toLowerCase();
 
 
             const profile =
-                profiles[key] ||
+                profiles[
+                    key
+                ]
+                ||
                 {
 
                     name:
@@ -4354,8 +5483,18 @@ function saveProfiles() {
                         0,
 
                     bestCheckout:
+                        0,
+
+                    checkouts:
+                        0,
+
+                    checkoutAttempts:
                         0
                 };
+
+
+            profile.name =
+                player.name;
 
 
             profile.matches++;
@@ -4383,14 +5522,26 @@ function saveProfiles() {
                 player.stats.scores180;
 
 
+            profile.checkouts +=
+                player.stats.checkouts;
+
+
+            profile.checkoutAttempts +=
+                player.stats.checkoutAttempts;
+
+
             profile.bestCheckout =
                 Math.max(
+
                     profile.bestCheckout,
+
                     player.stats.bestCheckout
                 );
 
 
-            profiles[key] =
+            profiles[
+                key
+            ] =
                 profile;
         }
     );
@@ -4407,65 +5558,96 @@ function saveProfiles() {
 }
 
 
-profileBtn.onclick =
-    () => {
+if (
+    profileBtn
+) {
 
-        const profiles =
-            Object.values(
-                getProfiles()
-            );
-
-
-        if (
-            !profiles.length
-        ) {
-
-            alert(
-                "No saved profiles yet."
-            );
+    profileBtn.onclick =
+        showProfiles;
+}
 
 
-            return;
-        }
+function showProfiles() {
 
+    const profiles =
+        Object.values(
+            getProfiles()
+        );
+
+
+    if (
+        profiles.length ===
+        0
+    ) {
 
         alert(
-
-            profiles.map(
-                p => {
-
-                    const avg =
-                        p.darts
-
-                            ? (
-                                p.points /
-                                p.darts *
-                                3
-                              ).toFixed(2)
-
-                            : "0.00";
-
-
-                    return (
-
-                        `${p.name}\n` +
-
-                        `Matches: ${p.matches}\n` +
-
-                        `Wins: ${p.wins}\n` +
-
-                        `Average: ${avg}\n` +
-
-                        `180s: ${p.scores180}\n` +
-
-                        `Best Checkout: ${p.bestCheckout || "-"}`
-                    );
-                }
-            ).join(
-                "\n\n"
-            )
+            "No saved player profiles yet. Complete a match first."
         );
-    };
+
+
+        return;
+    }
+
+
+    const text =
+        profiles.map(
+            profile => {
+
+                const average =
+                    profile.darts
+
+                        ? (
+                            profile.points /
+                            profile.darts *
+                            3
+                          ).toFixed(
+                              2
+                          )
+
+                        : "0.00";
+
+
+                const checkoutPercentage =
+                    profile.checkoutAttempts
+
+                        ? (
+                            profile.checkouts /
+                            profile.checkoutAttempts *
+                            100
+                          ).toFixed(
+                              1
+                          )
+
+                        : "0.0";
+
+
+                return (
+
+                    `${profile.name}\n` +
+
+                    `Matches: ${profile.matches}\n` +
+
+                    `Wins: ${profile.wins}\n` +
+
+                    `Average: ${average}\n` +
+
+                    `180s: ${profile.scores180}\n` +
+
+                    `Checkout: ${checkoutPercentage}%\n` +
+
+                    `Best Checkout: ${profile.bestCheckout || "-"}`
+                );
+            }
+        )
+        .join(
+            "\n\n"
+        );
+
+
+    alert(
+        text
+    );
+}
 
 
 /* =========================================================
@@ -4474,16 +5656,28 @@ profileBtn.onclick =
 
 function saveSettings() {
 
-    localStorage.setItem(
+    try {
 
-        STORAGE_SETTINGS,
+        localStorage.setItem(
 
-        JSON.stringify({
+            STORAGE_SETTINGS,
 
-            announcerEnabled
+            JSON.stringify({
 
-        })
-    );
+                announcerEnabled
+
+            })
+        );
+
+
+    } catch (
+        error
+    ) {
+
+        console.warn(
+            error
+        );
+    }
 }
 
 
@@ -4496,7 +5690,8 @@ function loadSettings() {
 
                 localStorage.getItem(
                     STORAGE_SETTINGS
-                ) ||
+                )
+                ||
                 "{}"
             );
 
@@ -4506,30 +5701,50 @@ function loadSettings() {
             false;
 
 
-    } catch (_) {}
+    } catch (
+        error
+    ) {
+
+        announcerEnabled =
+            true;
+    }
 
 
-    toggleAnnouncerBtn.textContent =
-        announcerEnabled
+    if (
+        toggleAnnouncerBtn
+    ) {
 
-            ? "🔊 Announcer: On"
+        toggleAnnouncerBtn.textContent =
 
-            : "🔇 Announcer: Off";
+            announcerEnabled
+
+                ? "🔊 Announcer: On"
+
+                : "🔇 Announcer: Off";
+    }
 }
 
 
 /* =========================================================
-   NEW MATCH / BACK
+   NEW MATCH
 ========================================================= */
 
-newMatchBtn.onclick =
-    () => {
+if (
+    newMatchBtn
+) {
 
-        if (
-            confirm(
-                "Start a new match?"
-            )
-        ) {
+    newMatchBtn.onclick =
+        () => {
+
+            if (
+                !confirm(
+                    "Start a new match?"
+                )
+            ) {
+
+                return;
+            }
+
 
             localStorage.removeItem(
                 STORAGE_MATCH
@@ -4547,12 +5762,24 @@ newMatchBtn.onclick =
             modeScreen.classList.remove(
                 "hidden"
             );
-        }
-    };
 
 
-$("game-back")
-    .onclick =
+            finishedBanner.classList.add(
+                "hidden"
+            );
+        };
+}
+
+
+/* =========================================================
+   GAME BACK
+========================================================= */
+
+if (
+    $("game-back")
+) {
+
+    $("game-back").onclick =
         () => {
 
             closeCaller();
@@ -4567,10 +5794,11 @@ $("game-back")
                 "hidden"
             );
         };
+}
 
 
 /* =========================================================
-   CRICKET
+   CRICKET DOM
 ========================================================= */
 
 const cricketTeamA =
@@ -4585,6 +5813,10 @@ const cricketBattingName =
 const cricketBowlingName =
     $("cricket-bowling-name");
 
+
+/* =========================================================
+   CRICKET STATE
+========================================================= */
 
 let cricketInnings =
     1;
@@ -4618,23 +5850,29 @@ const cricketHistory =
     [];
 
 
+/* =========================================================
+   CRICKET NAMES
+========================================================= */
+
 function setupCricketNames(
-    a,
-    b
+    teamA,
+    teamB
 ) {
 
     cricketTeamA.textContent =
-        a;
+        teamA;
+
 
     cricketTeamB.textContent =
-        b;
+        teamB;
 
 
     cricketBowlingName.textContent =
-        a;
+        teamA;
+
 
     cricketBattingName.textContent =
-        b;
+        teamB;
 
 
     nameScreen.classList.add(
@@ -4649,15 +5887,26 @@ function setupCricketNames(
 
     buildCricketBoard();
 
-    resetCricket();
+    resetCricket(
+        false
+    );
 }
 
 
+/* =========================================================
+   CRICKET BOARD
+========================================================= */
+
 function buildCricketBoard() {
 
+    const singles =
+        $("cricket-bowl-singles");
+
+
     if (
-        $("cricket-bowl-singles")
-            .children.length
+        !singles ||
+        singles.children.length >
+        0
     ) {
 
         return;
@@ -4701,7 +5950,6 @@ function buildCricketBoard() {
             3,
             "bat"
         ]
-
     ];
 
 
@@ -4709,19 +5957,21 @@ function buildCricketBoard() {
         (
             [
                 id,
-                mult,
+                multiplier,
                 role
             ]
         ) => {
 
             const container =
-                $(id);
+                $(
+                    id
+                );
 
 
             for (
-                let n = 1;
-                n <= 20;
-                n++
+                let number = 1;
+                number <= 20;
+                number++
             ) {
 
                 const button =
@@ -4735,16 +5985,22 @@ function buildCricketBoard() {
 
 
                 button.textContent =
+
                     (
-                        mult ===
+                        multiplier ===
                         1
+
                             ? ""
-                            : mult ===
+
+                            : multiplier ===
                               2
+
                                 ? "D"
+
                                 : "T"
-                    ) +
-                    n;
+                    )
+                    +
+                    number;
 
 
                 button.onclick =
@@ -4753,12 +6009,12 @@ function buildCricketBoard() {
 
                             role,
 
-                            n,
+                            number,
 
-                            mult,
+                            multiplier,
 
-                            n *
-                            mult
+                            number *
+                            multiplier
                         );
 
 
@@ -4771,17 +6027,37 @@ function buildCricketBoard() {
 }
 
 
-function resetCricket() {
+/* =========================================================
+   CRICKET RESET
+========================================================= */
+
+function resetCricket(
+    saveUndo =
+        true
+) {
+
+    if (
+        saveUndo
+    ) {
+
+        pushCricket();
+    }
+
 
     cricketTotalWickets =
         Math.min(
+
             20,
+
             Math.max(
+
                 1,
+
                 parseInt(
                     $("cricket-total-wickets")
                         .value
-                ) ||
+                )
+                ||
                 11
             )
         );
@@ -4790,23 +6066,30 @@ function resetCricket() {
     cricketInnings =
         1;
 
+
     cricketRuns =
         0;
+
 
     cricketWickets =
         0;
 
+
     cricketNextWicket =
         1;
+
 
     cricketTarget =
         null;
 
+
     cricketDarts =
         3;
 
+
     cricketPhase =
         "bowling";
+
 
     cricketFinished =
         false;
@@ -4815,6 +6098,7 @@ function resetCricket() {
     cricketBowlingName.textContent =
         cricketTeamA.textContent;
 
+
     cricketBattingName.textContent =
         cricketTeamB.textContent;
 
@@ -4822,6 +6106,10 @@ function resetCricket() {
     updateCricket();
 }
 
+
+/* =========================================================
+   CRICKET UNDO SNAPSHOT
+========================================================= */
 
 function pushCricket() {
 
@@ -4851,13 +6139,29 @@ function pushCricket() {
         bowling:
             cricketBowlingName.textContent
     });
+
+
+    if (
+        cricketHistory.length >
+        MAX_HISTORY
+    ) {
+
+        cricketHistory.shift();
+    }
+
+
+    updateUndoButtons();
 }
 
+
+/* =========================================================
+   CRICKET DART
+========================================================= */
 
 function cricketDart(
     role,
     base,
-    mult,
+    multiplier,
     score
 ) {
 
@@ -4870,31 +6174,24 @@ function cricketDart(
 
 
     if (
+        cricketPhase ===
+            "bowling" &&
         role !==
-        cricketPhase
-            .replace(
-                "ting",
-                ""
-            )
+            "bowl"
     ) {
 
-        if (
-            !(
-                cricketPhase ===
-                    "batting" &&
-                role ===
-                    "bat"
-            ) &&
-            !(
-                cricketPhase ===
-                    "bowling" &&
-                role ===
-                    "bowl"
-            )
-        ) {
+        return;
+    }
 
-            return;
-        }
+
+    if (
+        cricketPhase ===
+            "batting" &&
+        role !==
+            "bat"
+    ) {
+
+        return;
     }
 
 
@@ -4911,16 +6208,9 @@ function cricketDart(
             cricketNextWicket
         ) {
 
-            cricketWickets +=
-                Math.min(
-                    mult,
-                    cricketTotalWickets -
-                    cricketWickets
-                );
-
-
-            cricketNextWicket +=
-                mult;
+            takeCricketWickets(
+                multiplier
+            );
         }
 
 
@@ -4931,16 +6221,9 @@ function cricketDart(
             cricketNextWicket
         ) {
 
-            cricketWickets +=
-                Math.min(
-                    mult,
-                    cricketTotalWickets -
-                    cricketWickets
-                );
-
-
-            cricketNextWicket +=
-                mult;
+            takeCricketWickets(
+                multiplier
+            );
 
 
         } else {
@@ -4979,6 +6262,51 @@ function cricketDart(
 }
 
 
+/* =========================================================
+   CRICKET WICKETS
+========================================================= */
+
+function takeCricketWickets(
+    amount
+) {
+
+    const remaining =
+        cricketTotalWickets -
+        cricketWickets;
+
+
+    const actual =
+        Math.min(
+
+            amount,
+
+            remaining
+        );
+
+
+    cricketWickets +=
+        actual;
+
+
+    cricketNextWicket +=
+        actual;
+
+
+    if (
+        cricketNextWicket >
+        cricketTotalWickets
+    ) {
+
+        cricketNextWicket =
+            cricketTotalWickets;
+    }
+}
+
+
+/* =========================================================
+   SECOND CRICKET INNINGS
+========================================================= */
+
 function startSecondCricketInnings() {
 
     cricketTarget =
@@ -4989,17 +6317,22 @@ function startSecondCricketInnings() {
     cricketInnings =
         2;
 
+
     cricketRuns =
         0;
+
 
     cricketWickets =
         0;
 
+
     cricketNextWicket =
         1;
 
+
     cricketDarts =
         3;
+
 
     cricketPhase =
         "bowling";
@@ -5008,10 +6341,15 @@ function startSecondCricketInnings() {
     cricketBattingName.textContent =
         cricketTeamA.textContent;
 
+
     cricketBowlingName.textContent =
         cricketTeamB.textContent;
 }
 
+
+/* =========================================================
+   CRICKET RESULT
+========================================================= */
 
 function checkCricket() {
 
@@ -5061,238 +6399,338 @@ function checkCricket() {
 }
 
 
+/* =========================================================
+   CRICKET DISPLAY
+========================================================= */
+
 function updateCricket() {
 
-    $("cricket-runs").textContent =
-        cricketRuns;
+    if (
+        !$(
+            "cricket-runs"
+        )
+    ) {
+
+        return;
+    }
 
 
-    $("cricket-wickets").textContent =
-        cricketWickets;
+    $("cricket-runs")
+        .textContent =
+            cricketRuns;
 
 
-    $("cricket-innings").textContent =
-        cricketInnings;
+    $("cricket-wickets")
+        .textContent =
+            cricketWickets;
 
 
-    $("cricket-danger").textContent =
-        cricketWickets >=
-        cricketTotalWickets
-
-            ? "–"
-
-            : cricketNextWicket;
+    $("cricket-innings")
+        .textContent =
+            cricketInnings;
 
 
-    $("cricket-target").textContent =
-        cricketTarget ??
-        "–";
+    $("cricket-danger")
+        .textContent =
+
+            cricketWickets >=
+            cricketTotalWickets
+
+                ? "–"
+
+                : cricketNextWicket;
 
 
-    $("cricket-phase").textContent =
-        cricketFinished
+    $("cricket-target")
+        .textContent =
 
-            ? "Match Finished"
-
-            : cricketPhase ===
-              "bowling"
-
-                ? "Bowling Turn"
-
-                : "Batting Turn";
+            cricketTarget ??
+            "–";
 
 
-    $("cricket-darts-left").textContent =
-        cricketFinished
+    $("cricket-phase")
+        .textContent =
 
-            ? "–"
+            cricketFinished
 
-            : cricketDarts;
+                ? "Match Finished"
+
+                : cricketPhase ===
+                  "bowling"
+
+                    ? "Bowling Turn"
+
+                    : "Batting Turn";
 
 
-    $("undo-cricket").disabled =
-        !cricketHistory.length;
+    $("cricket-darts-left")
+        .textContent =
+
+            cricketFinished
+
+                ? "–"
+
+                : cricketDarts;
+
+
+    $("cricket-total-wickets")
+        .value =
+            cricketTotalWickets;
+
+
+    updateUndoButtons();
 }
 
 
-$("cricket-start-match")
-    .onclick =
-        resetCricket;
+/* =========================================================
+   CRICKET BUTTON EVENTS
+========================================================= */
+
+if (
+    $("cricket-start-match")
+) {
+
+    $("cricket-start-match")
+        .onclick =
+            () =>
+                resetCricket(
+                    true
+                );
+}
 
 
-$("cricket-declare")
-    .onclick =
-        () => {
+if (
+    $("cricket-declare")
+) {
 
-            if (
-                cricketInnings ===
-                1
-            ) {
+    $("cricket-declare")
+        .onclick =
+            () => {
+
+                if (
+                    cricketFinished
+                ) {
+
+                    return;
+                }
+
 
                 pushCricket();
 
-                startSecondCricketInnings();
+
+                if (
+                    cricketInnings ===
+                    1
+                ) {
+
+                    startSecondCricketInnings();
+
+
+                } else {
+
+                    cricketFinished =
+                        true;
+                }
+
 
                 updateCricket();
-            }
-        };
+            };
+}
 
 
-$("cricket-miss-board")
-    .onclick =
-        () => {
+/* =========================================================
+   CRICKET MISS SCORING ZONE
+========================================================= */
 
-            if (
-                cricketPhase !==
-                "batting"
-            ) {
+if (
+    $("cricket-miss-board")
+) {
 
-                return;
-            }
+    $("cricket-miss-board")
+        .onclick =
+            () => {
+
+                if (
+                    cricketFinished ||
+                    cricketPhase !==
+                    "batting"
+                ) {
+
+                    return;
+                }
 
 
-            pushCricket();
+                pushCricket();
 
 
-            cricketRuns++;
+                cricketRuns++;
 
 
-            cricketDarts--;
+                cricketDarts--;
 
 
-            if (
-                cricketDarts <=
-                0
-            ) {
+                if (
+                    cricketDarts <=
+                    0
+                ) {
+
+                    cricketDarts =
+                        3;
+
+
+                    cricketPhase =
+                        "bowling";
+                }
+
+
+                checkCricket();
+
+                updateCricket();
+            };
+}
+
+
+/* =========================================================
+   CRICKET FALL OUT
+   +1 RUN + EXTRA DART
+========================================================= */
+
+if (
+    $("cricket-fall-out")
+) {
+
+    $("cricket-fall-out")
+        .onclick =
+            () => {
+
+                if (
+                    cricketFinished ||
+                    cricketPhase !==
+                    "batting"
+                ) {
+
+                    return;
+                }
+
+
+                pushCricket();
+
+
+                cricketRuns++;
+
+
+                /*
+                   No dart removed:
+                   therefore extra dart.
+                */
+
+
+                checkCricket();
+
+                updateCricket();
+            };
+}
+
+
+/* =========================================================
+   CRICKET UNDO
+========================================================= */
+
+if (
+    $("undo-cricket")
+) {
+
+    $("undo-cricket")
+        .onclick =
+            () => {
+
+                const old =
+                    cricketHistory.pop();
+
+
+                if (
+                    !old
+                ) {
+
+                    return;
+                }
+
+
+                cricketInnings =
+                    old.cricketInnings;
+
+
+                cricketRuns =
+                    old.cricketRuns;
+
+
+                cricketWickets =
+                    old.cricketWickets;
+
+
+                cricketNextWicket =
+                    old.cricketNextWicket;
+
+
+                cricketTarget =
+                    old.cricketTarget;
+
 
                 cricketDarts =
-                    3;
+                    old.cricketDarts;
+
 
                 cricketPhase =
-                    "bowling";
-            }
+                    old.cricketPhase;
 
 
-            updateCricket();
-        };
+                cricketTotalWickets =
+                    old.cricketTotalWickets;
 
 
-$("cricket-fall-out")
-    .onclick =
-        () => {
-
-            if (
-                cricketPhase !==
-                "batting"
-            ) {
-
-                return;
-            }
+                cricketFinished =
+                    old.cricketFinished;
 
 
-            pushCricket();
+                cricketBattingName.textContent =
+                    old.batting;
 
 
-            cricketRuns++;
+                cricketBowlingName.textContent =
+                    old.bowling;
 
 
-            updateCricket();
-        };
-
-
-$("undo-cricket")
-    .onclick =
-        () => {
-
-            const old =
-                cricketHistory.pop();
-
-
-            if (
-                !old
-            ) {
-
-                return;
-            }
-
-
-            cricketInnings =
-                old.cricketInnings;
-
-            cricketRuns =
-                old.cricketRuns;
-
-            cricketWickets =
-                old.cricketWickets;
-
-            cricketNextWicket =
-                old.cricketNextWicket;
-
-            cricketTarget =
-                old.cricketTarget;
-
-            cricketDarts =
-                old.cricketDarts;
-
-            cricketPhase =
-                old.cricketPhase;
-
-            cricketTotalWickets =
-                old.cricketTotalWickets;
-
-            cricketFinished =
-                old.cricketFinished;
-
-
-            cricketBattingName.textContent =
-                old.batting;
-
-            cricketBowlingName.textContent =
-                old.bowling;
-
-
-            updateCricket();
-        };
-
-
-$("cricket-back")
-    .onclick =
-        () => {
-
-            cricketScreen.classList.add(
-                "hidden"
-            );
-
-
-            modeScreen.classList.remove(
-                "hidden"
-            );
-        };
+                updateCricket();
+            };
+}
 
 
 /* =========================================================
-   INITIALISE
+   CRICKET BACK
 ========================================================= */
 
-loadSettings();
+if (
+    $("cricket-back")
+) {
 
-checkSavedMatch();
+    $("cricket-back")
+        .onclick =
+            () => {
 
-updateNameDisplays();
+                cricketScreen.classList.add(
+                    "hidden"
+                );
 
-updateStartingPlayerButtons();
 
-updateEverything();
+                modeScreen.classList.remove(
+                    "hidden"
+                );
+            };
+}
 
-updateCricket();
 
 /* =========================================================
-   DART HUB PWA - V15
-========================================================= */
-
-
-/* =========================================================
-   SERVICE WORKER
+   PWA SERVICE WORKER
 ========================================================= */
 
 if (
@@ -5325,7 +6763,7 @@ if (
             ) {
 
                 console.error(
-                    "Service worker registration failed:",
+                    "Dart Hub service worker failed:",
                     error
                 );
             }
@@ -5335,7 +6773,7 @@ if (
 
 
 /* =========================================================
-   INSTALL APP
+   PWA INSTALL
 ========================================================= */
 
 let deferredInstallPrompt =
@@ -5343,20 +6781,11 @@ let deferredInstallPrompt =
 
 
 const installAppBtn =
-    document.getElementById(
-        "install-app-btn"
-    );
-
+    $("install-app-btn");
 
 const installStatus =
-    document.getElementById(
-        "install-status"
-    );
+    $("install-status");
 
-
-/* =========================================================
-   DETECT INSTALLED APP
-========================================================= */
 
 function isRunningAsApp() {
 
@@ -5374,9 +6803,14 @@ function isRunningAsApp() {
 }
 
 
-/* =========================================================
-   UPDATE INSTALL DISPLAY
-========================================================= */
+function isIOS() {
+
+    return /iphone|ipad|ipod/i
+        .test(
+            navigator.userAgent
+        );
+}
+
 
 function updateInstallDisplay() {
 
@@ -5400,52 +6834,38 @@ function updateInstallDisplay() {
             true;
 
 
-        installStatus.textContent =
-            "You are currently using the installed Dart Hub app.";
+        if (
+            installStatus
+        ) {
+
+            installStatus.textContent =
+                "You are using the installed Dart Hub app.";
+        }
 
 
         return;
     }
 
 
-    const userAgent =
-        navigator.userAgent
-            .toLowerCase();
-
-
-    const isiPhone =
-        /iphone|ipad|ipod/
-            .test(
-                userAgent
-            );
+    installAppBtn.disabled =
+        false;
 
 
     if (
-        isiPhone
+        isIOS()
     ) {
 
         installAppBtn.textContent =
             "📱 Add Dart Hub to Home Screen";
 
 
-        installStatus.textContent =
-            "On iPhone/iPad: tap this button for installation instructions.";
+        if (
+            installStatus
+        ) {
 
-
-        return;
-    }
-
-
-    if (
-        deferredInstallPrompt
-    ) {
-
-        installAppBtn.textContent =
-            "📱 Install Dart Hub";
-
-
-        installStatus.textContent =
-            "Install Dart Hub so it opens like a normal app.";
+            installStatus.textContent =
+                "On iPhone/iPad, install from Safari.";
+        }
 
 
         return;
@@ -5456,23 +6876,23 @@ function updateInstallDisplay() {
         "📱 Install Dart Hub";
 
 
-    installStatus.textContent =
-        "If the install option is not available yet, refresh the page once after the new files are uploaded.";
+    if (
+        installStatus
+    ) {
+
+        installStatus.textContent =
+            deferredInstallPrompt
+
+                ? "Dart Hub is ready to install."
+
+                : "Install Dart Hub on your phone or computer.";
+    }
 }
 
-
-/* =========================================================
-   BROWSER INSTALL PROMPT
-========================================================= */
 
 window.addEventListener(
     "beforeinstallprompt",
     event => {
-
-        /*
-           Stop Chrome immediately showing its own prompt.
-           We'll use our Dart Hub button instead.
-        */
 
         event.preventDefault();
 
@@ -5485,10 +6905,6 @@ window.addEventListener(
     }
 );
 
-
-/* =========================================================
-   INSTALL BUTTON
-========================================================= */
 
 if (
     installAppBtn
@@ -5506,24 +6922,12 @@ if (
             }
 
 
-            const userAgent =
-                navigator.userAgent
-                    .toLowerCase();
-
-
-            const isiPhone =
-                /iphone|ipad|ipod/
-                    .test(
-                        userAgent
-                    );
-
-
             /*
-               iPHONE / iPAD
+               IPHONE / IPAD
             */
 
             if (
-                isiPhone
+                isIOS()
             ) {
 
                 alert(
@@ -5532,15 +6936,13 @@ if (
 
                     "1. Open Dart Hub in Safari.\n\n" +
 
-                    "2. Tap the Share button at the bottom of Safari.\n\n" +
+                    "2. Tap the Share button.\n\n" +
 
-                    "3. Scroll down and choose 'Add to Home Screen'.\n\n" +
+                    "3. Tap Add to Home Screen.\n\n" +
 
-                    "4. Make sure the name says Dart Hub.\n\n" +
+                    "4. Make sure the name is Dart Hub.\n\n" +
 
-                    "5. Tap Add.\n\n" +
-
-                    "Dart Hub will then appear on your Home Screen like an app."
+                    "5. Tap Add."
                 );
 
 
@@ -5556,8 +6958,7 @@ if (
                 deferredInstallPrompt
             ) {
 
-                deferredInstallPrompt
-                    .prompt();
+                deferredInstallPrompt.prompt();
 
 
                 const choice =
@@ -5566,18 +6967,17 @@ if (
 
 
                 if (
-                    choice.outcome ===
-                    "accepted"
+                    installStatus
                 ) {
 
                     installStatus.textContent =
-                        "Installing Dart Hub…";
 
+                        choice.outcome ===
+                        "accepted"
 
-                } else {
+                            ? "Installing Dart Hub…"
 
-                    installStatus.textContent =
-                        "Installation cancelled.";
+                            : "Installation cancelled.";
                 }
 
 
@@ -5595,24 +6995,20 @@ if (
 
             alert(
 
-                "Dart Hub installation is not available from this browser yet.\n\n" +
+                "If the install button is not available yet:\n\n" +
 
                 "ANDROID / COMPUTER:\n" +
 
-                "Open Dart Hub in Chrome or Edge, open the browser menu, then choose 'Install app' or 'Add to Home screen'.\n\n" +
+                "Open Dart Hub in Chrome or Edge, open the browser menu and choose Install app or Add to Home screen.\n\n" +
 
                 "IPHONE:\n" +
 
-                "Open the website in Safari → Share → Add to Home Screen."
+                "Open Dart Hub in Safari → Share → Add to Home Screen."
             );
         }
     );
 }
 
-
-/* =========================================================
-   INSTALLED EVENT
-========================================================= */
 
 window.addEventListener(
     "appinstalled",
@@ -5640,14 +7036,26 @@ window.addEventListener(
         ) {
 
             installStatus.textContent =
-                "Dart Hub has been installed successfully.";
+                "Dart Hub installed successfully.";
         }
     }
 );
 
 
 /* =========================================================
-   STARTUP
+   INITIALISE
 ========================================================= */
+
+loadSettings();
+
+checkSavedMatch();
+
+updateNameDisplays();
+
+updateStartingPlayerButtons();
+
+updateEverything();
+
+updateCricket();
 
 updateInstallDisplay();
