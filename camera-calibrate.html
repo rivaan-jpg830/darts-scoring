@@ -54,14 +54,18 @@
 
 
         h1 {
+            color: #00aaff;
+        }
 
+
+        h2 {
             color: #00aaff;
         }
 
 
         .card {
 
-            max-width: 1100px;
+            max-width: 1150px;
 
             margin:
                 12px auto;
@@ -141,13 +145,11 @@
 
 
         .secondary {
-
             background: #087247;
         }
 
 
         .warning {
-
             background: #782323;
         }
 
@@ -158,7 +160,7 @@
 
             overflow: auto;
 
-            max-height: 75vh;
+            max-height: 74vh;
 
             background: black;
 
@@ -183,10 +185,7 @@
             display: grid;
 
             grid-template-columns:
-                repeat(
-                    3,
-                    1fr
-                );
+                repeat(3, 1fr);
 
             gap: 7px;
 
@@ -214,41 +213,118 @@
         }
 
 
-        .slider-grid {
+        .help {
 
-            display: grid;
+            color: #9fb0b7;
 
-            grid-template-columns:
-                repeat(
-                    2,
-                    1fr
-                );
+            font-size: 13px;
 
-            gap: 9px;
+            line-height: 1.55;
 
             text-align: left;
         }
 
 
-        .slider-grid label {
+        .help strong {
+            color: white;
+        }
+
+
+        .point-list {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 5px;
+
+            text-align: left;
+        }
+
+
+        .point-row {
+
+            display: grid;
+
+            grid-template-columns:
+                28px 1fr 24px;
+
+            gap: 6px;
+
+            align-items: center;
 
             padding: 7px;
 
             border-radius: 7px;
 
             background: #11181b;
+
+            color: #83949c;
         }
 
 
-        .slider-grid input {
+        .point-row.done {
 
-            width: 100%;
+            color: white;
 
-            min-height: auto;
+            border:
+                1px solid #155e46;
 
-            padding: 0;
+            background: #0a241b;
+        }
 
-            letter-spacing: 0;
+
+        .point-row span {
+
+            color: #00aaff;
+
+            font-weight: 900;
+        }
+
+
+        .point-row em {
+
+            color: #00ff9d;
+
+            font-style: normal;
+
+            font-weight: 900;
+        }
+
+
+        .ring-values {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 7px;
+        }
+
+
+        .ring-values div {
+
+            padding: 9px;
+
+            border-radius: 7px;
+
+            background: #11181b;
+
+            color: #9aaab1;
+        }
+
+
+        .ring-values strong {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #00ff9d;
+
+            font-size: 18px;
         }
 
 
@@ -263,12 +339,13 @@
 
 
         @media (
-            max-width:700px
+            max-width: 700px
         ) {
 
             .join-row,
             .controls,
-            .slider-grid {
+            .point-list,
+            .ring-values {
 
                 grid-template-columns:
                     1fr;
@@ -287,7 +364,7 @@
 
 
 <h1>
-    🎯 Dart Hub Camera Calibration
+    🎯 Dart Hub 17-Point Camera Calibration
 </h1>
 
 
@@ -323,6 +400,27 @@
 </div>
 
 
+<div class="card help">
+
+    <strong>
+        Calibration:
+    </strong>
+
+    click the bull first, then the
+    inner and outer edges of the treble and double
+    for 20, 6, 3 and 14.
+
+    <br><br>
+
+    Click along the
+    <strong>centre line of the number</strong>,
+    not near the wire between two numbers.
+
+    The image is frozen, so take your time.
+
+</div>
+
+
 <div
     id="calibration-area"
     class="card"
@@ -352,7 +450,7 @@
             id="undo-point"
             class="warning"
         >
-            ↶ Undo Point
+            ↶ Undo Last Point
         </button>
 
 
@@ -360,7 +458,7 @@
             id="reset-points"
             class="warning"
         >
-            Reset Calibration
+            Reset All 17 Points
         </button>
 
 
@@ -377,96 +475,35 @@
 
 
 <div
-    id="ring-settings"
+    id="calibration-summary"
     class="card"
     style="display:none"
 >
 
     <h2>
-        Fine Tune Rings
+        Calibration Points
     </h2>
 
 
-    <div class="slider-grid">
-
-        <label>
-
-            Outer Bull
-
-            <input
-                id="outer-bull-ratio"
-                type="range"
-                min="0.05"
-                max="0.16"
-                step="0.001"
-                value="0.094"
-            >
-
-            <span id="outer-bull-value">
-                0.094
-            </span>
-
-        </label>
+    <div
+        id="point-list"
+        class="point-list"
+    ></div>
 
 
-        <label>
-
-            Treble Inner
-
-            <input
-                id="treble-inner-ratio"
-                type="range"
-                min="0.45"
-                max="0.70"
-                step="0.001"
-                value="0.582"
-            >
-
-            <span id="treble-inner-value">
-                0.582
-            </span>
-
-        </label>
+    <h2>
+        Calculated Ring Positions
+    </h2>
 
 
-        <label>
+    <div
+        id="ring-values"
+        class="ring-values"
+    >
 
-            Treble Outer
-
-            <input
-                id="treble-outer-ratio"
-                type="range"
-                min="0.50"
-                max="0.75"
-                step="0.001"
-                value="0.629"
-            >
-
-            <span id="treble-outer-value">
-                0.629
-            </span>
-
-        </label>
-
-
-        <label>
-
-            Double Inner
-
-            <input
-                id="double-inner-ratio"
-                type="range"
-                min="0.85"
-                max="0.99"
-                step="0.001"
-                value="0.953"
-            >
-
-            <span id="double-inner-value">
-                0.953
-            </span>
-
-        </label>
+        <div>
+            Complete all 17 points first.
+        </div>
 
     </div>
 
@@ -474,8 +511,12 @@
     <button
         id="save-calibration"
         class="secondary"
+        style="
+            width:100%;
+            margin-top:12px;
+        "
     >
-        💾 Save Calibration
+        💾 Save Calibration to Phone
     </button>
 
 </div>
@@ -514,7 +555,7 @@
 
 
 <script
-    src="camera.js"
+    src="camera.js?v=3"
 ></script>
 
 
