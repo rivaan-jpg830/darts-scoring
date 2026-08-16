@@ -1,763 +1,640 @@
 "use strict";
 
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const STORAGE_MATCH =
+    "darts-current-match-v14";
+
+const STORAGE_PROFILES =
+    "darts-player-profiles-v14";
+
+const STORAGE_SETTINGS =
+    "darts-settings-v14";
+
+const MAX_HISTORY =
+    150;
+
+
 /* =========================================================
    DOM
 ========================================================= */
 
+const $ =
+    id =>
+        document.getElementById(id);
+
+
 const modeScreen =
-    document.getElementById("mode-screen");
+    $("mode-screen");
 
 const nameScreen =
-    document.getElementById("name-screen");
+    $("name-screen");
 
 const setupScreen =
-    document.getElementById("setup-screen");
+    $("setup-screen");
 
 const gameScreen =
-    document.getElementById("game-screen");
+    $("game-screen");
 
 const cricketScreen =
-    document.getElementById("cricket-screen");
-
-
-const modeButtons =
-    document.querySelectorAll(".mode-btn");
-
-
-const continueToSetupBtn =
-    document.getElementById("continue-to-setup");
+    $("cricket-screen");
 
 
 const p1NameInput =
-    document.getElementById("p1-name-input");
+    $("p1-name-input");
 
 const p2NameInput =
-    document.getElementById("p2-name-input");
-
+    $("p2-name-input");
 
 const p1NameDisplay =
-    document.getElementById("p1-name");
+    $("p1-name");
 
 const p2NameDisplay =
-    document.getElementById("p2-name");
+    $("p2-name");
+
+const p1ScoreDisplay =
+    $("p1-score");
+
+const p2ScoreDisplay =
+    $("p2-score");
+
+const p1LegsDisplay =
+    $("p1-legs");
+
+const p2LegsDisplay =
+    $("p2-legs");
+
+const p1SetsDisplay =
+    $("p1-sets");
+
+const p2SetsDisplay =
+    $("p2-sets");
+
+const p1Box =
+    $("p1-box");
+
+const p2Box =
+    $("p2-box");
 
 
 const nameScreenTitle =
-    document.getElementById("name-screen-title");
+    $("name-screen-title");
 
 const p1Label =
-    document.getElementById("p1-label");
+    $("p1-label");
 
 const p2Label =
-    document.getElementById("p2-label");
-
-
-const startMatchBtn =
-    document.getElementById("start-match");
+    $("p2-label");
 
 
 const startingScoreInput =
-    document.getElementById("starting-score");
+    $("starting-score");
 
 const legsPerSetInput =
-    document.getElementById("legs-per-set");
+    $("legs-per-set");
 
 const setsToWinInput =
-    document.getElementById("sets-to-win");
+    $("sets-to-win");
 
 
-const p1ScoreDisplay =
-    document.getElementById("p1-score");
+const startP1Btn =
+    $("start-p1");
 
-const p2ScoreDisplay =
-    document.getElementById("p2-score");
+const startP2Btn =
+    $("start-p2");
 
+const startRandomBtn =
+    $("start-random");
 
-const p1LegsDisplay =
-    document.getElementById("p1-legs");
-
-const p2LegsDisplay =
-    document.getElementById("p2-legs");
-
-
-const p1SetsDisplay =
-    document.getElementById("p1-sets");
-
-const p2SetsDisplay =
-    document.getElementById("p2-sets");
-
-
-const p1Box =
-    document.getElementById("p1-box");
-
-const p2Box =
-    document.getElementById("p2-box");
+const firstPlayerStatus =
+    $("first-player-status");
 
 
 const modeLabel =
-    document.getElementById("mode-label");
+    $("mode-label");
 
 const legSetStatus =
-    document.getElementById("leg-set-status");
-
-const checkoutText =
-    document.getElementById("checkout-text");
+    $("leg-set-status");
 
 const dartsStatus =
-    document.getElementById("darts-status");
+    $("darts-status");
 
-
-const methodButtons =
-    document.querySelectorAll(".method-button");
+const checkoutText =
+    $("checkout-text");
 
 
 const tapScoringSection =
-    document.getElementById("tap-scoring-section");
+    $("tap-scoring-section");
 
 const visitScoringSection =
-    document.getElementById("visit-scoring-section");
+    $("visit-scoring-section");
 
 const individualScoringSection =
-    document.getElementById("individual-scoring-section");
+    $("individual-scoring-section");
 
 
 const scoreInput =
-    document.getElementById("score-input");
+    $("score-input");
 
-const submitScoreBtn =
-    document.getElementById("submit-score");
-
+const individualDartType =
+    $("individual-dart-type");
 
 const individualDartInput =
-    document.getElementById("individual-dart-input");
-
-const submitIndividualDartBtn =
-    document.getElementById("submit-individual-dart");
+    $("individual-dart-input");
 
 const individualDartStatus =
-    document.getElementById("individual-dart-status");
+    $("individual-dart-status");
 
 
 const normalUndoBtn =
-    document.getElementById("undo-normal");
-
+    $("undo-normal");
 
 const toggleAnnouncerBtn =
-    document.getElementById("toggle-announcer");
+    $("toggle-announcer");
 
+const callerModeBtn =
+    $("caller-mode-btn");
 
-const gameBackBtn =
-    document.getElementById("game-back");
+const profileBtn =
+    $("profile-btn");
 
+const newMatchBtn =
+    $("new-match-btn");
 
-/* =========================================================
-   CRICKET DOM
-========================================================= */
+const finishedBanner =
+    $("match-finished-banner");
 
-const cricketTeamA =
-    document.getElementById("cricket-team-a");
+const statsP1 =
+    $("stats-p1");
 
-const cricketTeamB =
-    document.getElementById("cricket-team-b");
+const statsP2 =
+    $("stats-p2");
 
-const cricketBattingName =
-    document.getElementById("cricket-batting-name");
-
-const cricketBowlingName =
-    document.getElementById("cricket-bowling-name");
-
-
-const cricketInningsDisplay =
-    document.getElementById("cricket-innings");
-
-const cricketTotalWicketsInput =
-    document.getElementById("cricket-total-wickets");
-
-const cricketRunsDisplay =
-    document.getElementById("cricket-runs");
-
-const cricketWicketsDisplay =
-    document.getElementById("cricket-wickets");
-
-const cricketDangerDisplay =
-    document.getElementById("cricket-danger");
-
-const cricketTargetDisplay =
-    document.getElementById("cricket-target");
-
-const cricketPhaseDisplay =
-    document.getElementById("cricket-phase");
-
-const cricketDartsLeftDisplay =
-    document.getElementById("cricket-darts-left");
-
-
-const cricketStartMatchBtn =
-    document.getElementById("cricket-start-match");
-
-const cricketDeclareBtn =
-    document.getElementById("cricket-declare");
-
-const cricketMissBoardBtn =
-    document.getElementById("cricket-miss-board");
-
-const cricketFallOutBtn =
-    document.getElementById("cricket-fall-out");
-
-const cricketUndoBtn =
-    document.getElementById("undo-cricket");
-
-const cricketBackBtn =
-    document.getElementById("cricket-back");
+const visitHistoryList =
+    $("visit-history-list");
 
 
 /* =========================================================
-   HISTORY
+   CALLER DOM
 ========================================================= */
 
-const normalHistory = [];
-const cricketHistory = [];
+const callerScreen =
+    $("caller-screen");
 
-const MAX_HISTORY = 100;
+const callerDisplayBtn =
+    $("caller-display-btn");
+
+const callerScorerBtn =
+    $("caller-scorer-btn");
+
+const callerCloseBtn =
+    $("caller-close-btn");
+
+
+const callerP1 =
+    $("caller-p1");
+
+const callerP2 =
+    $("caller-p2");
+
+const callerP1Name =
+    $("caller-p1-name");
+
+const callerP2Name =
+    $("caller-p2-name");
+
+const callerP1Score =
+    $("caller-p1-score");
+
+const callerP2Score =
+    $("caller-p2-score");
+
+const callerP1Sets =
+    $("caller-p1-sets");
+
+const callerP2Sets =
+    $("caller-p2-sets");
+
+const callerP1Legs =
+    $("caller-p1-legs");
+
+const callerP2Legs =
+    $("caller-p2-legs");
+
+const callerP1Last =
+    $("caller-p1-last");
+
+const callerP2Last =
+    $("caller-p2-last");
+
+const callerMatchInfo =
+    $("caller-match-info");
+
+const callerTurn =
+    $("caller-turn");
+
+const callerRequire =
+    $("caller-require");
+
+const callerRoute =
+    $("caller-route");
+
+const callerCurrentVisit =
+    $("caller-current-visit");
+
+
+const callerScorerControls =
+    $("caller-scorer-controls");
+
+const callerVisitEntry =
+    $("caller-visit-entry");
+
+const callerDartEntry =
+    $("caller-dart-entry");
+
+const callerVisitInput =
+    $("caller-visit-input");
+
+const callerDartType =
+    $("caller-dart-type");
+
+const callerDartNumber =
+    $("caller-dart-number");
+
+const callerCelebration =
+    $("caller-celebration");
+
+const callerCelebrationText =
+    $("caller-celebration-text");
 
 
 /* =========================================================
-   ANNOUNCER
+   STATE
 ========================================================= */
 
-let announcerEnabled = true;
+let selectedMode =
+    "501";
 
-let currentVisitScore = 0;
+let gameMode =
+    "legs";
+
+let startingScore =
+    501;
+
+let legsPerSet =
+    3;
+
+let setsToWin =
+    3;
+
+let currentSet =
+    1;
+
+let currentLeg =
+    1;
+
+let currentPlayer =
+    1;
+
+let legStartingPlayer =
+    1;
+
+let selectedStartingPlayer =
+    "random";
+
+let dartsLeft =
+    3;
+
+let currentVisitDarts =
+    [];
+
+let currentVisitStartSnapshot =
+    null;
+
+let matchFinished =
+    false;
+
+let winnerPlayer =
+    null;
+
+let announcerEnabled =
+    true;
+
+let callerOpen =
+    false;
+
+let callerView =
+    "display";
+
+let visitCounter =
+    1;
+
+
+const normalHistory =
+    [];
+
+const visitRestoreSnapshots =
+    new Map();
 
 
 /* =========================================================
-   SPEAK
+   PLAYER STATE
 ========================================================= */
 
-function speakAnnouncement(
-    text,
-    special = "normal"
+function createStats() {
+
+    return {
+
+        pointsScored:
+            0,
+
+        dartsThrown:
+            0,
+
+        first9Points:
+            0,
+
+        first9Darts:
+            0,
+
+        highestVisit:
+            0,
+
+        scores100:
+            0,
+
+        scores140:
+            0,
+
+        scores180:
+            0,
+
+        checkoutAttempts:
+            0,
+
+        checkouts:
+            0,
+
+        bestCheckout:
+            0,
+
+        legPoints:
+            0,
+
+        legDarts:
+            0,
+
+        lastLegAverage:
+            0,
+
+        visits:
+            []
+    };
+}
+
+
+function createPlayer(
+    name
 ) {
 
-    if (!announcerEnabled) {
-        return;
-    }
+    return {
 
-    if (!("speechSynthesis" in window)) {
-        return;
-    }
+        name,
 
-    window.speechSynthesis.cancel();
+        score:
+            startingScore,
 
+        legs:
+            0,
 
-    const utterance =
-        new SpeechSynthesisUtterance(
-            text
-        );
+        sets:
+            0,
 
+        lastVisit:
+            null,
 
-    /*
-       Browser speech volume max is 1.
-    */
-
-    utterance.volume = 1;
-
-
-    if (special === "180") {
-
-        /*
-           Make 180 sound more dramatic.
-        */
-
-        utterance.rate = 0.95;
-        utterance.pitch = 1.28;
-
-    } else if (special === "game") {
-
-        utterance.rate = 0.86;
-        utterance.pitch = 1.12;
-
-    } else if (special === "require") {
-
-        utterance.rate = 0.88;
-        utterance.pitch = 1.0;
-
-    } else if (special === "bust") {
-
-        utterance.rate = 0.82;
-        utterance.pitch = 0.85;
-
-    } else {
-
-        utterance.rate = 0.90;
-        utterance.pitch = 1.02;
-    }
-
-
-    /*
-       Prefer British English voice.
-    */
-
-    const voices =
-        window.speechSynthesis
-            .getVoices();
-
-
-    const ukVoice =
-        voices.find(
-            voice =>
-                voice.lang &&
-                voice.lang
-                    .toLowerCase()
-                    .startsWith("en-gb")
-        );
-
-
-    if (ukVoice) {
-
-        utterance.voice =
-            ukVoice;
-    }
-
-
-    window.speechSynthesis.speak(
-        utterance
-    );
+        stats:
+            createStats()
+    };
 }
 
 
-/* =========================================================
-   ANNOUNCER ON/OFF
-========================================================= */
+let players = [
 
-toggleAnnouncerBtn.addEventListener(
-    "click",
-    () => {
+    createPlayer(
+        "Player 1"
+    ),
 
-        announcerEnabled =
-            !announcerEnabled;
+    createPlayer(
+        "Player 2"
+    )
 
-
-        toggleAnnouncerBtn.textContent =
-            announcerEnabled
-                ? "🔊 Announcer: On"
-                : "🔇 Announcer: Off";
-
-
-        if (
-            !announcerEnabled &&
-            "speechSynthesis" in window
-        ) {
-
-            window.speechSynthesis.cancel();
-        }
-    }
-);
+];
 
 
 /* =========================================================
-   NORMAL VISIT SCORE
+   HELPERS
 ========================================================= */
 
-function announceVisitScore(
-    score
+function clone(
+    value
 ) {
 
-    if (score === 180) {
-
-        speakAnnouncement(
-            "ONE HUNDRED AND EIGHTYYYYYYYY!",
-            "180"
-        );
-
-        return;
-    }
-
-
-    if (score === 0) {
-
-        speakAnnouncement(
-            "NO SCORE!",
-            "bust"
-        );
-
-        return;
-    }
-
-
-    speakAnnouncement(
-        visitScoreToWords(score) + "!"
+    return JSON.parse(
+        JSON.stringify(
+            value
+        )
     );
 }
 
 
-/* =========================================================
-   REQUIRE ANNOUNCEMENT
-========================================================= */
-
-function announceRequiredScore() {
-
-    if (!announcerEnabled) {
-        return;
-    }
-
-
-    const score =
-        currentPlayer === 1
-            ? p1Score
-            : p2Score;
-
-
-    const playerName =
-        currentPlayer === 1
-            ? p1NameDisplay.textContent
-            : p2NameDisplay.textContent;
-
-
-    /*
-       Only announce "you require"
-       when a checkout is actually possible.
-    */
-
-    const checkout =
-        findBestCheckout(
-            score,
-            3
-        );
-
-
-    if (!checkout) {
-
-        return;
-    }
-
-
-    const spokenScore =
-        numberToBritishWords(
-            score
-        );
-
-
-    speakAnnouncement(
-        `${playerName}, you require ${spokenScore}`,
-        "require"
-    );
-}
-
-
-/* =========================================================
-   GAME CALLS
-========================================================= */
-
-function announceGameShot() {
-
-    speakAnnouncement(
-        "GAME SHOT!",
-        "game"
-    );
-}
-
-
-function announceGameShotAndSet() {
-
-    speakAnnouncement(
-        "GAME SHOT... AND THE SET!",
-        "game"
-    );
-}
-
-
-function announceGameShotAndMatch() {
-
-    speakAnnouncement(
-        "GAME SHOT... AND THE MATCH!",
-        "game"
-    );
-}
-
-
-/* =========================================================
-   NUMBER WORDS
-========================================================= */
-
-function visitScoreToWords(
-    score
+function escapeHTML(
+    value
 ) {
 
-    if (score === 0) {
+    return String(
+        value
+    ).replace(
 
-        return "No score";
-    }
+        /[&<>'"]/g,
 
+        c => ({
 
-    if (score === 180) {
+            "&":
+                "&amp;",
 
-        return "One hundred and eighty";
-    }
+            "<":
+                "&lt;",
 
+            ">":
+                "&gt;",
 
-    return numberToBritishWords(
-        score
+            "'":
+                "&#39;",
+
+            '"':
+                "&quot;"
+
+        })[c]
     );
 }
 
 
-function numberToBritishWords(
-    number
-) {
+/* =========================================================
+   MOBILE TABS
+========================================================= */
 
-    const smallNumbers = [
-        "zero",
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "six",
-        "seven",
-        "eight",
-        "nine",
-        "ten",
-        "eleven",
-        "twelve",
-        "thirteen",
-        "fourteen",
-        "fifteen",
-        "sixteen",
-        "seventeen",
-        "eighteen",
-        "nineteen"
-    ];
+document
+    .querySelectorAll(
+        ".mobile-game-tab"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document.body.dataset.gameTab =
+                        button.dataset.gameTab;
 
 
-    const tensWords = [
-        "",
-        "",
-        "twenty",
-        "thirty",
-        "forty",
-        "fifty",
-        "sixty",
-        "seventy",
-        "eighty",
-        "ninety"
-    ];
+                    document
+                        .querySelectorAll(
+                            ".mobile-game-tab"
+                        )
+                        .forEach(
+                            other => {
 
+                                other.classList.toggle(
 
-    if (number < 20) {
+                                    "active",
 
-        return smallNumbers[number];
-    }
-
-
-    if (number < 100) {
-
-        const tens =
-            Math.floor(
-                number / 10
+                                    other ===
+                                    button
+                                );
+                            }
+                        );
+                }
             );
-
-
-        const units =
-            number % 10;
-
-
-        return (
-            tensWords[tens] +
-            (
-                units
-                    ? " " +
-                      smallNumbers[units]
-                    : ""
-            )
-        );
-    }
-
-
-    if (number < 200) {
-
-        const remainder =
-            number - 100;
-
-
-        if (remainder === 0) {
-
-            return "one hundred";
         }
-
-
-        return (
-            "one hundred and " +
-            numberToBritishWords(
-                remainder
-            )
-        );
-    }
-
-
-    if (number < 1000) {
-
-        const hundreds =
-            Math.floor(
-                number / 100
-            );
-
-
-        const remainder =
-            number % 100;
-
-
-        let result =
-            smallNumbers[hundreds] +
-            " hundred";
-
-
-        if (remainder > 0) {
-
-            result +=
-                " and " +
-                numberToBritishWords(
-                    remainder
-                );
-        }
-
-
-        return result;
-    }
-
-
-    return String(number);
-}
+    );
 
 
 /* =========================================================
    MODE
 ========================================================= */
 
-let selectedMode = "501";
+document
+    .querySelectorAll(
+        ".mode-btn"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    selectedMode =
+                        button.dataset.mode;
 
 
-modeButtons.forEach(
-    button => {
+                    modeScreen.classList.add(
+                        "hidden"
+                    );
 
-        button.addEventListener(
-            "click",
-            () => {
 
-                selectedMode =
-                    button.dataset.mode;
+                    if (
+                        selectedMode ===
+                        "cricket"
+                    ) {
 
-                modeScreen.classList.add(
-                    "hidden"
-                );
+                        nameScreenTitle.textContent =
+                            "Enter Team Names";
 
-                if (
-                    selectedMode === "cricket"
-                ) {
+                        p1Label.textContent =
+                            "Team A:";
 
-                    nameScreenTitle.textContent =
-                        "Enter Team Names";
+                        p2Label.textContent =
+                            "Team B:";
 
-                    p1Label.textContent =
-                        "Team A:";
 
-                    p2Label.textContent =
-                        "Team B:";
+                    } else {
 
-                    p1NameInput.placeholder =
-                        "Team A";
+                        nameScreenTitle.textContent =
+                            "Enter Player Names";
 
-                    p2NameInput.placeholder =
-                        "Team B";
+                        p1Label.textContent =
+                            "Player 1:";
 
-                } else {
+                        p2Label.textContent =
+                            "Player 2:";
+                    }
 
-                    nameScreenTitle.textContent =
-                        "Enter Player Names";
 
-                    p1Label.textContent =
-                        "Player 1:";
-
-                    p2Label.textContent =
-                        "Player 2:";
-
-                    p1NameInput.placeholder =
-                        "Player 1";
-
-                    p2NameInput.placeholder =
-                        "Player 2";
+                    nameScreen.classList.remove(
+                        "hidden"
+                    );
                 }
+            );
+        }
+    );
 
-                nameScreen.classList.remove(
-                    "hidden"
+
+$("continue-to-setup")
+    .addEventListener(
+        "click",
+        () => {
+
+            const name1 =
+                p1NameInput.value.trim() ||
+                (
+                    selectedMode ===
+                    "cricket"
+                        ? "Team A"
+                        : "Player 1"
                 );
+
+
+            const name2 =
+                p2NameInput.value.trim() ||
+                (
+                    selectedMode ===
+                    "cricket"
+                        ? "Team B"
+                        : "Player 2"
+                );
+
+
+            if (
+                selectedMode ===
+                "cricket"
+            ) {
+
+                setupCricketNames(
+                    name1,
+                    name2
+                );
+
+                return;
             }
-        );
-    }
-);
 
 
-/* =========================================================
-   NAMES
-========================================================= */
-
-continueToSetupBtn.addEventListener(
-    "click",
-    () => {
-
-        const name1 =
-            p1NameInput.value.trim() ||
-            (
-                selectedMode === "cricket"
-                    ? "Team A"
-                    : "Player 1"
-            );
-
-
-        const name2 =
-            p2NameInput.value.trim() ||
-            (
-                selectedMode === "cricket"
-                    ? "Team B"
-                    : "Player 2"
-            );
-
-
-        if (
-            selectedMode === "cricket"
-        ) {
-
-            cricketTeamA.textContent =
+            players[0].name =
                 name1;
 
-            cricketTeamB.textContent =
+            players[1].name =
                 name2;
 
-            cricketBattingName.textContent =
-                name2;
 
-            cricketBowlingName.textContent =
-                name1;
+            updateNameDisplays();
 
-            nameScreen.classList.add(
-                "hidden"
-            );
+            updateStartingPlayerButtons();
 
-            cricketScreen.classList.remove(
-                "hidden"
-            );
-
-            initCricketBoard();
-
-            resetCricketMatch(false);
-
-        } else {
-
-            p1NameDisplay.textContent =
-                name1;
-
-            p2NameDisplay.textContent =
-                name2;
 
             nameScreen.classList.add(
                 "hidden"
@@ -767,187 +644,319 @@ continueToSetupBtn.addEventListener(
                 "hidden"
             );
         }
-    }
-);
+    );
+
+
+function updateNameDisplays() {
+
+    p1NameDisplay.textContent =
+        players[0].name;
+
+    p2NameDisplay.textContent =
+        players[1].name;
+}
 
 
 /* =========================================================
-   501 VARIABLES
+   START PLAYER
 ========================================================= */
 
-let gameMode = "legs";
+startP1Btn.onclick =
+    () =>
+        setStartingPlayer(
+            1
+        );
 
-let legsPerSet = 3;
-let setsToWin = 3;
 
-let startingScore = 501;
+startP2Btn.onclick =
+    () =>
+        setStartingPlayer(
+            2
+        );
 
-let p1Score = 501;
-let p2Score = 501;
 
-let p1Legs = 0;
-let p2Legs = 0;
+startRandomBtn.onclick =
+    () =>
+        setStartingPlayer(
+            "random"
+        );
 
-let p1Sets = 0;
-let p2Sets = 0;
 
-let currentSet = 1;
-let currentLeg = 1;
+function setStartingPlayer(
+    choice
+) {
 
-let currentPlayer = 1;
+    selectedStartingPlayer =
+        choice;
 
-let dartsLeft = 3;
 
-let turnStartScoreP1 = 501;
-let turnStartScoreP2 = 501;
+    [
+        startP1Btn,
+        startP2Btn,
+        startRandomBtn
+    ].forEach(
+        button =>
+
+            button.classList.remove(
+                "active-start"
+            )
+    );
+
+
+    if (
+        choice ===
+        1
+    ) {
+
+        startP1Btn.classList.add(
+            "active-start"
+        );
+
+        firstPlayerStatus.textContent =
+            `${players[0].name} will throw first.`;
+
+
+    } else if (
+        choice ===
+        2
+    ) {
+
+        startP2Btn.classList.add(
+            "active-start"
+        );
+
+        firstPlayerStatus.textContent =
+            `${players[1].name} will throw first.`;
+
+
+    } else {
+
+        startRandomBtn.classList.add(
+            "active-start"
+        );
+
+        firstPlayerStatus.textContent =
+            "Random / bull-off winner will throw first.";
+    }
+}
+
+
+function updateStartingPlayerButtons() {
+
+    startP1Btn.textContent =
+        players[0].name;
+
+    startP2Btn.textContent =
+        players[1].name;
+
+
+    setStartingPlayer(
+        selectedStartingPlayer
+    );
+}
 
 
 /* =========================================================
    START MATCH
 ========================================================= */
 
-startMatchBtn.addEventListener(
-    "click",
-    () => {
+$("start-match")
+    .addEventListener(
+        "click",
+        () => {
 
-        gameMode =
-            selectedMode === "sets"
-                ? "sets"
-                : "legs";
-
-
-        legsPerSet =
-            parseInt(
-                legsPerSetInput.value
-            ) || 3;
+            gameMode =
+                selectedMode ===
+                "sets"
+                    ? "sets"
+                    : "legs";
 
 
-        setsToWin =
-            parseInt(
-                setsToWinInput.value
-            ) || 3;
+            startingScore =
+                Math.max(
+                    2,
+                    parseInt(
+                        startingScoreInput.value
+                    ) ||
+                    501
+                );
 
 
-        startingScore =
-            parseInt(
-                startingScoreInput.value
-            ) || 501;
+            legsPerSet =
+                Math.max(
+                    1,
+                    parseInt(
+                        legsPerSetInput.value
+                    ) ||
+                    3
+                );
 
 
-        normalHistory.length = 0;
+            setsToWin =
+                Math.max(
+                    1,
+                    parseInt(
+                        setsToWinInput.value
+                    ) ||
+                    3
+                );
 
 
-        resetMatch();
+            const names = [
+
+                players[0].name,
+
+                players[1].name
+
+            ];
 
 
-        setupScreen.classList.add(
-            "hidden"
-        );
+            players = [
+
+                createPlayer(
+                    names[0]
+                ),
+
+                createPlayer(
+                    names[1]
+                )
+
+            ];
 
 
-        gameScreen.classList.remove(
-            "hidden"
-        );
+            players.forEach(
+                p =>
+                    p.score =
+                        startingScore
+            );
 
 
-        selectScoringMethod(
-            "tap"
-        );
+            currentSet =
+                1;
+
+            currentLeg =
+                1;
 
 
-        updateDisplay();
-    }
-);
+            currentPlayer =
+                selectedStartingPlayer ===
+                "random"
+
+                    ? (
+                        Math.random() <
+                        .5
+                            ? 1
+                            : 2
+                    )
+
+                    : selectedStartingPlayer;
 
 
-/* =========================================================
-   RESET MATCH
-========================================================= */
-
-function resetMatch() {
-
-    p1Score = startingScore;
-    p2Score = startingScore;
-
-    p1Legs = 0;
-    p2Legs = 0;
-
-    p1Sets = 0;
-    p2Sets = 0;
-
-    currentSet = 1;
-    currentLeg = 1;
-
-    currentPlayer = 1;
-
-    dartsLeft = 3;
-
-    currentVisitScore = 0;
-
-    turnStartScoreP1 =
-        startingScore;
-
-    turnStartScoreP2 =
-        startingScore;
-
-    updateModeLabel();
-}
+            legStartingPlayer =
+                currentPlayer;
 
 
-/* =========================================================
-   MODE LABEL
-========================================================= */
+            dartsLeft =
+                3;
 
-function updateModeLabel() {
 
-    if (
-        gameMode === "legs"
-    ) {
+            currentVisitDarts =
+                [];
 
-        modeLabel.textContent =
-            `Legs Only · First to ${setsToWin} legs`;
 
-    } else {
+            matchFinished =
+                false;
 
-        modeLabel.textContent =
-            `${legsPerSet} legs per set · First to ${setsToWin} sets`;
-    }
-}
+
+            winnerPlayer =
+                null;
+
+
+            visitCounter =
+                1;
+
+
+            normalHistory.length =
+                0;
+
+
+            visitRestoreSnapshots.clear();
+
+
+            setupScreen.classList.add(
+                "hidden"
+            );
+
+
+            gameScreen.classList.remove(
+                "hidden"
+            );
+
+
+            document.body.dataset.gameTab =
+                "score";
+
+
+            selectScoringMethod(
+                "tap"
+            );
+
+
+            updateEverything();
+
+            saveMatch();
+
+
+            setTimeout(
+                announceTurnStatus,
+                300
+            );
+        }
+    );
 
 
 /* =========================================================
    SCORING METHOD
 ========================================================= */
 
-methodButtons.forEach(
-    button => {
+document
+    .querySelectorAll(
+        ".method-button"
+    )
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
-
-                selectScoringMethod(
-                    button.dataset.method
-                );
-            }
-        );
-    }
-);
+            button.addEventListener(
+                "click",
+                () =>
+                    selectScoringMethod(
+                        button.dataset.method
+                    )
+            );
+        }
+    );
 
 
 function selectScoringMethod(
     method
 ) {
 
-    methodButtons.forEach(
-        button => {
+    document
+        .querySelectorAll(
+            ".method-button"
+        )
+        .forEach(
+            button => {
 
-            button.classList.toggle(
-                "active-method",
-                button.dataset.method === method
-            );
-        }
-    );
+                button.classList.toggle(
+
+                    "active-method",
+
+                    button.dataset.method ===
+                    method
+                );
+            }
+        );
 
 
     tapScoringSection.classList.add(
@@ -964,192 +973,3111 @@ function selectScoringMethod(
 
 
     if (
-        method === "tap"
+        method ===
+        "tap"
     ) {
 
         tapScoringSection.classList.remove(
             "hidden"
         );
+    }
 
-    } else if (
-        method === "visit"
+
+    if (
+        method ===
+        "visit"
     ) {
 
         visitScoringSection.classList.remove(
             "hidden"
         );
+    }
 
-        setTimeout(
-            () => scoreInput.focus(),
-            100
-        );
 
-    } else if (
-        method === "individual"
+    if (
+        method ===
+        "individual"
     ) {
 
         individualScoringSection.classList.remove(
             "hidden"
         );
+    }
+}
 
-        updateIndividualDartStatus();
+
+/* =========================================================
+   DARTS
+========================================================= */
+
+function makeDart(
+    type,
+    number
+) {
+
+    if (
+        type ===
+        "miss"
+    ) {
+
+        return {
+
+            type,
+
+            score:
+                0,
+
+            label:
+                "Miss",
+
+            isDouble:
+                false
+        };
+    }
+
+
+    if (
+        type ===
+        "outerbull"
+    ) {
+
+        return {
+
+            type,
+
+            score:
+                25,
+
+            label:
+                "25",
+
+            isDouble:
+                false
+        };
+    }
+
+
+    if (
+        type ===
+        "bull"
+    ) {
+
+        return {
+
+            type,
+
+            score:
+                50,
+
+            label:
+                "Bull",
+
+            isDouble:
+                true
+        };
+    }
+
+
+    const multiplier =
+        type ===
+        "double"
+
+            ? 2
+
+            : type ===
+              "treble"
+
+                ? 3
+
+                : 1;
+
+
+    return {
+
+        type,
+
+        score:
+            number *
+            multiplier,
+
+        label:
+            (
+                type ===
+                "double"
+
+                    ? "D"
+
+                    : type ===
+                      "treble"
+
+                        ? "T"
+
+                        : ""
+            ) +
+            number,
+
+        isDouble:
+            type ===
+            "double"
+    };
+}
+
+
+/* =========================================================
+   TAP BUTTONS
+========================================================= */
+
+function buildTapBoard() {
+
+    const singles =
+        $("singles");
+
+    const doubles =
+        $("doubles");
+
+    const trebles =
+        $("trebles");
+
+
+    for (
+        let n = 1;
+        n <= 20;
+        n++
+    ) {
+
+        addDartButton(
+
+            singles,
+
+            String(n),
+
+            makeDart(
+                "single",
+                n
+            )
+        );
+
+
+        addDartButton(
+
+            doubles,
+
+            "D" + n,
+
+            makeDart(
+                "double",
+                n
+            )
+        );
+
+
+        addDartButton(
+
+            trebles,
+
+            "T" + n,
+
+            makeDart(
+                "treble",
+                n
+            )
+        );
+    }
+
+
+    $("tap-outer-bull").onclick =
+        () =>
+            applyDart(
+                makeDart(
+                    "outerbull",
+                    25
+                )
+            );
+
+
+    $("tap-bull").onclick =
+        () =>
+            applyDart(
+                makeDart(
+                    "bull",
+                    25
+                )
+            );
+
+
+    $("tap-miss").onclick =
+        () =>
+            applyDart(
+                makeDart(
+                    "miss",
+                    0
+                )
+            );
+}
+
+
+function addDartButton(
+    container,
+    label,
+    dart
+) {
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.className =
+        "btn-score";
+
+
+    button.textContent =
+        label;
+
+
+    button.onclick =
+        () =>
+            applyDart(
+                dart
+            );
+
+
+    container.appendChild(
+        button
+    );
+}
+
+
+buildTapBoard();
+
+
+/* =========================================================
+   VISIT START
+========================================================= */
+
+function beginVisit() {
+
+    if (
+        currentVisitDarts.length ===
+        0
+    ) {
+
+        currentVisitStartSnapshot =
+            makeSnapshot();
+    }
+}
+
+
+function visitTotal() {
+
+    return currentVisitDarts.reduce(
+        (
+            total,
+            dart
+        ) =>
+            total +
+            (
+                dart.score ||
+                0
+            ),
+        0
+    );
+}
+
+
+/* =========================================================
+   APPLY DART
+========================================================= */
+
+function applyDart(
+    dart
+) {
+
+    if (
+        matchFinished
+    ) {
+
+        return;
+    }
+
+
+    beginVisit();
+
+    pushUndo();
+
+
+    const player =
+        players[
+            currentPlayer - 1
+        ];
+
+
+    const before =
+        player.score;
+
+
+    const after =
+        before -
+        dart.score;
+
+
+    currentVisitDarts.push(
+        clone(
+            dart
+        )
+    );
+
+
+    dartsLeft--;
+
+
+    if (
+        dart.isDouble &&
+        dart.score ===
+        before
+    ) {
+
+        player.stats.checkoutAttempts++;
+    }
+
+
+    if (
+        after <
+            0 ||
+        after ===
+            1 ||
+        (
+            after ===
+                0 &&
+            !dart.isDouble
+        )
+    ) {
+
+        showCallerEvent(
+            "NO SCORE",
+            1200
+        );
+
+
+        announceVisitScore(
+            0
+        );
+
+
+        completeVisit(
+            0,
+            false,
+            true
+        );
+
+
+        return;
+    }
+
+
+    player.score =
+        after;
+
+
+    if (
+        after ===
+            0 &&
+        dart.isDouble
+    ) {
+
+        completeVisit(
+            visitTotal(),
+            true,
+            false
+        );
+
+
+        return;
+    }
+
+
+    if (
+        dartsLeft <=
+        0
+    ) {
+
+        completeVisit(
+            visitTotal(),
+            false,
+            false
+        );
+
+
+        return;
+    }
+
+
+    updateEverything();
+
+    saveMatch();
+}
+
+
+/* =========================================================
+   INDIVIDUAL ENTRY
+========================================================= */
+
+$("submit-individual-dart")
+    .onclick =
+        submitIndividualDart;
+
+
+individualDartInput
+    .addEventListener(
+        "keydown",
+        e => {
+
+            if (
+                e.key ===
+                "Enter"
+            ) {
+
+                submitIndividualDart();
+            }
+        }
+    );
+
+
+function submitIndividualDart() {
+
+    const dart =
+        dartFromInputs(
+
+            individualDartType,
+
+            individualDartInput
+        );
+
+
+    if (
+        dart
+    ) {
+
+        applyDart(
+            dart
+        );
+
+
+        individualDartInput.value =
+            "";
+    }
+}
+
+
+function dartFromInputs(
+    typeElement,
+    numberElement
+) {
+
+    const type =
+        typeElement.value;
+
+
+    if (
+        [
+            "bull",
+            "outerbull",
+            "miss"
+        ].includes(
+            type
+        )
+    ) {
+
+        return makeDart(
+            type,
+            0
+        );
+    }
+
+
+    const number =
+        parseInt(
+            numberElement.value
+        );
+
+
+    if (
+        !Number.isInteger(
+            number
+        ) ||
+        number <
+            1 ||
+        number >
+            20
+    ) {
+
+        alert(
+            "Enter a number from 1 to 20."
+        );
+
+
+        return null;
+    }
+
+
+    return makeDart(
+        type,
+        number
+    );
+}
+
+
+/* =========================================================
+   MISSED DOUBLE
+========================================================= */
+
+$("tap-missed-double")
+    .onclick =
+        missedDouble;
+
+
+$("missed-double-individual")
+    .onclick =
+        missedDouble;
+
+
+$("tap-end-turn")
+    .onclick =
+        () => {
+
+            if (
+                currentVisitDarts.length
+            ) {
+
+                completeVisit(
+                    visitTotal(),
+                    false,
+                    false
+                );
+            }
+        };
+
+
+function missedDouble() {
+
+    if (
+        matchFinished
+    ) {
+
+        return;
+    }
+
+
+    beginVisit();
+
+    pushUndo();
+
+
+    players[
+        currentPlayer - 1
+    ].stats.checkoutAttempts++;
+
+
+    currentVisitDarts.push({
+
+        score:
+            0,
+
+        label:
+            "Missed Double",
+
+        isDouble:
+            false
+    });
+
+
+    dartsLeft--;
+
+
+    if (
+        dartsLeft <=
+        0
+    ) {
+
+        completeVisit(
+            visitTotal(),
+            false,
+            false
+        );
+
+
+    } else {
+
+        updateEverything();
+
+        saveMatch();
+    }
+}
+
+
+/* =========================================================
+   WHOLE VISIT
+========================================================= */
+
+$("submit-score")
+    .onclick =
+        () =>
+            submitWholeVisit(
+                scoreInput
+            );
+
+
+scoreInput
+    .addEventListener(
+        "keydown",
+        e => {
+
+            if (
+                e.key ===
+                "Enter"
+            ) {
+
+                submitWholeVisit(
+                    scoreInput
+                );
+            }
+        }
+    );
+
+
+function submitWholeVisit(
+    input
+) {
+
+    if (
+        matchFinished
+    ) {
+
+        return;
+    }
+
+
+    const score =
+        parseInt(
+            input.value
+        );
+
+
+    if (
+        !Number.isInteger(
+            score
+        ) ||
+        score <
+            0 ||
+        score >
+            180
+    ) {
+
+        alert(
+            "Enter a score from 0 to 180."
+        );
+
+
+        return;
+    }
+
+
+    beginVisit();
+
+    pushUndo();
+
+
+    const player =
+        players[
+            currentPlayer - 1
+        ];
+
+
+    const before =
+        player.score;
+
+
+    const after =
+        before -
+        score;
+
+
+    if (
+        after <
+            0 ||
+        after ===
+            1
+    ) {
+
+        announceVisitScore(
+            0
+        );
+
+
+        completeVisit(
+            0,
+            false,
+            true,
+            3
+        );
+
+
+        input.value =
+            "";
+
+
+        return;
+    }
+
+
+    let checkout =
+        false;
+
+
+    if (
+        after ===
+        0
+    ) {
+
+        const valid =
+            confirm(
+                "Did the final dart hit a DOUBLE or BULL?\n\nOK = Yes\nCancel = No"
+            );
+
+
+        if (
+            !valid
+        ) {
+
+            announceVisitScore(
+                0
+            );
+
+
+            completeVisit(
+                0,
+                false,
+                true,
+                3
+            );
+
+
+            input.value =
+                "";
+
+
+            return;
+        }
+
+
+        checkout =
+            true;
+
+
+        player.stats.checkoutAttempts++;
+    }
+
+
+    player.score =
+        after;
+
+
+    currentVisitDarts = [
+
+        {
+
+            score,
+
+            label:
+                `Visit ${score}`,
+
+            isDouble:
+                checkout
+
+        }
+
+    ];
+
+
+    completeVisit(
+        score,
+        checkout,
+        false,
+        3
+    );
+
+
+    input.value =
+        "";
+}
+
+
+/* =========================================================
+   COMPLETE VISIT
+========================================================= */
+
+function completeVisit(
+    score,
+    checkout,
+    bust,
+    dartsUsedOverride = null
+) {
+
+    const throwingPlayer =
+        currentPlayer;
+
+
+    const player =
+        players[
+            throwingPlayer - 1
+        ];
+
+
+    const dartsUsed =
+        dartsUsedOverride ||
+        Math.max(
+            1,
+            currentVisitDarts.length
+        );
+
+
+    updateVisitStats(
+        player,
+        score,
+        dartsUsed
+    );
+
+
+    player.lastVisit =
+        bust
+            ? "BUST"
+            : score;
+
+
+    const visitID =
+        visitCounter++;
+
+
+    if (
+        currentVisitStartSnapshot
+    ) {
+
+        visitRestoreSnapshots.set(
+
+            visitID,
+
+            clone(
+                currentVisitStartSnapshot
+            )
+        );
+    }
+
+
+    player.stats.visits.push({
+
+        id:
+            visitID,
+
+        playerName:
+            player.name,
+
+        score,
+
+        checkout,
+
+        bust,
+
+        remaining:
+            player.score,
+
+        darts:
+            currentVisitDarts.map(
+                d =>
+                    d.label
+            )
+
+    });
+
+
+    if (
+        checkout
+    ) {
+
+        player.stats.checkouts++;
+
+
+        player.stats.bestCheckout =
+            Math.max(
+                player.stats.bestCheckout,
+                score
+            );
+
+
+        const result =
+            handleLegWin(
+                throwingPlayer
+            );
+
+
+        announceGameResult(
+            result
+        );
+
+
+        if (
+            result ===
+            "match"
+        ) {
+
+            showCallerEvent(
+
+                `GAME SHOT\nAND THE MATCH\n${player.name}`,
+
+                4000
+            );
+
+
+        } else if (
+            result ===
+            "set"
+        ) {
+
+            showCallerEvent(
+
+                `GAME SHOT\nAND THE SET\n${player.name}`,
+
+                3000
+            );
+
+
+        } else {
+
+            showCallerEvent(
+
+                `GAME SHOT\n${player.name}`,
+
+                2400
+            );
+        }
+
+
+    } else {
+
+        if (
+            !bust
+        ) {
+
+            announceVisitScore(
+                score
+            );
+
+
+            if (
+                score ===
+                180
+            ) {
+
+                showCallerEvent(
+
+                    "ONE HUNDRED\nAND EIGHTY!",
+
+                    2800
+                );
+            }
+        }
+
+
+        currentPlayer =
+            currentPlayer ===
+            1
+                ? 2
+                : 1;
+    }
+
+
+    currentVisitDarts =
+        [];
+
+
+    currentVisitStartSnapshot =
+        null;
+
+
+    dartsLeft =
+        3;
+
+
+    updateEverything();
+
+    saveMatch();
+
+
+    if (
+        !matchFinished
+    ) {
 
         setTimeout(
-            () => individualDartInput.focus(),
-            100
+            announceTurnStatus,
+            700
         );
     }
 }
 
 
 /* =========================================================
-   CREATE 501 BUTTONS
+   STATS
 ========================================================= */
 
-function createButtons501() {
+function updateVisitStats(
+    player,
+    score,
+    dartsUsed
+) {
 
-    const singles =
-        document.getElementById("singles");
-
-    const doubles =
-        document.getElementById("doubles");
-
-    const trebles =
-        document.getElementById("trebles");
+    const stats =
+        player.stats;
 
 
-    singles.innerHTML = "";
-    doubles.innerHTML = "";
-    trebles.innerHTML = "";
+    stats.pointsScored +=
+        score;
 
 
-    for (
-        let i = 1;
-        i <= 20;
-        i++
+    stats.dartsThrown +=
+        dartsUsed;
+
+
+    stats.legPoints +=
+        score;
+
+
+    stats.legDarts +=
+        dartsUsed;
+
+
+    stats.highestVisit =
+        Math.max(
+            stats.highestVisit,
+            score
+        );
+
+
+    if (
+        score ===
+        180
     ) {
 
-        const single =
-            document.createElement(
-                "button"
+        stats.scores180++;
+    }
+
+
+    if (
+        score >=
+            140 &&
+        score <
+            180
+    ) {
+
+        stats.scores140++;
+    }
+
+
+    if (
+        score >=
+            100 &&
+        score <
+            140
+    ) {
+
+        stats.scores100++;
+    }
+
+
+    const first9Remaining =
+        9 -
+        stats.first9Darts;
+
+
+    if (
+        first9Remaining >
+        0
+    ) {
+
+        const used =
+            Math.min(
+                first9Remaining,
+                dartsUsed
             );
 
-        single.className =
-            "segment btn-score";
 
-        single.dataset.score = i;
+        stats.first9Darts +=
+            used;
 
-        single.textContent = i;
 
-        singles.appendChild(
-            single
+        stats.first9Points +=
+            score *
+            (
+                used /
+                dartsUsed
+            );
+    }
+}
+
+
+/* =========================================================
+   LEG / SET / MATCH
+========================================================= */
+
+function handleLegWin(
+    playerNumber
+) {
+
+    players.forEach(
+        p => {
+
+            p.stats.lastLegAverage =
+                p.stats.legDarts
+                    ? (
+                        p.stats.legPoints /
+                        p.stats.legDarts
+                      ) *
+                      3
+                    : 0;
+        }
+    );
+
+
+    const winner =
+        players[
+            playerNumber - 1
+        ];
+
+
+    winner.legs++;
+
+
+    let wonSet =
+        false;
+
+
+    if (
+        gameMode ===
+            "sets" &&
+        winner.legs >=
+            legsPerSet
+    ) {
+
+        winner.sets++;
+
+
+        players[0].legs =
+            0;
+
+        players[1].legs =
+            0;
+
+
+        wonSet =
+            true;
+
+
+        if (
+            winner.sets >=
+            setsToWin
+        ) {
+
+            finishMatch(
+                playerNumber
+            );
+
+
+            return "match";
+        }
+
+
+        currentSet++;
+    }
+
+
+    if (
+        gameMode ===
+            "legs" &&
+        winner.legs >=
+            setsToWin
+    ) {
+
+        finishMatch(
+            playerNumber
         );
 
 
-        const double =
-            document.createElement(
-                "button"
-            );
+        return "match";
+    }
 
-        double.className =
-            "segment btn-score";
 
-        double.dataset.score =
-            i * 2;
+    currentLeg++;
 
-        double.textContent =
-            "D" + i;
 
-        doubles.appendChild(
-            double
+    players.forEach(
+        p => {
+
+            p.score =
+                startingScore;
+
+
+            p.stats.legPoints =
+                0;
+
+
+            p.stats.legDarts =
+                0;
+        }
+    );
+
+
+    legStartingPlayer =
+        legStartingPlayer ===
+        1
+            ? 2
+            : 1;
+
+
+    currentPlayer =
+        legStartingPlayer;
+
+
+    return (
+        wonSet
+            ? "set"
+            : "leg"
+    );
+}
+
+
+function finishMatch(
+    playerNumber
+) {
+
+    matchFinished =
+        true;
+
+
+    winnerPlayer =
+        playerNumber;
+
+
+    finishedBanner.textContent =
+        `${players[playerNumber - 1].name} WINS THE MATCH!`;
+
+
+    finishedBanner.classList.remove(
+        "hidden"
+    );
+
+
+    saveProfiles();
+
+
+    localStorage.removeItem(
+        STORAGE_MATCH
+    );
+}
+
+
+/* =========================================================
+   ANNOUNCER
+========================================================= */
+
+function getVoice() {
+
+    if (
+        !(
+            "speechSynthesis"
+            in window
+        )
+    ) {
+
+        return null;
+    }
+
+
+    const voices =
+        speechSynthesis
+            .getVoices();
+
+
+    return (
+
+        voices.find(
+            voice =>
+                (
+                    voice.lang ||
+                    ""
+                )
+                    .toLowerCase()
+                    .startsWith(
+                        "en-gb"
+                    )
+        )
+
+        ||
+
+        voices.find(
+            voice =>
+                (
+                    voice.lang ||
+                    ""
+                )
+                    .toLowerCase()
+                    .startsWith(
+                        "en"
+                    )
+        )
+
+        ||
+
+        null
+    );
+}
+
+
+function speak(
+    text,
+    mode = "normal"
+) {
+
+    if (
+        !announcerEnabled ||
+        !(
+            "speechSynthesis"
+            in window
+        )
+    ) {
+
+        return;
+    }
+
+
+    const u =
+        new SpeechSynthesisUtterance(
+            text
         );
 
 
-        const treble =
-            document.createElement(
-                "button"
-            );
+    const voice =
+        getVoice();
 
-        treble.className =
-            "segment btn-score";
 
-        treble.dataset.score =
-            i * 3;
+    if (
+        voice
+    ) {
 
-        treble.textContent =
-            "T" + i;
+        u.voice =
+            voice;
+    }
 
-        trebles.appendChild(
-            treble
+
+    u.volume =
+        1;
+
+
+    if (
+        mode ===
+        "180"
+    ) {
+
+        u.rate =
+            .76;
+
+        u.pitch =
+            1.38;
+
+
+    } else if (
+        mode ===
+        "game"
+    ) {
+
+        u.rate =
+            .8;
+
+        u.pitch =
+            1.18;
+
+
+    } else {
+
+        u.rate =
+            .9;
+
+        u.pitch =
+            1.03;
+    }
+
+
+    speechSynthesis.speak(
+        u
+    );
+}
+
+
+function announceVisitScore(
+    score
+) {
+
+    if (
+        score ===
+        180
+    ) {
+
+        speak(
+
+            "ONE HUNDRED AND EIGHTYYYYYYYY!",
+
+            "180"
+        );
+
+
+    } else if (
+        score ===
+        0
+    ) {
+
+        speak(
+            "NO SCORE!",
+            "game"
+        );
+
+
+    } else {
+
+        speak(
+            numberWords(
+                score
+            )
+        );
+    }
+}
+
+
+function announceTurnStatus() {
+
+    if (
+        matchFinished
+    ) {
+
+        return;
+    }
+
+
+    const player =
+        players[
+            currentPlayer - 1
+        ];
+
+
+    const checkout =
+        findBestCheckout(
+            player.score,
+            3
+        );
+
+
+    if (
+        checkout
+    ) {
+
+        speak(
+
+            `${player.name}, you require ${numberWords(player.score)}`
+
+        );
+
+
+    } else {
+
+        speak(
+            `${player.name}, to throw`
+        );
+    }
+}
+
+
+function announceGameResult(
+    result
+) {
+
+    if (
+        result ===
+        "match"
+    ) {
+
+        speak(
+            "GAME SHOT AND THE MATCH!",
+            "game"
+        );
+
+
+    } else if (
+        result ===
+        "set"
+    ) {
+
+        speak(
+            "GAME SHOT AND THE SET!",
+            "game"
+        );
+
+
+    } else {
+
+        speak(
+            "GAME SHOT!",
+            "game"
+        );
+    }
+}
+
+
+function numberWords(
+    n
+) {
+
+    const small = [
+
+        "zero","one","two","three","four",
+        "five","six","seven","eight","nine",
+        "ten","eleven","twelve","thirteen",
+        "fourteen","fifteen","sixteen",
+        "seventeen","eighteen","nineteen"
+
+    ];
+
+
+    const tens = [
+
+        "","","twenty","thirty","forty",
+        "fifty","sixty","seventy",
+        "eighty","ninety"
+
+    ];
+
+
+    if (
+        n <
+        20
+    ) {
+
+        return small[n];
+    }
+
+
+    if (
+        n <
+        100
+    ) {
+
+        return (
+
+            tens[
+                Math.floor(
+                    n /
+                    10
+                )
+            ]
+
+            +
+
+            (
+                n %
+                10
+                    ? " " +
+                      small[
+                        n %
+                        10
+                      ]
+                    : ""
+            )
         );
     }
 
 
-    document
-        .querySelectorAll(
-            "#game-screen .segment"
-        )
-        .forEach(
-            button => {
+    if (
+        n <
+        1000
+    ) {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+        const hundreds =
+            Math.floor(
+                n /
+                100
+            );
 
-                        const value =
-                            parseInt(
-                                button.dataset.score
-                            );
 
-                        scoreIndividual501Dart(
-                            value
+        const remainder =
+            n %
+            100;
+
+
+        return (
+
+            small[hundreds] +
+
+            " hundred" +
+
+            (
+                remainder
+
+                    ? " and " +
+                      numberWords(
+                          remainder
+                      )
+
+                    : ""
+            )
+        );
+    }
+
+
+    return String(n);
+}
+
+
+toggleAnnouncerBtn.onclick =
+    () => {
+
+        announcerEnabled =
+            !announcerEnabled;
+
+
+        toggleAnnouncerBtn.textContent =
+            announcerEnabled
+
+                ? "🔊 Announcer: On"
+
+                : "🔇 Announcer: Off";
+
+
+        saveSettings();
+    };
+
+
+/* =========================================================
+   CHECKOUT ENGINE
+========================================================= */
+
+const checkoutDarts =
+    [];
+
+const finishingDarts =
+    [];
+
+
+for (
+    let n = 1;
+    n <= 20;
+    n++
+) {
+
+    checkoutDarts.push(
+        {
+            score:n,
+            label:String(n)
+        },
+        {
+            score:n * 2,
+            label:"D" + n
+        },
+        {
+            score:n * 3,
+            label:"T" + n
+        }
+    );
+
+
+    finishingDarts.push(
+        {
+            score:n * 2,
+            label:"D" + n
+        }
+    );
+}
+
+
+checkoutDarts.push(
+    {
+        score:25,
+        label:"25"
+    },
+    {
+        score:50,
+        label:"Bull"
+    }
+);
+
+
+finishingDarts.push(
+    {
+        score:50,
+        label:"Bull"
+    }
+);
+
+
+function findBestCheckout(
+    score,
+    dartsAvailable
+) {
+
+    const routes =
+        [];
+
+
+    for (
+        const finish
+        of finishingDarts
+    ) {
+
+        if (
+            finish.score ===
+            score
+        ) {
+
+            routes.push(
+                [
+                    finish.label
+                ]
+            );
+        }
+    }
+
+
+    if (
+        dartsAvailable >=
+        2
+    ) {
+
+        for (
+            const a
+            of checkoutDarts
+        ) {
+
+            for (
+                const finish
+                of finishingDarts
+            ) {
+
+                if (
+                    a.score +
+                    finish.score ===
+                    score
+                ) {
+
+                    routes.push(
+                        [
+                            a.label,
+                            finish.label
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+
+    if (
+        dartsAvailable >=
+        3
+    ) {
+
+        for (
+            const a
+            of checkoutDarts
+        ) {
+
+            for (
+                const b
+                of checkoutDarts
+            ) {
+
+                for (
+                    const finish
+                    of finishingDarts
+                ) {
+
+                    if (
+                        a.score +
+                        b.score +
+                        finish.score ===
+                        score
+                    ) {
+
+                        routes.push(
+                            [
+                                a.label,
+                                b.label,
+                                finish.label
+                            ]
                         );
                     }
+                }
+            }
+        }
+    }
+
+
+    if (
+        !routes.length
+    ) {
+
+        return null;
+    }
+
+
+    routes.sort(
+        (
+            a,
+            b
+        ) => {
+
+            if (
+                a.length !==
+                b.length
+            ) {
+
+                return (
+                    a.length -
+                    b.length
                 );
+            }
+
+
+            return (
+                routePreference(
+                    b
+                ) -
+                routePreference(
+                    a
+                )
+            );
+        }
+    );
+
+
+    return routes[0];
+}
+
+
+function routePreference(
+    route
+) {
+
+    return route.reduce(
+        (
+            total,
+            label
+        ) => {
+
+            if (
+                label.startsWith(
+                    "T"
+                )
+            ) {
+
+                return total +
+                    15;
+            }
+
+
+            if (
+                label.startsWith(
+                    "D"
+                )
+            ) {
+
+                return total +
+                    7;
+            }
+
+
+            return total +
+                4;
+        },
+        0
+    );
+}
+
+
+function getSetupSuggestion(
+    score,
+    dartsAvailable
+) {
+
+    const options = [
+
+        {score:60,label:"T20"},
+        {score:57,label:"T19"},
+        {score:54,label:"T18"},
+        {score:51,label:"T17"},
+        {score:48,label:"T16"},
+        {score:45,label:"T15"},
+        {score:20,label:"20"},
+        {score:19,label:"19"},
+        {score:18,label:"18"},
+        {score:17,label:"17"},
+        {score:16,label:"16"}
+
+    ];
+
+
+    let best =
+        null;
+
+
+    function consider(
+        route,
+        total
+    ) {
+
+        const leave =
+            score -
+            total;
+
+
+        if (
+            leave <=
+            1
+        ) {
+
+            return;
+        }
+
+
+        const checkout =
+            leave <=
+            170
+
+                ? findBestCheckout(
+                    leave,
+                    3
+                )
+
+                : null;
+
+
+        const rank =
+
+            (
+                checkout
+                    ? 0
+                    : 5000
+            )
+
+            +
+
+            leave
+
+            -
+
+            total;
+
+
+        if (
+            !best ||
+            rank <
+            best.rank
+        ) {
+
+            best = {
+
+                route,
+
+                leave,
+
+                rank
+            };
+        }
+    }
+
+
+    for (
+        const a
+        of options
+    ) {
+
+        consider(
+            [
+                a.label
+            ],
+            a.score
+        );
+
+
+        if (
+            dartsAvailable >=
+            2
+        ) {
+
+            for (
+                const b
+                of options
+            ) {
+
+                consider(
+                    [
+                        a.label,
+                        b.label
+                    ],
+                    a.score +
+                    b.score
+                );
+
+
+                if (
+                    dartsAvailable >=
+                    3
+                ) {
+
+                    for (
+                        const c
+                        of options
+                    ) {
+
+                        consider(
+                            [
+                                a.label,
+                                b.label,
+                                c.label
+                            ],
+                            a.score +
+                            b.score +
+                            c.score
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+
+    return best;
+}
+
+
+function getSuggestion(
+    score,
+    dartsAvailable
+) {
+
+    const checkout =
+        score <=
+        170
+
+            ? findBestCheckout(
+                score,
+                dartsAvailable
+            )
+
+            : null;
+
+
+    if (
+        checkout
+    ) {
+
+        return {
+
+            type:
+                "checkout",
+
+            route:
+                checkout,
+
+            text:
+                "Checkout: " +
+                checkout.join(
+                    " → "
+                )
+        };
+    }
+
+
+    const setup =
+        getSetupSuggestion(
+            score,
+            dartsAvailable
+        );
+
+
+    if (
+        setup
+    ) {
+
+        return {
+
+            type:
+                "setup",
+
+            route:
+                setup.route,
+
+            leave:
+                setup.leave,
+
+            text:
+
+                "Setup: " +
+
+                setup.route.join(
+                    " → "
+                ) +
+
+                " · Leave " +
+
+                setup.leave
+        };
+    }
+
+
+    return {
+
+        type:
+            "none",
+
+        route:
+            [],
+
+        text:
+            "Score heavily"
+    };
+}
+
+
+/* =========================================================
+   DISPLAY
+========================================================= */
+
+function updateEverything() {
+
+    updateNameDisplays();
+
+
+    p1ScoreDisplay.textContent =
+        players[0].score;
+
+    p2ScoreDisplay.textContent =
+        players[1].score;
+
+
+    p1LegsDisplay.textContent =
+        `Legs: ${players[0].legs}`;
+
+    p2LegsDisplay.textContent =
+        `Legs: ${players[1].legs}`;
+
+
+    p1SetsDisplay.textContent =
+        `Sets: ${players[0].sets}`;
+
+    p2SetsDisplay.textContent =
+        `Sets: ${players[1].sets}`;
+
+
+    modeLabel.textContent =
+        gameMode ===
+        "sets"
+
+            ? `${legsPerSet} legs per set · First to ${setsToWin} sets`
+
+            : `First to ${setsToWin} legs`;
+
+
+    legSetStatus.textContent =
+        gameMode ===
+        "sets"
+
+            ? `Set ${currentSet} · Leg ${currentLeg}`
+
+            : `Leg ${currentLeg}`;
+
+
+    dartsStatus.textContent =
+        matchFinished
+
+            ? "Match Finished"
+
+            : `Darts: ${dartsLeft}`;
+
+
+    p1Box.classList.toggle(
+        "active",
+        currentPlayer ===
+            1 &&
+        !matchFinished
+    );
+
+
+    p2Box.classList.toggle(
+        "active",
+        currentPlayer ===
+            2 &&
+        !matchFinished
+    );
+
+
+    const suggestion =
+        getSuggestion(
+
+            players[
+                currentPlayer - 1
+            ].score,
+
+            dartsLeft
+        );
+
+
+    checkoutText.textContent =
+        matchFinished
+
+            ? "Match complete"
+
+            : suggestion.text;
+
+
+    updateIndividualStatus();
+
+    updateStats();
+
+    updateHistory();
+
+    updateUndoButtons();
+
+    updateCaller();
+}
+
+
+function updateIndividualStatus() {
+
+    individualDartStatus.textContent =
+        matchFinished
+
+            ? "Match finished"
+
+            : `${players[currentPlayer - 1].name} · ${dartsLeft} darts remaining`;
+}
+
+
+/* =========================================================
+   CALLER DISPLAY
+========================================================= */
+
+function updateCaller() {
+
+    callerP1Name.textContent =
+        players[0].name;
+
+    callerP2Name.textContent =
+        players[1].name;
+
+
+    callerP1Score.textContent =
+        players[0].score;
+
+    callerP2Score.textContent =
+        players[1].score;
+
+
+    callerP1Sets.textContent =
+        `Sets ${players[0].sets}`;
+
+    callerP2Sets.textContent =
+        `Sets ${players[1].sets}`;
+
+
+    callerP1Legs.textContent =
+        `Legs ${players[0].legs}`;
+
+    callerP2Legs.textContent =
+        `Legs ${players[1].legs}`;
+
+
+    callerP1Last.textContent =
+        `Last: ${
+            players[0].lastVisit ??
+            "–"
+        }`;
+
+
+    callerP2Last.textContent =
+        `Last: ${
+            players[1].lastVisit ??
+            "–"
+        }`;
+
+
+    callerP1.classList.toggle(
+        "active",
+        currentPlayer ===
+            1 &&
+        !matchFinished
+    );
+
+
+    callerP2.classList.toggle(
+        "active",
+        currentPlayer ===
+            2 &&
+        !matchFinished
+    );
+
+
+    callerMatchInfo.textContent =
+        gameMode ===
+        "sets"
+
+            ? `Set ${currentSet} • Leg ${currentLeg}`
+
+            : `Leg ${currentLeg}`;
+
+
+    if (
+        matchFinished
+    ) {
+
+        const winner =
+            players[
+                winnerPlayer - 1
+            ];
+
+
+        callerTurn.textContent =
+            "MATCH COMPLETE";
+
+
+        callerRequire.textContent =
+            `${winner.name.toUpperCase()} WINS`;
+
+
+        callerRoute.textContent =
+            "";
+
+
+    } else {
+
+        const player =
+            players[
+                currentPlayer - 1
+            ];
+
+
+        const suggestion =
+            getSuggestion(
+                player.score,
+                dartsLeft
+            );
+
+
+        callerTurn.textContent =
+            `${player.name.toUpperCase()} TO THROW`;
+
+
+        if (
+            suggestion.type ===
+            "checkout"
+        ) {
+
+            callerRequire.textContent =
+                `${player.name.toUpperCase()} REQUIRES ${player.score}`;
+
+
+            callerRoute.textContent =
+                suggestion.route.join(
+                    " → "
+                );
+
+
+        } else {
+
+            callerRequire.textContent =
+                `${player.name.toUpperCase()} — ${player.score}`;
+
+
+            callerRoute.textContent =
+                suggestion.text;
+        }
+    }
+
+
+    if (
+        currentVisitDarts.length
+    ) {
+
+        callerCurrentVisit.textContent =
+
+            "Current visit: " +
+
+            currentVisitDarts
+                .map(
+                    d =>
+                        d.label
+                )
+                .join(
+                    " • "
+                )
+
+            +
+
+            " = " +
+
+            visitTotal();
+
+
+    } else {
+
+        callerCurrentVisit.textContent =
+            "Current visit: –";
+    }
+}
+
+
+/* =========================================================
+   CALLER MODE CONTROLS
+========================================================= */
+
+callerModeBtn.onclick =
+    openCaller;
+
+
+callerCloseBtn.onclick =
+    closeCaller;
+
+
+callerDisplayBtn.onclick =
+    () =>
+        setCallerView(
+            "display"
+        );
+
+
+callerScorerBtn.onclick =
+    () =>
+        setCallerView(
+            "scorer"
+        );
+
+
+function openCaller() {
+
+    callerOpen =
+        true;
+
+
+    callerScreen.classList.remove(
+        "hidden"
+    );
+
+
+    setCallerView(
+        "display"
+    );
+
+
+    updateCaller();
+
+
+    if (
+        document.documentElement
+            .requestFullscreen
+    ) {
+
+        document.documentElement
+            .requestFullscreen()
+            .catch(
+                () => {}
+            );
+    }
+}
+
+
+function closeCaller() {
+
+    callerOpen =
+        false;
+
+
+    callerScreen.classList.add(
+        "hidden"
+    );
+
+
+    if (
+        document.fullscreenElement
+    ) {
+
+        document
+            .exitFullscreen()
+            .catch(
+                () => {}
+            );
+    }
+}
+
+
+function setCallerView(
+    view
+) {
+
+    callerView =
+        view;
+
+
+    callerDisplayBtn.classList.toggle(
+        "active",
+        view ===
+        "display"
+    );
+
+
+    callerScorerBtn.classList.toggle(
+        "active",
+        view ===
+        "scorer"
+    );
+
+
+    callerScorerControls.classList.toggle(
+        "hidden",
+        view !==
+        "scorer"
+    );
+}
+
+
+/* =========================================================
+   CALLER SCORER
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".caller-method"
+    )
+    .forEach(
+        button => {
+
+            button.onclick =
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".caller-method"
+                        )
+                        .forEach(
+                            other =>
+                                other.classList.remove(
+                                    "active"
+                                )
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    const method =
+                        button.dataset.callerMethod;
+
+
+                    callerVisitEntry.classList.toggle(
+                        "hidden",
+                        method !==
+                        "visit"
+                    );
+
+
+                    callerDartEntry.classList.toggle(
+                        "hidden",
+                        method !==
+                        "dart"
+                    );
+                };
+        }
+    );
+
+
+$("caller-submit-visit")
+    .onclick =
+        () =>
+            submitWholeVisit(
+                callerVisitInput
+            );
+
+
+callerVisitInput
+    .addEventListener(
+        "keydown",
+        e => {
+
+            if (
+                e.key ===
+                "Enter"
+            ) {
+
+                submitWholeVisit(
+                    callerVisitInput
+                );
+            }
+        }
+    );
+
+
+$("caller-submit-dart")
+    .onclick =
+        submitCallerDart;
+
+
+callerDartNumber
+    .addEventListener(
+        "keydown",
+        e => {
+
+            if (
+                e.key ===
+                "Enter"
+            ) {
+
+                submitCallerDart();
+            }
+        }
+    );
+
+
+function submitCallerDart() {
+
+    const dart =
+        dartFromInputs(
+
+            callerDartType,
+
+            callerDartNumber
+        );
+
+
+    if (
+        dart
+    ) {
+
+        applyDart(
+            dart
+        );
+
+
+        callerDartNumber.value =
+            "";
+    }
+}
+
+
+$("caller-missed-double")
+    .onclick =
+        missedDouble;
+
+
+$("caller-undo")
+    .onclick =
+        undoNormal;
+
+
+/* =========================================================
+   CALLER EVENT
+========================================================= */
+
+let callerEventTimer =
+    null;
+
+
+function showCallerEvent(
+    text,
+    duration = 2200
+) {
+
+    if (
+        !callerOpen
+    ) {
+
+        return;
+    }
+
+
+    clearTimeout(
+        callerEventTimer
+    );
+
+
+    callerCelebrationText.textContent =
+        text;
+
+
+    callerCelebration.classList.remove(
+        "hidden"
+    );
+
+
+    callerEventTimer =
+        setTimeout(
+            () => {
+
+                callerCelebration.classList.add(
+                    "hidden"
+                );
+
+            },
+            duration
+        );
+}
+
+
+/* =========================================================
+   STATS DISPLAY
+========================================================= */
+
+function average(
+    stats
+) {
+
+    return stats.dartsThrown
+
+        ? (
+            stats.pointsScored /
+            stats.dartsThrown *
+            3
+          ).toFixed(2)
+
+        : "0.00";
+}
+
+
+function statRow(
+    label,
+    value
+) {
+
+    return `
+
+        <div class="stat-row">
+
+            <span>${label}</span>
+
+            <strong>${value}</strong>
+
+        </div>
+    `;
+}
+
+
+function statsHTML(
+    player
+) {
+
+    const s =
+        player.stats;
+
+
+    const legAvg =
+        s.legDarts
+
+            ? (
+                s.legPoints /
+                s.legDarts *
+                3
+              ).toFixed(2)
+
+            : "0.00";
+
+
+    const first9 =
+        s.first9Darts
+
+            ? (
+                s.first9Points /
+                s.first9Darts *
+                3
+              ).toFixed(2)
+
+            : "0.00";
+
+
+    const checkout =
+        s.checkoutAttempts
+
+            ? (
+                s.checkouts /
+                s.checkoutAttempts *
+                100
+              ).toFixed(1) +
+              "%"
+
+            : "0.0%";
+
+
+    return `
+
+        <h3>
+            ${escapeHTML(player.name)}
+        </h3>
+
+        ${statRow(
+            "Match Average",
+            average(s)
+        )}
+
+        ${statRow(
+            "Current Leg Avg",
+            legAvg
+        )}
+
+        ${statRow(
+            "First 9",
+            first9
+        )}
+
+        ${statRow(
+            "Highest Visit",
+            s.highestVisit
+        )}
+
+        ${statRow(
+            "100+",
+            s.scores100
+        )}
+
+        ${statRow(
+            "140+",
+            s.scores140
+        )}
+
+        ${statRow(
+            "180s",
+            s.scores180
+        )}
+
+        ${statRow(
+            "Darts",
+            s.dartsThrown
+        )}
+
+        ${statRow(
+            "Checkout %",
+            checkout
+        )}
+
+        ${statRow(
+            "Best Checkout",
+            s.bestCheckout ||
+            "–"
+        )}
+    `;
+}
+
+
+function updateStats() {
+
+    statsP1.innerHTML =
+        statsHTML(
+            players[0]
+        );
+
+
+    statsP2.innerHTML =
+        statsHTML(
+            players[1]
+        );
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function getAllVisits() {
+
+    return [
+
+        ...players[0].stats.visits,
+
+        ...players[1].stats.visits
+
+    ].sort(
+        (
+            a,
+            b
+        ) =>
+            a.id -
+            b.id
+    );
+}
+
+
+function updateHistory() {
+
+    const visits =
+        getAllVisits();
+
+
+    if (
+        !visits.length
+    ) {
+
+        visitHistoryList.innerHTML =
+            '<div class="visit-meta">No completed visits yet.</div>';
+
+
+        return;
+    }
+
+
+    visitHistoryList.innerHTML =
+        visits
+            .slice()
+            .reverse()
+            .map(
+                visit => `
+
+                    <div
+                        class="visit-item"
+                        data-id="${visit.id}"
+                    >
+
+                        <span class="visit-player">
+                            ${escapeHTML(visit.playerName)}
+                        </span>
+
+                        <span class="visit-meta">
+                            ${escapeHTML(
+                                visit.darts.join(" • ")
+                            )}
+                        </span>
+
+                        <span class="visit-score">
+                            ${
+                                visit.bust
+                                    ? "BUST"
+                                    : visit.score
+                            }
+                        </span>
+
+                    </div>
+                `
+            )
+            .join(
+                ""
+            );
+
+
+    visitHistoryList
+        .querySelectorAll(
+            ".visit-item"
+        )
+        .forEach(
+            item => {
+
+                item.onclick =
+                    () =>
+                        restoreVisit(
+                            parseInt(
+                                item.dataset.id
+                            )
+                        );
             }
         );
 }
 
 
-createButtons501();
+function restoreVisit(
+    id
+) {
+
+    const snap =
+        visitRestoreSnapshots.get(
+            id
+        );
+
+
+    if (
+        !snap
+    ) {
+
+        alert(
+            "This visit cannot be restored after a page refresh."
+        );
+
+
+        return;
+    }
+
+
+    if (
+        confirm(
+            "Restore to immediately before this visit?"
+        )
+    ) {
+
+        restoreSnapshot(
+            snap
+        );
+    }
+}
 
 
 /* =========================================================
-   NORMAL HISTORY
+   UNDO
 ========================================================= */
 
-function pushNormalHistory() {
+function makeSnapshot() {
 
-    normalHistory.push({
+    return clone({
 
-        p1Score,
-        p2Score,
-
-        p1Legs,
-        p2Legs,
-
-        p1Sets,
-        p2Sets,
-
-        currentSet,
-        currentLeg,
-
-        currentPlayer,
-
-        dartsLeft,
-
-        currentVisitScore,
-
-        turnStartScoreP1,
-        turnStartScoreP2,
+        selectedMode,
 
         gameMode,
 
         startingScore,
 
         legsPerSet,
-        setsToWin
+
+        setsToWin,
+
+        currentSet,
+
+        currentLeg,
+
+        currentPlayer,
+
+        legStartingPlayer,
+
+        selectedStartingPlayer,
+
+        dartsLeft,
+
+        currentVisitDarts,
+
+        matchFinished,
+
+        winnerPlayer,
+
+        visitCounter,
+
+        players
+
     });
+}
+
+
+function pushUndo() {
+
+    normalHistory.push(
+        makeSnapshot()
+    );
 
 
     if (
@@ -1165,1654 +4093,506 @@ function pushNormalHistory() {
 }
 
 
+function undoNormal() {
+
+    if (
+        !normalHistory.length
+    ) {
+
+        return;
+    }
+
+
+    restoreSnapshot(
+        normalHistory.pop()
+    );
+}
+
+
+normalUndoBtn.onclick =
+    undoNormal;
+
+
+function restoreSnapshot(
+    snapshot
+) {
+
+    selectedMode =
+        snapshot.selectedMode;
+
+    gameMode =
+        snapshot.gameMode;
+
+    startingScore =
+        snapshot.startingScore;
+
+    legsPerSet =
+        snapshot.legsPerSet;
+
+    setsToWin =
+        snapshot.setsToWin;
+
+    currentSet =
+        snapshot.currentSet;
+
+    currentLeg =
+        snapshot.currentLeg;
+
+    currentPlayer =
+        snapshot.currentPlayer;
+
+    legStartingPlayer =
+        snapshot.legStartingPlayer;
+
+    selectedStartingPlayer =
+        snapshot.selectedStartingPlayer;
+
+    dartsLeft =
+        snapshot.dartsLeft;
+
+    currentVisitDarts =
+        snapshot.currentVisitDarts ||
+        [];
+
+    matchFinished =
+        snapshot.matchFinished;
+
+    winnerPlayer =
+        snapshot.winnerPlayer;
+
+    visitCounter =
+        snapshot.visitCounter;
+
+    players =
+        snapshot.players;
+
+
+    currentVisitStartSnapshot =
+        null;
+
+
+    updateEverything();
+
+    saveMatch();
+}
+
+
+function updateUndoButtons() {
+
+    normalUndoBtn.disabled =
+        normalHistory.length ===
+        0;
+
+
+    $("caller-undo").disabled =
+        normalHistory.length ===
+        0;
+}
+
+
 /* =========================================================
-   NORMAL UNDO
+   SAVE / RESUME
 ========================================================= */
 
-normalUndoBtn.addEventListener(
-    "click",
+function saveMatch() {
+
+    if (
+        matchFinished
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        localStorage.setItem(
+
+            STORAGE_MATCH,
+
+            JSON.stringify(
+                makeSnapshot()
+            )
+        );
+
+    } catch (_) {}
+}
+
+
+function checkSavedMatch() {
+
+    if (
+        localStorage.getItem(
+            STORAGE_MATCH
+        )
+    ) {
+
+        $("resume-banner")
+            .classList.remove(
+                "hidden"
+            );
+    }
+}
+
+
+$("resume-match-btn")
+    .onclick =
+        () => {
+
+            try {
+
+                const saved =
+                    JSON.parse(
+
+                        localStorage.getItem(
+                            STORAGE_MATCH
+                        )
+                    );
+
+
+                modeScreen.classList.add(
+                    "hidden"
+                );
+
+
+                gameScreen.classList.remove(
+                    "hidden"
+                );
+
+
+                restoreSnapshot(
+                    saved
+                );
+
+
+            } catch (_) {
+
+                alert(
+                    "Could not restore saved match."
+                );
+            }
+        };
+
+
+$("discard-match-btn")
+    .onclick =
+        () => {
+
+            localStorage.removeItem(
+                STORAGE_MATCH
+            );
+
+
+            $("resume-banner")
+                .classList.add(
+                    "hidden"
+                );
+        };
+
+
+/* =========================================================
+   PROFILES
+========================================================= */
+
+function getProfiles() {
+
+    try {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+                STORAGE_PROFILES
+            ) ||
+            "{}"
+        );
+
+    } catch (_) {
+
+        return {};
+    }
+}
+
+
+function saveProfiles() {
+
+    const profiles =
+        getProfiles();
+
+
+    players.forEach(
+        (
+            player,
+            index
+        ) => {
+
+            const key =
+                player.name
+                    .toLowerCase()
+                    .trim();
+
+
+            const profile =
+                profiles[key] ||
+                {
+
+                    name:
+                        player.name,
+
+                    matches:
+                        0,
+
+                    wins:
+                        0,
+
+                    points:
+                        0,
+
+                    darts:
+                        0,
+
+                    scores180:
+                        0,
+
+                    bestCheckout:
+                        0
+                };
+
+
+            profile.matches++;
+
+
+            if (
+                winnerPlayer ===
+                index +
+                1
+            ) {
+
+                profile.wins++;
+            }
+
+
+            profile.points +=
+                player.stats.pointsScored;
+
+
+            profile.darts +=
+                player.stats.dartsThrown;
+
+
+            profile.scores180 +=
+                player.stats.scores180;
+
+
+            profile.bestCheckout =
+                Math.max(
+                    profile.bestCheckout,
+                    player.stats.bestCheckout
+                );
+
+
+            profiles[key] =
+                profile;
+        }
+    );
+
+
+    localStorage.setItem(
+
+        STORAGE_PROFILES,
+
+        JSON.stringify(
+            profiles
+        )
+    );
+}
+
+
+profileBtn.onclick =
     () => {
 
+        const profiles =
+            Object.values(
+                getProfiles()
+            );
+
+
         if (
-            normalHistory.length === 0
+            !profiles.length
         ) {
+
+            alert(
+                "No saved profiles yet."
+            );
+
 
             return;
         }
 
 
-        const old =
-            normalHistory.pop();
-
-
-        p1Score = old.p1Score;
-        p2Score = old.p2Score;
-
-        p1Legs = old.p1Legs;
-        p2Legs = old.p2Legs;
-
-        p1Sets = old.p1Sets;
-        p2Sets = old.p2Sets;
-
-        currentSet = old.currentSet;
-        currentLeg = old.currentLeg;
-
-        currentPlayer =
-            old.currentPlayer;
-
-        dartsLeft =
-            old.dartsLeft;
-
-        currentVisitScore =
-            old.currentVisitScore;
-
-        turnStartScoreP1 =
-            old.turnStartScoreP1;
-
-        turnStartScoreP2 =
-            old.turnStartScoreP2;
-
-        gameMode =
-            old.gameMode;
-
-        startingScore =
-            old.startingScore;
-
-        legsPerSet =
-            old.legsPerSet;
-
-        setsToWin =
-            old.setsToWin;
-
-
-        if (
-            "speechSynthesis" in window
-        ) {
-
-            window.speechSynthesis.cancel();
-        }
-
-
-        updateModeLabel();
-
-        updateDisplay();
-
-        updateIndividualDartStatus();
-
-        updateUndoButtons();
-    }
-);
-
-
-/* =========================================================
-   INDIVIDUAL DART SCORING
-========================================================= */
-
-function scoreIndividual501Dart(
-    value
-) {
-
-    if (
-        dartsLeft <= 0
-    ) {
-
-        return;
-    }
-
-
-    pushNormalHistory();
-
-
-    if (
-        currentPlayer === 1 &&
-        dartsLeft === 3
-    ) {
-
-        turnStartScoreP1 =
-            p1Score;
-
-        currentVisitScore =
-            0;
-    }
-
-
-    if (
-        currentPlayer === 2 &&
-        dartsLeft === 3
-    ) {
-
-        turnStartScoreP2 =
-            p2Score;
-
-        currentVisitScore =
-            0;
-    }
-
-
-    currentVisitScore +=
-        value;
-
-
-    if (
-        currentPlayer === 1
-    ) {
-
-        p1Score -= value;
-
-
-        if (
-            p1Score < 0 ||
-            p1Score === 1
-        ) {
-
-            p1Score =
-                turnStartScoreP1;
-
-            currentVisitScore =
-                0;
-
-            announceVisitScore(
-                0
-            );
-
-            endTurn501(
-                "Bust!"
-            );
-
-        } else if (
-            p1Score === 0
-        ) {
-
-            announceGameShot(
-                currentVisitScore
-            );
-
-            handleLegWin(
-                1
-            );
-
-        } else {
-
-            dartsLeft--;
-
-
-            if (
-                dartsLeft === 0
-            ) {
-
-                announceVisitScore(
-                    currentVisitScore
-                );
-
-                endTurn501();
-            }
-        }
-
-    } else {
-
-        p2Score -= value;
-
-
-        if (
-            p2Score < 0 ||
-            p2Score === 1
-        ) {
-
-            p2Score =
-                turnStartScoreP2;
-
-            currentVisitScore =
-                0;
-
-            announceVisitScore(
-                0
-            );
-
-            endTurn501(
-                "Bust!"
-            );
-
-        } else if (
-            p2Score === 0
-        ) {
-
-            announceGameShot(
-                currentVisitScore
-            );
-
-            handleLegWin(
-                2
-            );
-
-        } else {
-
-            dartsLeft--;
-
-
-            if (
-                dartsLeft === 0
-            ) {
-
-                announceVisitScore(
-                    currentVisitScore
-                );
-
-                endTurn501();
-            }
-        }
-    }
-
-
-    updateDisplay();
-
-    updateIndividualDartStatus();
-}
-
-
-/* =========================================================
-   GAME SHOT ANNOUNCEMENT
-========================================================= */
-
-function announceGameShot(
-    visit
-) {
-
-    if (
-        !announcerEnabled
-    ) {
-
-        return;
-    }
-
-
-    speakAnnouncement(
-        `Game shot. ${visitScoreToWords(visit)}`
-    );
-}
-
-
-/* =========================================================
-   WHOLE VISIT
-========================================================= */
-
-submitScoreBtn.addEventListener(
-    "click",
-    submitWholeVisit
-);
-
-
-scoreInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            submitWholeVisit();
-        }
-    }
-);
-
-
-function submitWholeVisit() {
-
-    const visitScore =
-        parseInt(
-            scoreInput.value
-        );
-
-
-    if (
-        isNaN(visitScore) ||
-        visitScore < 0 ||
-        visitScore > 180
-    ) {
-
         alert(
-            "Enter a visit score from 0 to 180."
-        );
 
-        return;
-    }
+            profiles.map(
+                p => {
 
+                    const avg =
+                        p.darts
 
-    pushNormalHistory();
+                            ? (
+                                p.points /
+                                p.darts *
+                                3
+                              ).toFixed(2)
 
+                            : "0.00";
 
-    if (
-        currentPlayer === 1
-    ) {
 
-        turnStartScoreP1 =
-            p1Score;
+                    return (
 
-        p1Score -=
-            visitScore;
+                        `${p.name}\n` +
 
+                        `Matches: ${p.matches}\n` +
 
-        if (
-            p1Score < 0 ||
-            p1Score === 1
-        ) {
+                        `Wins: ${p.wins}\n` +
 
-            p1Score =
-                turnStartScoreP1;
+                        `Average: ${avg}\n` +
 
-            announceVisitScore(
-                0
-            );
+                        `180s: ${p.scores180}\n` +
 
-            endTurn501(
-                "Bust!"
-            );
-
-        } else if (
-            p1Score === 0
-        ) {
-
-            announceGameShot(
-                visitScore
-            );
-
-            handleLegWin(
-                1
-            );
-
-        } else {
-
-            announceVisitScore(
-                visitScore
-            );
-
-            endTurn501();
-        }
-
-    } else {
-
-        turnStartScoreP2 =
-            p2Score;
-
-        p2Score -=
-            visitScore;
-
-
-        if (
-            p2Score < 0 ||
-            p2Score === 1
-        ) {
-
-            p2Score =
-                turnStartScoreP2;
-
-            announceVisitScore(
-                0
-            );
-
-            endTurn501(
-                "Bust!"
-            );
-
-        } else if (
-            p2Score === 0
-        ) {
-
-            announceGameShot(
-                visitScore
-            );
-
-            handleLegWin(
-                2
-            );
-
-        } else {
-
-            announceVisitScore(
-                visitScore
-            );
-
-            endTurn501();
-        }
-    }
-
-
-    currentVisitScore =
-        0;
-
-
-    scoreInput.value =
-        "";
-
-
-    updateDisplay();
-
-    updateIndividualDartStatus();
-
-
-    setTimeout(
-        () => scoreInput.focus(),
-        50
-    );
-}
-
-
-/* =========================================================
-   VALID SINGLE DART SCORE
-========================================================= */
-
-function isValidSingleDartScore(
-    value
-) {
-
-    if (
-        value === 0 ||
-        value === 25 ||
-        value === 50
-    ) {
-
-        return true;
-    }
-
-
-    for (
-        let number = 1;
-        number <= 20;
-        number++
-    ) {
-
-        if (
-            value === number ||
-            value === number * 2 ||
-            value === number * 3
-        ) {
-
-            return true;
-        }
-    }
-
-
-    return false;
-}
-
-
-/* =========================================================
-   MANUAL INDIVIDUAL DART
-========================================================= */
-
-submitIndividualDartBtn.addEventListener(
-    "click",
-    submitIndividualDart
-);
-
-
-individualDartInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            submitIndividualDart();
-        }
-    }
-);
-
-
-function submitIndividualDart() {
-
-    const value =
-        parseInt(
-            individualDartInput.value
-        );
-
-
-    if (
-        isNaN(value)
-    ) {
-
-        alert(
-            "Enter the score for this dart."
-        );
-
-        return;
-    }
-
-
-    if (
-        !isValidSingleDartScore(
-            value
-        )
-    ) {
-
-        alert(
-            `${value} cannot be scored with one dart.`
-        );
-
-        return;
-    }
-
-
-    scoreIndividual501Dart(
-        value
-    );
-
-
-    individualDartInput.value =
-        "";
-
-
-    setTimeout(
-        () =>
-            individualDartInput.focus(),
-        50
-    );
-}
-
-
-/* =========================================================
-   INDIVIDUAL STATUS
-========================================================= */
-
-function updateIndividualDartStatus() {
-
-    const player =
-        currentPlayer === 1
-            ? p1NameDisplay.textContent
-            : p2NameDisplay.textContent;
-
-
-    const dartNumber =
-        4 - dartsLeft;
-
-
-    individualDartStatus.textContent =
-        `${player} · Dart ${dartNumber} of 3 · ${dartsLeft} dart${dartsLeft === 1 ? "" : "s"} remaining`;
-}
-
-
-/* =========================================================
-   END TURN
-========================================================= */
-
-function endTurn501(
-    message
-) {
-
-    if (
-        message
-    ) {
-
-        alert(
-            message
-        );
-    }
-
-
-    currentPlayer =
-        currentPlayer === 1
-            ? 2
-            : 1;
-
-
-    dartsLeft =
-        3;
-
-
-    currentVisitScore =
-        0;
-}
-
-
-/* =========================================================
-   LEG / SET WIN
-========================================================= */
-
-function handleLegWin(
-    player
-) {
-
-    if (
-        player === 1
-    ) {
-
-        p1Legs++;
-
-    } else {
-
-        p2Legs++;
-    }
-
-
-    let matchWon =
-        false;
-
-
-    if (
-        gameMode === "sets"
-    ) {
-
-        if (
-            p1Legs >= legsPerSet ||
-            p2Legs >= legsPerSet
-        ) {
-
-            if (
-                p1Legs > p2Legs
-            ) {
-
-                p1Sets++;
-
-            } else {
-
-                p2Sets++;
-            }
-
-
-            p1Legs = 0;
-            p2Legs = 0;
-
-            currentSet++;
-        }
-
-
-        if (
-            p1Sets >= setsToWin
-        ) {
-
-            speakAnnouncement(
-                `${p1NameDisplay.textContent} wins the match`
-            );
-
-            alert(
-                `${p1NameDisplay.textContent} wins the match!`
-            );
-
-            matchWon = true;
-
-        } else if (
-            p2Sets >= setsToWin
-        ) {
-
-            speakAnnouncement(
-                `${p2NameDisplay.textContent} wins the match`
-            );
-
-            alert(
-                `${p2NameDisplay.textContent} wins the match!`
-            );
-
-            matchWon = true;
-        }
-
-    } else {
-
-        if (
-            p1Legs >= setsToWin
-        ) {
-
-            speakAnnouncement(
-                `${p1NameDisplay.textContent} wins the match`
-            );
-
-            alert(
-                `${p1NameDisplay.textContent} wins the match!`
-            );
-
-            matchWon = true;
-
-        } else if (
-            p2Legs >= setsToWin
-        ) {
-
-            speakAnnouncement(
-                `${p2NameDisplay.textContent} wins the match`
-            );
-
-            alert(
-                `${p2NameDisplay.textContent} wins the match!`
-            );
-
-            matchWon = true;
-        }
-    }
-
-
-    if (
-        matchWon
-    ) {
-
-        resetMatch();
-
-        return;
-    }
-
-
-    currentLeg++;
-
-
-    p1Score =
-        startingScore;
-
-    p2Score =
-        startingScore;
-
-
-    dartsLeft =
-        3;
-
-
-    currentVisitScore =
-        0;
-
-
-    currentPlayer =
-        player === 1
-            ? 2
-            : 1;
-
-
-    turnStartScoreP1 =
-        startingScore;
-
-    turnStartScoreP2 =
-        startingScore;
-}
-
-
-/* =========================================================
-   DISPLAY
-========================================================= */
-
-function updateDisplay() {
-
-    p1ScoreDisplay.textContent =
-        p1Score;
-
-    p2ScoreDisplay.textContent =
-        p2Score;
-
-
-    p1LegsDisplay.textContent =
-        `Legs: ${p1Legs}`;
-
-    p2LegsDisplay.textContent =
-        `Legs: ${p2Legs}`;
-
-
-    p1SetsDisplay.textContent =
-        `Sets: ${p1Sets}`;
-
-    p2SetsDisplay.textContent =
-        `Sets: ${p2Sets}`;
-
-
-    if (
-        gameMode === "sets"
-    ) {
-
-        legSetStatus.textContent =
-            `Set ${currentSet} · Leg ${currentLeg}`;
-
-    } else {
-
-        legSetStatus.textContent =
-            `Leg ${currentLeg}`;
-    }
-
-
-    dartsStatus.textContent =
-        `Darts: ${dartsLeft}`;
-
-
-    if (
-        currentPlayer === 1
-    ) {
-
-        p1Box.classList.add(
-            "active"
-        );
-
-        p2Box.classList.remove(
-            "active"
-        );
-
-    } else {
-
-        p2Box.classList.add(
-            "active"
-        );
-
-        p1Box.classList.remove(
-            "active"
-        );
-    }
-
-
-    updateCheckoutSuggestion();
-
-    updateUndoButtons();
-}
-
-
-/* =========================================================
-   CHECKOUT ENGINE
-========================================================= */
-
-const ALL_DARTS = [];
-const FINISH_DARTS = [];
-
-
-for (
-    let n = 1;
-    n <= 20;
-    n++
-) {
-
-    ALL_DARTS.push({
-        score: n,
-        label: String(n),
-        type: "single"
-    });
-}
-
-
-for (
-    let n = 1;
-    n <= 20;
-    n++
-) {
-
-    const dart = {
-        score: n * 2,
-        label: "D" + n,
-        type: "double"
-    };
-
-    ALL_DARTS.push(
-        dart
-    );
-
-    FINISH_DARTS.push(
-        dart
-    );
-}
-
-
-for (
-    let n = 1;
-    n <= 20;
-    n++
-) {
-
-    ALL_DARTS.push({
-        score: n * 3,
-        label: "T" + n,
-        type: "treble"
-    });
-}
-
-
-ALL_DARTS.push({
-    score: 25,
-    label: "25",
-    type: "single"
-});
-
-
-const bullDart = {
-    score: 50,
-    label: "Bull",
-    type: "double"
-};
-
-
-ALL_DARTS.push(
-    bullDart
-);
-
-FINISH_DARTS.push(
-    bullDart
-);
-
-
-const BOGEY_NUMBERS =
-    new Set([
-        169,
-        168,
-        166,
-        165,
-        163,
-        162,
-        159
-    ]);
-
-
-const GOOD_LEAVE_PRIORITY = [
-
-    40,
-    32,
-    36,
-    24,
-    20,
-    16,
-
-    48,
-    52,
-    56,
-    60,
-    64,
-
-    68,
-    72,
-    76,
-    80,
-
-    81,
-    82,
-    83,
-    84,
-
-    86,
-    88,
-
-    90,
-    92,
-    94,
-    96,
-
-    100,
-    101,
-    104,
-    107,
-    110,
-
-    116,
-    120,
-    121,
-
-    124,
-    126,
-    128,
-
-    130,
-    132,
-
-    136,
-    140,
-
-    144,
-    148,
-
-    150,
-    152,
-    156,
-
-    160,
-    164,
-    167,
-    170
-];
-
-
-function updateCheckoutSuggestion() {
-
-    const score =
-        currentPlayer === 1
-            ? p1Score
-            : p2Score;
-
-
-    checkoutText.textContent =
-        getCheckoutSuggestion(
-            score,
-            dartsLeft
-        );
-}
-
-
-function getCheckoutSuggestion(
-    score,
-    dartsAvailable
-) {
-
-    if (
-        score <= 0
-    ) {
-
-        return "Finished";
-    }
-
-
-    if (
-        score === 1
-    ) {
-
-        return "No legal finish from 1";
-    }
-
-
-    const maxDarts =
-        Math.max(
-            1,
-            Math.min(
-                3,
-                dartsAvailable
-            )
-        );
-
-
-    const checkout =
-        findBestCheckout(
-            score,
-            maxDarts
-        );
-
-
-    if (
-        checkout
-    ) {
-
-        return (
-            "Checkout: " +
-            checkout.join(" → ")
-        );
-    }
-
-
-    const setup =
-        findBestSetup(
-            score,
-            maxDarts
-        );
-
-
-    if (
-        setup
-    ) {
-
-        return (
-            "Setup: " +
-            setup.route.join(" → ") +
-            " · Leave " +
-            setup.leave
-        );
-    }
-
-
-    return (
-        "Score heavily and avoid leaving 1"
-    );
-}
-
-
-function findBestCheckout(
-    target,
-    maxDarts
-) {
-
-    const candidates = [];
-
-
-    if (
-        maxDarts >= 1
-    ) {
-
-        for (
-            const finish
-            of FINISH_DARTS
-        ) {
-
-            if (
-                finish.score ===
-                target
-            ) {
-
-                candidates.push({
-                    route: [
-                        finish.label
-                    ],
-                    finish:
-                        finish.score
-                });
-            }
-        }
-    }
-
-
-    if (
-        maxDarts >= 2
-    ) {
-
-        for (
-            const first
-            of ALL_DARTS
-        ) {
-
-            for (
-                const finish
-                of FINISH_DARTS
-            ) {
-
-                if (
-                    first.score +
-                    finish.score ===
-                    target
-                ) {
-
-                    candidates.push({
-                        route: [
-                            first.label,
-                            finish.label
-                        ],
-                        finish:
-                            finish.score
-                    });
-                }
-            }
-        }
-    }
-
-
-    if (
-        maxDarts >= 3
-    ) {
-
-        for (
-            const first
-            of ALL_DARTS
-        ) {
-
-            for (
-                const second
-                of ALL_DARTS
-            ) {
-
-                for (
-                    const finish
-                    of FINISH_DARTS
-                ) {
-
-                    if (
-                        first.score +
-                        second.score +
-                        finish.score ===
-                        target
-                    ) {
-
-                        candidates.push({
-                            route: [
-                                first.label,
-                                second.label,
-                                finish.label
-                            ],
-                            finish:
-                                finish.score
-                        });
-                    }
-                }
-            }
-        }
-    }
-
-
-    if (
-        candidates.length ===
-        0
-    ) {
-
-        return null;
-    }
-
-
-    candidates.sort(
-        compareCheckoutCandidates
-    );
-
-
-    return candidates[0].route;
-}
-
-
-function compareCheckoutCandidates(
-    a,
-    b
-) {
-
-    if (
-        a.route.length !==
-        b.route.length
-    ) {
-
-        return (
-            a.route.length -
-            b.route.length
-        );
-    }
-
-
-    const aDouble =
-        doublePreference(
-            a.finish
-        );
-
-    const bDouble =
-        doublePreference(
-            b.finish
-        );
-
-
-    if (
-        aDouble !==
-        bDouble
-    ) {
-
-        return (
-            aDouble -
-            bDouble
-        );
-    }
-
-
-    return (
-        routePreferenceScore(
-            b.route
-        ) -
-        routePreferenceScore(
-            a.route
-        )
-    );
-}
-
-
-function doublePreference(
-    score
-) {
-
-    const order = [
-
-        40,
-        32,
-        36,
-        24,
-        20,
-        16,
-        28,
-        12,
-        8,
-        4,
-        2,
-        50
-
-    ];
-
-
-    const index =
-        order.indexOf(
-            score
-        );
-
-
-    return (
-        index === -1
-            ? 999
-            : index
-    );
-}
-
-
-function routePreferenceScore(
-    route
-) {
-
-    let total =
-        0;
-
-
-    route.forEach(
-        label => {
-
-            if (
-                label.startsWith("T")
-            ) {
-
-                total +=
-                    15;
-
-            } else if (
-                label.startsWith("D")
-            ) {
-
-                total +=
-                    4;
-
-            } else if (
-                label === "Bull"
-            ) {
-
-                total +=
-                    5;
-
-            } else {
-
-                total +=
-                    8;
-            }
-        }
-    );
-
-
-    return total;
-}
-
-
-function findBestSetup(
-    score,
-    maxDarts
-) {
-
-    let best =
-        null;
-
-
-    const setupDarts = [
-
-        { score: 60, label: "T20" },
-        { score: 57, label: "T19" },
-        { score: 54, label: "T18" },
-        { score: 51, label: "T17" },
-        { score: 48, label: "T16" },
-        { score: 45, label: "T15" },
-
-        { score: 42, label: "T14" },
-        { score: 39, label: "T13" },
-        { score: 36, label: "T12" },
-
-        { score: 25, label: "25" },
-
-        { score: 20, label: "20" },
-        { score: 19, label: "19" },
-        { score: 18, label: "18" },
-        { score: 17, label: "17" },
-        { score: 16, label: "16" },
-        { score: 15, label: "15" },
-        { score: 14, label: "14" },
-        { score: 13, label: "13" },
-        { score: 12, label: "12" },
-        { score: 11, label: "11" },
-        { score: 10, label: "10" },
-
-        { score: 50, label: "Bull" },
-
-        { score: 40, label: "D20" },
-        { score: 38, label: "D19" },
-        { score: 36, label: "D18" },
-        { score: 34, label: "D17" },
-        { score: 32, label: "D16" }
-    ];
-
-
-    if (
-        maxDarts >= 1
-    ) {
-
-        for (
-            const a
-            of setupDarts
-        ) {
-
-            evaluateSetup(
-                [a],
-                score,
-                candidate => {
-
-                    if (
-                        !best ||
-                        candidate.rank <
-                        best.rank
-                    ) {
-
-                        best =
-                            candidate;
-                    }
-                }
-            );
-        }
-    }
-
-
-    if (
-        maxDarts >= 2
-    ) {
-
-        for (
-            const a
-            of setupDarts
-        ) {
-
-            for (
-                const b
-                of setupDarts
-            ) {
-
-                evaluateSetup(
-                    [a, b],
-                    score,
-                    candidate => {
-
-                        if (
-                            !best ||
-                            candidate.rank <
-                            best.rank
-                        ) {
-
-                            best =
-                                candidate;
-                        }
-                    }
-                );
-            }
-        }
-    }
-
-
-    if (
-        maxDarts >= 3
-    ) {
-
-        for (
-            const a
-            of setupDarts
-        ) {
-
-            for (
-                const b
-                of setupDarts
-            ) {
-
-                for (
-                    const c
-                    of setupDarts
-                ) {
-
-                    evaluateSetup(
-                        [a, b, c],
-                        score,
-                        candidate => {
-
-                            if (
-                                !best ||
-                                candidate.rank <
-                                best.rank
-                            ) {
-
-                                best =
-                                    candidate;
-                            }
-                        }
+                        `Best Checkout: ${p.bestCheckout || "-"}`
                     );
                 }
-            }
-        }
-    }
+            ).join(
+                "\n\n"
+            )
+        );
+    };
 
 
-    return best;
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function saveSettings() {
+
+    localStorage.setItem(
+
+        STORAGE_SETTINGS,
+
+        JSON.stringify({
+
+            announcerEnabled
+
+        })
+    );
 }
 
 
-function evaluateSetup(
-    darts,
-    score,
-    callback
-) {
+function loadSettings() {
 
-    const scored =
-        darts.reduce(
-            (
-                total,
-                dart
-            ) =>
-                total +
-                dart.score,
-            0
-        );
+    try {
 
+        const saved =
+            JSON.parse(
 
-    const leave =
-        score -
-        scored;
-
-
-    if (
-        leave <= 1
-    ) {
-
-        return;
-    }
-
-
-    const bogeyPenalty =
-        BOGEY_NUMBERS.has(
-            leave
-        )
-            ? 100000
-            : 0;
-
-
-    let checkoutPenalty =
-        5000;
-
-
-    if (
-        leave <= 170
-    ) {
-
-        const nextCheckout =
-            findBestCheckout(
-                leave,
-                3
+                localStorage.getItem(
+                    STORAGE_SETTINGS
+                ) ||
+                "{}"
             );
 
 
-        if (
-            nextCheckout
-        ) {
-
-            checkoutPenalty =
-                nextCheckout.length *
-                100;
-        }
-    }
+        announcerEnabled =
+            saved.announcerEnabled !==
+            false;
 
 
-    let leaveRank =
-        GOOD_LEAVE_PRIORITY.indexOf(
-            leave
-        );
+    } catch (_) {}
 
 
-    if (
-        leaveRank === -1
-    ) {
+    toggleAnnouncerBtn.textContent =
+        announcerEnabled
 
-        leaveRank =
-            500 +
-            leave;
-    }
+            ? "🔊 Announcer: On"
 
-
-    const scoringReward =
-        scored;
-
-
-    const dartPenalty =
-        darts.length *
-        5;
-
-
-    const rank =
-
-        bogeyPenalty +
-
-        checkoutPenalty +
-
-        leaveRank *
-        10 +
-
-        dartPenalty -
-
-        scoringReward;
-
-
-    callback({
-
-        route:
-            darts.map(
-                dart =>
-                    dart.label
-            ),
-
-        leave,
-
-        rank
-    });
+            : "🔇 Announcer: Off";
 }
 
 
 /* =========================================================
-   BACK
+   NEW MATCH / BACK
 ========================================================= */
 
-gameBackBtn.addEventListener(
-    "click",
+newMatchBtn.onclick =
     () => {
 
-        gameScreen.classList.add(
-            "hidden"
-        );
+        if (
+            confirm(
+                "Start a new match?"
+            )
+        ) {
 
-        modeScreen.classList.remove(
-            "hidden"
-        );
-    }
-);
+            localStorage.removeItem(
+                STORAGE_MATCH
+            );
+
+
+            closeCaller();
+
+
+            gameScreen.classList.add(
+                "hidden"
+            );
+
+
+            modeScreen.classList.remove(
+                "hidden"
+            );
+        }
+    };
+
+
+$("game-back")
+    .onclick =
+        () => {
+
+            closeCaller();
+
+
+            gameScreen.classList.add(
+                "hidden"
+            );
+
+
+            modeScreen.classList.remove(
+                "hidden"
+            );
+        };
 
 
 /* =========================================================
    CRICKET
 ========================================================= */
 
+const cricketTeamA =
+    $("cricket-team-a");
+
+const cricketTeamB =
+    $("cricket-team-b");
+
+const cricketBattingName =
+    $("cricket-batting-name");
+
+const cricketBowlingName =
+    $("cricket-bowling-name");
+
+
 let cricketInnings =
     1;
-
-let cricketTotalWickets =
-    11;
 
 let cricketRuns =
     0;
 
-let cricketWicketsLost =
+let cricketWickets =
     0;
 
 let cricketNextWicket =
@@ -2821,342 +4601,199 @@ let cricketNextWicket =
 let cricketTarget =
     null;
 
-let cricketDartsLeft =
+let cricketDarts =
     3;
 
 let cricketPhase =
     "bowling";
 
-let cricketMatchFinished =
+let cricketTotalWickets =
+    11;
+
+let cricketFinished =
     false;
 
 
-function pushCricketHistory() {
-
-    cricketHistory.push({
-
-        cricketInnings,
-        cricketTotalWickets,
-        cricketRuns,
-        cricketWicketsLost,
-        cricketNextWicket,
-        cricketTarget,
-        cricketDartsLeft,
-        cricketPhase,
-        cricketMatchFinished,
-
-        battingName:
-            cricketBattingName.textContent,
-
-        bowlingName:
-            cricketBowlingName.textContent
-    });
+const cricketHistory =
+    [];
 
 
-    if (
-        cricketHistory.length >
-        MAX_HISTORY
-    ) {
+function setupCricketNames(
+    a,
+    b
+) {
 
-        cricketHistory.shift();
-    }
+    cricketTeamA.textContent =
+        a;
+
+    cricketTeamB.textContent =
+        b;
 
 
-    updateUndoButtons();
+    cricketBowlingName.textContent =
+        a;
+
+    cricketBattingName.textContent =
+        b;
+
+
+    nameScreen.classList.add(
+        "hidden"
+    );
+
+
+    cricketScreen.classList.remove(
+        "hidden"
+    );
+
+
+    buildCricketBoard();
+
+    resetCricket();
 }
 
 
-cricketUndoBtn.addEventListener(
-    "click",
-    () => {
-
-        if (
-            cricketHistory.length === 0
-        ) {
-
-            return;
-        }
-
-
-        const old =
-            cricketHistory.pop();
-
-
-        cricketInnings =
-            old.cricketInnings;
-
-        cricketTotalWickets =
-            old.cricketTotalWickets;
-
-        cricketRuns =
-            old.cricketRuns;
-
-        cricketWicketsLost =
-            old.cricketWicketsLost;
-
-        cricketNextWicket =
-            old.cricketNextWicket;
-
-        cricketTarget =
-            old.cricketTarget;
-
-        cricketDartsLeft =
-            old.cricketDartsLeft;
-
-        cricketPhase =
-            old.cricketPhase;
-
-        cricketMatchFinished =
-            old.cricketMatchFinished;
-
-
-        cricketBattingName.textContent =
-            old.battingName;
-
-        cricketBowlingName.textContent =
-            old.bowlingName;
-
-
-        updateCricketDisplay();
-
-        updateUndoButtons();
-    }
-);
-
-
-function updateUndoButtons() {
-
-    normalUndoBtn.disabled =
-        normalHistory.length === 0;
-
-    cricketUndoBtn.disabled =
-        cricketHistory.length === 0;
-}
-
-
-function initCricketBoard() {
-
-    const bowlSingles =
-        document.getElementById(
-            "cricket-bowl-singles"
-        );
-
-    const bowlDoubles =
-        document.getElementById(
-            "cricket-bowl-doubles"
-        );
-
-    const bowlTrebles =
-        document.getElementById(
-            "cricket-bowl-trebles"
-        );
-
-
-    const batSingles =
-        document.getElementById(
-            "cricket-bat-singles"
-        );
-
-    const batDoubles =
-        document.getElementById(
-            "cricket-bat-doubles"
-        );
-
-    const batTrebles =
-        document.getElementById(
-            "cricket-bat-trebles"
-        );
-
+function buildCricketBoard() {
 
     if (
-        bowlSingles.children.length >
-        0
+        $("cricket-bowl-singles")
+            .children.length
     ) {
 
         return;
     }
 
 
-    for (
-        let i = 1;
-        i <= 20;
-        i++
-    ) {
+    const groups = [
 
-        createCricketButton(
-            bowlSingles,
-            i,
+        [
+            "cricket-bowl-singles",
             1,
-            "bowl",
-            String(i)
-        );
+            "bowl"
+        ],
 
-        createCricketButton(
-            bowlDoubles,
-            i,
+        [
+            "cricket-bowl-doubles",
             2,
-            "bowl",
-            "D" + i
-        );
+            "bowl"
+        ],
 
-        createCricketButton(
-            bowlTrebles,
-            i,
+        [
+            "cricket-bowl-trebles",
             3,
-            "bowl",
-            "T" + i
-        );
+            "bowl"
+        ],
 
-
-        createCricketButton(
-            batSingles,
-            i,
+        [
+            "cricket-bat-singles",
             1,
-            "bat",
-            String(i)
-        );
+            "bat"
+        ],
 
-        createCricketButton(
-            batDoubles,
-            i,
+        [
+            "cricket-bat-doubles",
             2,
-            "bat",
-            "D" + i
-        );
+            "bat"
+        ],
 
-        createCricketButton(
-            batTrebles,
-            i,
+        [
+            "cricket-bat-trebles",
             3,
-            "bat",
-            "T" + i
-        );
-    }
+            "bat"
+        ]
+
+    ];
 
 
-    document
-        .querySelectorAll(
-            "#cricket-screen .segment"
-        )
-        .forEach(
-            button => {
+    groups.forEach(
+        (
+            [
+                id,
+                mult,
+                role
+            ]
+        ) => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const role =
-                            button.dataset.role;
+            const container =
+                $(id);
 
 
-                        if (
-                            !role
-                        ) {
+            for (
+                let n = 1;
+                n <= 20;
+                n++
+            ) {
 
-                            return;
-                        }
+                const button =
+                    document.createElement(
+                        "button"
+                    );
 
 
-                        handleCricketDart(
+                button.className =
+                    "btn-score";
+
+
+                button.textContent =
+                    (
+                        mult ===
+                        1
+                            ? ""
+                            : mult ===
+                              2
+                                ? "D"
+                                : "T"
+                    ) +
+                    n;
+
+
+                button.onclick =
+                    () =>
+                        cricketDart(
 
                             role,
 
-                            parseInt(
-                                button.dataset.base
-                            ),
+                            n,
 
-                            parseInt(
-                                button.dataset.mult
-                            ),
+                            mult,
 
-                            parseInt(
-                                button.dataset.score
-                            )
+                            n *
+                            mult
                         );
-                    }
+
+
+                container.appendChild(
+                    button
                 );
             }
-        );
-}
-
-
-function createCricketButton(
-    container,
-    base,
-    mult,
-    role,
-    label
-) {
-
-    const button =
-        document.createElement(
-            "button"
-        );
-
-
-    button.className =
-        "segment btn-score";
-
-
-    button.dataset.base =
-        base;
-
-    button.dataset.mult =
-        mult;
-
-    button.dataset.role =
-        role;
-
-    button.dataset.score =
-        base * mult;
-
-
-    button.textContent =
-        label;
-
-
-    container.appendChild(
-        button
+        }
     );
 }
 
 
-function resetCricketMatch(
-    saveHistory = true
-) {
-
-    if (
-        saveHistory
-    ) {
-
-        pushCricketHistory();
-    }
-
-
-    cricketInnings =
-        1;
-
-
-    cricketTotalWickets =
-        parseInt(
-            cricketTotalWicketsInput.value
-        ) || 11;
-
+function resetCricket() {
 
     cricketTotalWickets =
         Math.min(
             20,
             Math.max(
                 1,
-                cricketTotalWickets
+                parseInt(
+                    $("cricket-total-wickets")
+                        .value
+                ) ||
+                11
             )
         );
 
 
+    cricketInnings =
+        1;
+
     cricketRuns =
         0;
 
-    cricketWicketsLost =
+    cricketWickets =
         0;
 
     cricketNextWicket =
@@ -3165,150 +4802,59 @@ function resetCricketMatch(
     cricketTarget =
         null;
 
-    cricketDartsLeft =
+    cricketDarts =
         3;
 
     cricketPhase =
         "bowling";
 
-    cricketMatchFinished =
+    cricketFinished =
         false;
 
-
-    cricketBattingName.textContent =
-        cricketTeamB.textContent;
 
     cricketBowlingName.textContent =
         cricketTeamA.textContent;
 
+    cricketBattingName.textContent =
+        cricketTeamB.textContent;
 
-    updateCricketDisplay();
+
+    updateCricket();
 }
 
 
-cricketStartMatchBtn.addEventListener(
-    "click",
-    () => {
+function pushCricket() {
 
-        resetCricketMatch(
-            true
-        );
-    }
-);
+    cricketHistory.push({
 
+        cricketInnings,
 
-cricketDeclareBtn.addEventListener(
-    "click",
-    () => {
+        cricketRuns,
 
-        if (
-            cricketMatchFinished
-        ) {
+        cricketWickets,
 
-            return;
-        }
+        cricketNextWicket,
 
+        cricketTarget,
 
-        pushCricketHistory();
+        cricketDarts,
 
+        cricketPhase,
 
-        if (
-            cricketInnings === 1
-        ) {
+        cricketTotalWickets,
 
-            startSecondInnings(
-                "declared"
-            );
+        cricketFinished,
 
-        } else {
+        batting:
+            cricketBattingName.textContent,
 
-            cricketMatchFinished =
-                true;
+        bowling:
+            cricketBowlingName.textContent
+    });
+}
 
 
-            alert(
-                `${cricketBattingName.textContent} declared on ${cricketRuns}.`
-            );
-        }
-
-
-        updateCricketDisplay();
-    }
-);
-
-
-cricketMissBoardBtn.addEventListener(
-    "click",
-    () => {
-
-        if (
-            cricketMatchFinished ||
-            cricketPhase !==
-                "batting"
-        ) {
-
-            return;
-        }
-
-
-        pushCricketHistory();
-
-
-        cricketRuns +=
-            1;
-
-        cricketDartsLeft--;
-
-
-        if (
-            cricketDartsLeft <=
-            0
-        ) {
-
-            cricketPhase =
-                "bowling";
-
-            cricketDartsLeft =
-                3;
-        }
-
-
-        checkCricketResult();
-
-        updateCricketDisplay();
-    }
-);
-
-
-cricketFallOutBtn.addEventListener(
-    "click",
-    () => {
-
-        if (
-            cricketMatchFinished ||
-            cricketPhase !==
-                "batting"
-        ) {
-
-            return;
-        }
-
-
-        pushCricketHistory();
-
-
-        cricketRuns +=
-            1;
-
-
-        checkCricketResult();
-
-        updateCricketDisplay();
-    }
-);
-
-
-function handleCricketDart(
+function cricketDart(
     role,
     base,
     mult,
@@ -3316,9 +4862,7 @@ function handleCricketDart(
 ) {
 
     if (
-        cricketMatchFinished ||
-        cricketDartsLeft <=
-            0
+        cricketFinished
     ) {
 
         return;
@@ -3326,28 +4870,35 @@ function handleCricketDart(
 
 
     if (
-        cricketPhase ===
-            "batting" &&
         role !==
-            "bat"
+        cricketPhase
+            .replace(
+                "ting",
+                ""
+            )
     ) {
 
-        return;
+        if (
+            !(
+                cricketPhase ===
+                    "batting" &&
+                role ===
+                    "bat"
+            ) &&
+            !(
+                cricketPhase ===
+                    "bowling" &&
+                role ===
+                    "bowl"
+            )
+        ) {
+
+            return;
+        }
     }
 
 
-    if (
-        cricketPhase ===
-            "bowling" &&
-        role !==
-            "bowl"
-    ) {
-
-        return;
-    }
-
-
-    pushCricketHistory();
+    pushCricket();
 
 
     if (
@@ -3360,26 +4911,18 @@ function handleCricketDart(
             cricketNextWicket
         ) {
 
-            takeCricketWickets(
-                mult
-            );
+            cricketWickets +=
+                Math.min(
+                    mult,
+                    cricketTotalWickets -
+                    cricketWickets
+                );
+
+
+            cricketNextWicket +=
+                mult;
         }
 
-
-        cricketDartsLeft--;
-
-
-        if (
-            cricketDartsLeft <=
-            0
-        ) {
-
-            cricketPhase =
-                "batting";
-
-            cricketDartsLeft =
-                3;
-        }
 
     } else {
 
@@ -3388,90 +4931,78 @@ function handleCricketDart(
             cricketNextWicket
         ) {
 
-            takeCricketWickets(
-                mult
-            );
+            cricketWickets +=
+                Math.min(
+                    mult,
+                    cricketTotalWickets -
+                    cricketWickets
+                );
+
+
+            cricketNextWicket +=
+                mult;
+
 
         } else {
 
             cricketRuns +=
                 score;
         }
-
-
-        cricketDartsLeft--;
-
-
-        if (
-            cricketDartsLeft <=
-            0
-        ) {
-
-            cricketPhase =
-                "bowling";
-
-            cricketDartsLeft =
-                3;
-        }
     }
 
 
-    checkCricketResult();
-
-    updateCricketDisplay();
-}
-
-
-function takeCricketWickets(
-    amount
-) {
-
-    const remaining =
-        cricketTotalWickets -
-        cricketWicketsLost;
-
-
-    const actual =
-        Math.min(
-            amount,
-            remaining
-        );
-
-
-    cricketWicketsLost +=
-        actual;
-
-
-    cricketNextWicket +=
-        actual;
+    cricketDarts--;
 
 
     if (
-        cricketNextWicket >
-        cricketTotalWickets
+        cricketDarts <=
+        0
     ) {
 
-        cricketNextWicket =
-            cricketTotalWickets;
+        cricketDarts =
+            3;
+
+
+        cricketPhase =
+            cricketPhase ===
+            "bowling"
+
+                ? "batting"
+
+                : "bowling";
     }
+
+
+    checkCricket();
+
+    updateCricket();
 }
 
 
-function startSecondInnings(
-    reason
-) {
-
-    const firstInningsRuns =
-        cricketRuns;
-
+function startSecondCricketInnings() {
 
     cricketTarget =
-        firstInningsRuns +
+        cricketRuns +
         1;
 
 
     cricketInnings =
         2;
+
+    cricketRuns =
+        0;
+
+    cricketWickets =
+        0;
+
+    cricketNextWicket =
+        1;
+
+    cricketDarts =
+        3;
+
+    cricketPhase =
+        "bowling";
 
 
     cricketBattingName.textContent =
@@ -3479,54 +5010,13 @@ function startSecondInnings(
 
     cricketBowlingName.textContent =
         cricketTeamB.textContent;
-
-
-    cricketRuns =
-        0;
-
-    cricketWicketsLost =
-        0;
-
-    cricketNextWicket =
-        1;
-
-    cricketDartsLeft =
-        3;
-
-    cricketPhase =
-        "bowling";
-
-
-    if (
-        reason ===
-        "declared"
-    ) {
-
-        alert(
-            `Innings declared at ${firstInningsRuns} runs.\nTarget: ${cricketTarget}`
-        );
-
-    } else {
-
-        alert(
-            `All wickets down.\nFirst innings: ${firstInningsRuns} runs.\nTarget: ${cricketTarget}`
-        );
-    }
 }
 
 
-function checkCricketResult() {
+function checkCricket() {
 
     if (
-        cricketMatchFinished
-    ) {
-
-        return;
-    }
-
-
-    if (
-        cricketWicketsLost >=
+        cricketWickets >=
         cricketTotalWickets
     ) {
 
@@ -3535,77 +5025,58 @@ function checkCricketResult() {
             1
         ) {
 
-            startSecondInnings(
-                "allout"
-            );
+            startSecondCricketInnings();
 
-            return;
-        }
-
-
-        cricketMatchFinished =
-            true;
-
-
-        if (
-            cricketRuns >=
-            cricketTarget
-        ) {
-
-            alert(
-                `${cricketBattingName.textContent} wins!`
-            );
 
         } else {
 
+            cricketFinished =
+                true;
+
+
             alert(
-                `${cricketBowlingName.textContent} wins!\n${cricketBattingName.textContent} all out for ${cricketRuns}.\nTarget was ${cricketTarget}.`
+                `${cricketBowlingName.textContent} wins!`
             );
         }
-
-
-        return;
     }
 
 
     if (
-        cricketInnings === 2 &&
-        cricketTarget !== null &&
+        cricketInnings ===
+            2 &&
+        cricketTarget !==
+            null &&
         cricketRuns >=
             cricketTarget
     ) {
 
-        cricketMatchFinished =
+        cricketFinished =
             true;
 
 
         alert(
-            `${cricketBattingName.textContent} wins!\nTarget ${cricketTarget} reached.`
+            `${cricketBattingName.textContent} wins!`
         );
     }
 }
 
 
-function updateCricketDisplay() {
+function updateCricket() {
 
-    cricketInningsDisplay.textContent =
-        cricketInnings;
-
-
-    cricketTotalWicketsInput.value =
-        cricketTotalWickets;
-
-
-    cricketRunsDisplay.textContent =
+    $("cricket-runs").textContent =
         cricketRuns;
 
 
-    cricketWicketsDisplay.textContent =
-        cricketWicketsLost;
+    $("cricket-wickets").textContent =
+        cricketWickets;
 
 
-    cricketDangerDisplay.textContent =
-        cricketWicketsLost >=
+    $("cricket-innings").textContent =
+        cricketInnings;
+
+
+    $("cricket-danger").textContent =
+        cricketWickets >=
         cricketTotalWickets
 
             ? "–"
@@ -3613,60 +5084,570 @@ function updateCricketDisplay() {
             : cricketNextWicket;
 
 
-    cricketTargetDisplay.textContent =
-        cricketTarget === null
-            ? "–"
-            : cricketTarget;
+    $("cricket-target").textContent =
+        cricketTarget ??
+        "–";
 
 
-    if (
-        cricketMatchFinished
-    ) {
+    $("cricket-phase").textContent =
+        cricketFinished
 
-        cricketPhaseDisplay.textContent =
-            "Match Finished";
+            ? "Match Finished"
 
-        cricketDartsLeftDisplay.textContent =
-            "–";
+            : cricketPhase ===
+              "bowling"
 
-    } else {
-
-        cricketPhaseDisplay.textContent =
-            cricketPhase ===
-            "bowling"
                 ? "Bowling Turn"
+
                 : "Batting Turn";
 
-        cricketDartsLeftDisplay.textContent =
-            cricketDartsLeft;
-    }
+
+    $("cricket-darts-left").textContent =
+        cricketFinished
+
+            ? "–"
+
+            : cricketDarts;
 
 
-    updateUndoButtons();
+    $("undo-cricket").disabled =
+        !cricketHistory.length;
 }
 
 
-cricketBackBtn.addEventListener(
-    "click",
-    () => {
+$("cricket-start-match")
+    .onclick =
+        resetCricket;
 
-        cricketScreen.classList.add(
-            "hidden"
-        );
 
-        modeScreen.classList.remove(
-            "hidden"
-        );
+$("cricket-declare")
+    .onclick =
+        () => {
+
+            if (
+                cricketInnings ===
+                1
+            ) {
+
+                pushCricket();
+
+                startSecondCricketInnings();
+
+                updateCricket();
+            }
+        };
+
+
+$("cricket-miss-board")
+    .onclick =
+        () => {
+
+            if (
+                cricketPhase !==
+                "batting"
+            ) {
+
+                return;
+            }
+
+
+            pushCricket();
+
+
+            cricketRuns++;
+
+
+            cricketDarts--;
+
+
+            if (
+                cricketDarts <=
+                0
+            ) {
+
+                cricketDarts =
+                    3;
+
+                cricketPhase =
+                    "bowling";
+            }
+
+
+            updateCricket();
+        };
+
+
+$("cricket-fall-out")
+    .onclick =
+        () => {
+
+            if (
+                cricketPhase !==
+                "batting"
+            ) {
+
+                return;
+            }
+
+
+            pushCricket();
+
+
+            cricketRuns++;
+
+
+            updateCricket();
+        };
+
+
+$("undo-cricket")
+    .onclick =
+        () => {
+
+            const old =
+                cricketHistory.pop();
+
+
+            if (
+                !old
+            ) {
+
+                return;
+            }
+
+
+            cricketInnings =
+                old.cricketInnings;
+
+            cricketRuns =
+                old.cricketRuns;
+
+            cricketWickets =
+                old.cricketWickets;
+
+            cricketNextWicket =
+                old.cricketNextWicket;
+
+            cricketTarget =
+                old.cricketTarget;
+
+            cricketDarts =
+                old.cricketDarts;
+
+            cricketPhase =
+                old.cricketPhase;
+
+            cricketTotalWickets =
+                old.cricketTotalWickets;
+
+            cricketFinished =
+                old.cricketFinished;
+
+
+            cricketBattingName.textContent =
+                old.batting;
+
+            cricketBowlingName.textContent =
+                old.bowling;
+
+
+            updateCricket();
+        };
+
+
+$("cricket-back")
+    .onclick =
+        () => {
+
+            cricketScreen.classList.add(
+                "hidden"
+            );
+
+
+            modeScreen.classList.remove(
+                "hidden"
+            );
+        };
+
+
+/* =========================================================
+   INITIALISE
+========================================================= */
+
+loadSettings();
+
+checkSavedMatch();
+
+updateNameDisplays();
+
+updateStartingPlayerButtons();
+
+updateEverything();
+
+updateCricket();
+
+/* =========================================================
+   DART HUB PWA - V15
+========================================================= */
+
+
+/* =========================================================
+   SERVICE WORKER
+========================================================= */
+
+if (
+    "serviceWorker"
+    in navigator
+) {
+
+    window.addEventListener(
+        "load",
+        async () => {
+
+            try {
+
+                const registration =
+                    await navigator
+                        .serviceWorker
+                        .register(
+                            "./sw.js"
+                        );
+
+
+                console.log(
+                    "Dart Hub service worker registered:",
+                    registration.scope
+                );
+
+
+            } catch (
+                error
+            ) {
+
+                console.error(
+                    "Service worker registration failed:",
+                    error
+                );
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   INSTALL APP
+========================================================= */
+
+let deferredInstallPrompt =
+    null;
+
+
+const installAppBtn =
+    document.getElementById(
+        "install-app-btn"
+    );
+
+
+const installStatus =
+    document.getElementById(
+        "install-status"
+    );
+
+
+/* =========================================================
+   DETECT INSTALLED APP
+========================================================= */
+
+function isRunningAsApp() {
+
+    return (
+
+        window.matchMedia(
+            "(display-mode: standalone)"
+        ).matches
+
+        ||
+
+        window.navigator.standalone ===
+        true
+    );
+}
+
+
+/* =========================================================
+   UPDATE INSTALL DISPLAY
+========================================================= */
+
+function updateInstallDisplay() {
+
+    if (
+        !installAppBtn
+    ) {
+
+        return;
+    }
+
+
+    if (
+        isRunningAsApp()
+    ) {
+
+        installAppBtn.textContent =
+            "✅ Dart Hub Installed";
+
+
+        installAppBtn.disabled =
+            true;
+
+
+        installStatus.textContent =
+            "You are currently using the installed Dart Hub app.";
+
+
+        return;
+    }
+
+
+    const userAgent =
+        navigator.userAgent
+            .toLowerCase();
+
+
+    const isiPhone =
+        /iphone|ipad|ipod/
+            .test(
+                userAgent
+            );
+
+
+    if (
+        isiPhone
+    ) {
+
+        installAppBtn.textContent =
+            "📱 Add Dart Hub to Home Screen";
+
+
+        installStatus.textContent =
+            "On iPhone/iPad: tap this button for installation instructions.";
+
+
+        return;
+    }
+
+
+    if (
+        deferredInstallPrompt
+    ) {
+
+        installAppBtn.textContent =
+            "📱 Install Dart Hub";
+
+
+        installStatus.textContent =
+            "Install Dart Hub so it opens like a normal app.";
+
+
+        return;
+    }
+
+
+    installAppBtn.textContent =
+        "📱 Install Dart Hub";
+
+
+    installStatus.textContent =
+        "If the install option is not available yet, refresh the page once after the new files are uploaded.";
+}
+
+
+/* =========================================================
+   BROWSER INSTALL PROMPT
+========================================================= */
+
+window.addEventListener(
+    "beforeinstallprompt",
+    event => {
+
+        /*
+           Stop Chrome immediately showing its own prompt.
+           We'll use our Dart Hub button instead.
+        */
+
+        event.preventDefault();
+
+
+        deferredInstallPrompt =
+            event;
+
+
+        updateInstallDisplay();
     }
 );
 
 
 /* =========================================================
-   INITIAL DISPLAY
+   INSTALL BUTTON
 ========================================================= */
 
-updateDisplay();
+if (
+    installAppBtn
+) {
 
-updateIndividualDartStatus();
+    installAppBtn.addEventListener(
+        "click",
+        async () => {
 
-updateUndoButtons();
+            if (
+                isRunningAsApp()
+            ) {
+
+                return;
+            }
+
+
+            const userAgent =
+                navigator.userAgent
+                    .toLowerCase();
+
+
+            const isiPhone =
+                /iphone|ipad|ipod/
+                    .test(
+                        userAgent
+                    );
+
+
+            /*
+               iPHONE / iPAD
+            */
+
+            if (
+                isiPhone
+            ) {
+
+                alert(
+
+                    "Install Dart Hub on iPhone / iPad:\n\n" +
+
+                    "1. Open Dart Hub in Safari.\n\n" +
+
+                    "2. Tap the Share button at the bottom of Safari.\n\n" +
+
+                    "3. Scroll down and choose 'Add to Home Screen'.\n\n" +
+
+                    "4. Make sure the name says Dart Hub.\n\n" +
+
+                    "5. Tap Add.\n\n" +
+
+                    "Dart Hub will then appear on your Home Screen like an app."
+                );
+
+
+                return;
+            }
+
+
+            /*
+               CHROME / EDGE / ANDROID
+            */
+
+            if (
+                deferredInstallPrompt
+            ) {
+
+                deferredInstallPrompt
+                    .prompt();
+
+
+                const choice =
+                    await deferredInstallPrompt
+                        .userChoice;
+
+
+                if (
+                    choice.outcome ===
+                    "accepted"
+                ) {
+
+                    installStatus.textContent =
+                        "Installing Dart Hub…";
+
+
+                } else {
+
+                    installStatus.textContent =
+                        "Installation cancelled.";
+                }
+
+
+                deferredInstallPrompt =
+                    null;
+
+
+                return;
+            }
+
+
+            /*
+               FALLBACK
+            */
+
+            alert(
+
+                "Dart Hub installation is not available from this browser yet.\n\n" +
+
+                "ANDROID / COMPUTER:\n" +
+
+                "Open Dart Hub in Chrome or Edge, open the browser menu, then choose 'Install app' or 'Add to Home screen'.\n\n" +
+
+                "IPHONE:\n" +
+
+                "Open the website in Safari → Share → Add to Home Screen."
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   INSTALLED EVENT
+========================================================= */
+
+window.addEventListener(
+    "appinstalled",
+    () => {
+
+        deferredInstallPrompt =
+            null;
+
+
+        if (
+            installAppBtn
+        ) {
+
+            installAppBtn.textContent =
+                "✅ Dart Hub Installed";
+
+
+            installAppBtn.disabled =
+                true;
+        }
+
+
+        if (
+            installStatus
+        ) {
+
+            installStatus.textContent =
+                "Dart Hub has been installed successfully.";
+        }
+    }
+);
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+updateInstallDisplay();
