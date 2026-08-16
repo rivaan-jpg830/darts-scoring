@@ -637,17 +637,6 @@ function scoreBoardPoint(
 }
 
 
-/* =========================================================
-   PHONE
-========================================================= */
-
-if (
-    CAMERA_PAGE ===
-    "phone"
-) {
-
-    initialiseCameraPhone();
-}
 
 
 /* =========================================================
@@ -2184,13 +2173,7 @@ function stopPhoneCamera() {
    PC CALIBRATION
 ========================================================= */
 
-if (
-    CAMERA_PAGE ===
-    "calibrate"
-) {
 
-    initialiseCalibrationPC();
-}
 
 
 /* =========================================================
@@ -3594,3 +3577,66 @@ function setCurrentInstruction(
         .textContent =
             message;
 }
+
+/* =========================================================
+   START CAMERA APP
+   MUST BE LAST IN THIS FILE
+========================================================= */
+
+async function startDartHubCamera() {
+
+    try {
+
+        if (
+            CAMERA_PAGE ===
+            "phone"
+        ) {
+
+            await initialiseCameraPhone();
+
+            console.log(
+                "Dart Hub phone camera ready."
+            );
+
+            return;
+        }
+
+
+        if (
+            CAMERA_PAGE ===
+            "calibrate"
+        ) {
+
+            await initialiseCalibrationPC();
+
+            console.log(
+                "Dart Hub PC calibration ready."
+            );
+
+            return;
+        }
+
+
+        console.warn(
+            "Unknown Dart Hub camera page."
+        );
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Dart Hub camera startup error:",
+            error
+        );
+
+
+        alert(
+            "The Dart Hub camera could not start. Check the browser console for details."
+        );
+    }
+}
+
+
+startDartHubCamera();
