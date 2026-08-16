@@ -2,20 +2,14 @@
 
 
 /* =========================================================
-   DART HUB AUTH LOADER
-   VERSION 22
+   DART HUB SCRIPT LOADER
 ========================================================= */
 
 
-function loadDartHubScript(
-    src
-) {
+function loadDartHubScript(src) {
 
     return new Promise(
-        (
-            resolve,
-            reject
-        ) => {
+        (resolve, reject) => {
 
             const script =
                 document.createElement(
@@ -59,25 +53,62 @@ function loadDartHubScript(
 
 
 /* =========================================================
-   START DART HUB V22
+   START DART HUB
 ========================================================= */
 
-async function startDartHubV22() {
+
+async function startDartHub() {
 
     try {
+
+        /*
+           LOGIN
+           SUPABASE
+           CLOUD PROFILE
+        */
 
         await loadDartHubScript(
             "./auth-core.js"
         );
 
 
+        /*
+           REGISTERED PLAYERS
+           PLAYER CODES
+           MATCH IDENTITY
+           RESULT CONFIRMATIONS FOUNDATION
+        */
+
         await loadDartHubScript(
             "./players.js"
         );
 
 
+        /*
+           MULTI-GAME PROFILE STATS
+           CRICKET CLOUD SUPPORT
+           CONFIRMATION PAGE
+           RIVALS
+           101 / 301 / 501 STATS
+        */
+
+        await loadDartHubScript(
+            "./features.js"
+        );
+
+
+        /*
+           LIVE SCORE
+           SECOND SCREEN
+        */
+
+        await loadDartHubScript(
+            "./live.js"
+        );
+
+
         console.log(
-            "Dart Hub v22 ready."
+            "🎯 Dart Hub ready."
         );
 
 
@@ -92,10 +123,13 @@ async function startDartHubV22() {
 
 
         alert(
-            "Dart Hub could not start correctly. Please refresh the page."
+
+            "Dart Hub could not start correctly.\n\n" +
+
+            "Please refresh the page."
         );
     }
 }
 
 
-startDartHubV22();
+startDartHub();
