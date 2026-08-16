@@ -3,8 +3,8 @@
 
 /* =========================================================
    DART HUB
-   PLAYER IDENTITY + REGISTERED PLAYERS
-   VERSION 21
+   REGISTERED PLAYERS + RESULT CONFIRMATION
+   VERSION 22
 ========================================================= */
 
 
@@ -12,16 +12,20 @@
    STORAGE
 ========================================================= */
 
-const DART_HUB_ACCOUNT_SLOT_KEY =
-    "dart-hub-account-player-slot-v21";
+const DH_ACCOUNT_SLOT_KEY =
+    "dart-hub-account-slot-v22";
 
 
-const DART_HUB_OPPONENT_TYPE_KEY =
-    "dart-hub-opponent-type-v21";
+const DH_OPPONENT_TYPE_KEY =
+    "dart-hub-opponent-type-v22";
 
 
-const DART_HUB_REGISTERED_PLAYER_KEY =
-    "dart-hub-registered-player-v21";
+const DH_REGISTERED_OPPONENT_KEY =
+    "dart-hub-registered-opponent-v22";
+
+
+const DH_MATCH_UID_KEY =
+    "dart-hub-current-match-uid-v22";
 
 
 /* =========================================================
@@ -32,7 +36,7 @@ let dartHubAccountPlayerSlot =
 
     Number(
         localStorage.getItem(
-            DART_HUB_ACCOUNT_SLOT_KEY
+            DH_ACCOUNT_SLOT_KEY
         )
     ) ===
     2
@@ -45,7 +49,7 @@ let dartHubAccountPlayerSlot =
 let dartHubOpponentType =
 
     localStorage.getItem(
-        DART_HUB_OPPONENT_TYPE_KEY
+        DH_OPPONENT_TYPE_KEY
     ) ===
     "registered"
 
@@ -58,25 +62,29 @@ let dartHubRegisteredOpponent =
     null;
 
 
-let registeredCloudSaveRunning =
+let dartHubCloudSubmissionRunning =
     false;
 
 
-let identityPanel =
+let identityPanelV22 =
+    null;
+
+
+let matchRequestsCard =
     null;
 
 
 /* =========================================================
-   LOAD SAVED REGISTERED PLAYER
+   LOAD SAVED OPPONENT
 ========================================================= */
 
 try {
 
-    const savedRegisteredPlayer =
+    const saved =
         JSON.parse(
 
             localStorage.getItem(
-                DART_HUB_REGISTERED_PLAYER_KEY
+                DH_REGISTERED_OPPONENT_KEY
             )
             ||
             "null"
@@ -84,12 +92,12 @@ try {
 
 
     if (
-        savedRegisteredPlayer &&
-        savedRegisteredPlayer.user_id
+        saved &&
+        saved.user_id
     ) {
 
         dartHubRegisteredOpponent =
-            savedRegisteredPlayer;
+            saved;
     }
 
 } catch (
@@ -105,7 +113,7 @@ try {
    HELPERS
 ========================================================= */
 
-function normaliseDartHubName(
+function dhNormalizeName(
     value
 ) {
 
@@ -118,7 +126,7 @@ function normaliseDartHubName(
 }
 
 
-function normalisePlayerCode(
+function dhNormalizeCode(
     value
 ) {
 
@@ -135,7 +143,40 @@ function normalisePlayerCode(
 }
 
 
-function getSignedInDartHubName() {
+function dhEscapeHTML(
+    value
+) {
+
+    return String(
+        value ??
+        ""
+    ).replace(
+
+        /[&<>'"]/g,
+
+        character => ({
+
+            "&":
+                "&amp;",
+
+            "<":
+                "&lt;",
+
+            ">":
+                "&gt;",
+
+            "'":
+                "&#39;",
+
+            '"':
+                "&quot;"
+
+        })[character]
+    );
+}
+
+
+function getSignedInPlayerNameV22() {
 
     if (
         typeof currentCloudProfile !==
@@ -144,7 +185,8 @@ function getSignedInDartHubName() {
         currentCloudProfile.display_name
     ) {
 
-        return currentCloudProfile.display_name;
+        return currentCloudProfile
+            .display_name;
     }
 
 
@@ -166,7 +208,7 @@ function getSignedInDartHubName() {
 }
 
 
-function getMyPlayerCode() {
+function getMyPlayerCodeV22() {
 
     if (
         typeof currentCloudProfile !==
@@ -184,7 +226,7 @@ function getMyPlayerCode() {
 }
 
 
-function getOpponentSlot() {
+function getOpponentSlotV22() {
 
     return (
 
@@ -198,7 +240,7 @@ function getOpponentSlot() {
 }
 
 
-function getNameInput(
+function getNameInputV22(
     slot
 ) {
 
@@ -214,7 +256,7 @@ function getNameInput(
 }
 
 
-function getPlayerBoxV21(
+function getPlayerBoxV22(
     slot
 ) {
 
@@ -231,14 +273,107 @@ function getPlayerBoxV21(
 
 
 /* =========================================================
-   SAVE IDENTITY SETTINGS
+   MATCH UUID
 ========================================================= */
 
-function saveIdentityState() {
+function createDartHubUUID() {
+
+    if (
+        window.crypto &&
+        typeof window.crypto.randomUUID ===
+            "function"
+    ) {
+
+        return window.crypto.randomUUID();
+    }
+
+
+    return (
+
+        Date.now()
+            .toString(
+                16
+            )
+
+        +
+
+        "-"
+
+        +
+
+        Math.random()
+            .toString(
+                16
+            )
+            .slice(
+                2
+            )
+
+        +
+
+        "-"
+
+        +
+
+        Math.random()
+            .toString(
+                16
+            )
+            .slice(
+                2
+            )
+    );
+}
+
+
+function createNewMatchUID() {
+
+    const uid =
+        createDartHubUUID();
+
 
     localStorage.setItem(
 
-        DART_HUB_ACCOUNT_SLOT_KEY,
+        DH_MATCH_UID_KEY,
+
+        uid
+    );
+
+
+    return uid;
+}
+
+
+function getCurrentMatchUID() {
+
+    let uid =
+        localStorage.getItem(
+            DH_MATCH_UID_KEY
+        );
+
+
+    if (
+        !uid
+    ) {
+
+        uid =
+            createNewMatchUID();
+    }
+
+
+    return uid;
+}
+
+
+/* =========================================================
+   SAVE PLAYER CONFIGURATION
+========================================================= */
+
+function savePlayerConfigurationV22() {
+
+    localStorage.setItem(
+
+        DH_ACCOUNT_SLOT_KEY,
 
         String(
             dartHubAccountPlayerSlot
@@ -248,7 +383,7 @@ function saveIdentityState() {
 
     localStorage.setItem(
 
-        DART_HUB_OPPONENT_TYPE_KEY,
+        DH_OPPONENT_TYPE_KEY,
 
         dartHubOpponentType
     );
@@ -260,7 +395,7 @@ function saveIdentityState() {
 
         localStorage.setItem(
 
-            DART_HUB_REGISTERED_PLAYER_KEY,
+            DH_REGISTERED_OPPONENT_KEY,
 
             JSON.stringify(
                 dartHubRegisteredOpponent
@@ -271,21 +406,21 @@ function saveIdentityState() {
     } else {
 
         localStorage.removeItem(
-            DART_HUB_REGISTERED_PLAYER_KEY
+            DH_REGISTERED_OPPONENT_KEY
         );
     }
 }
 
 
 /* =========================================================
-   STYLES
+   STYLE
 ========================================================= */
 
-function installRegisteredPlayerStyles() {
+function installV22Styles() {
 
     if (
         document.getElementById(
-            "dart-hub-v21-player-styles"
+            "dart-hub-v22-style"
         )
     ) {
 
@@ -300,12 +435,12 @@ function installRegisteredPlayerStyles() {
 
 
     style.id =
-        "dart-hub-v21-player-styles";
+        "dart-hub-v22-style";
 
 
     style.textContent = `
 
-        .v21-player-panel {
+        .dh-player-panel {
 
             margin:
                 12px
@@ -331,13 +466,13 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-panel.hidden {
+        .dh-player-panel.hidden {
 
             display: none !important;
         }
 
 
-        .v21-player-heading {
+        .dh-player-heading {
 
             margin-bottom: 4px;
 
@@ -349,7 +484,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-help {
+        .dh-player-help {
 
             margin:
                 0
@@ -364,7 +499,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-grid {
+        .dh-player-grid {
 
             display: grid;
 
@@ -381,7 +516,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-card {
+        .dh-player-card {
 
             padding: 11px;
 
@@ -395,11 +530,11 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-card-title {
+        .dh-player-card-title {
 
             margin-bottom: 8px;
 
-            color: #eaf0f3;
+            color: white;
 
             font-size: 13px;
 
@@ -407,24 +542,21 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-options {
+        .dh-player-options {
 
             display: grid;
 
             grid-template-columns:
                 repeat(
                     3,
-                    minmax(
-                        0,
-                        1fr
-                    )
+                    1fr
                 );
 
             gap: 5px;
         }
 
 
-        .v21-player-choice {
+        .dh-choice {
 
             min-height: 43px;
 
@@ -448,7 +580,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-choice.me-active {
+        .dh-choice.me-active {
 
             border-color: #00aaff;
 
@@ -463,7 +595,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-choice.guest-active {
+        .dh-choice.guest-active {
 
             border-color: #138354;
 
@@ -478,7 +610,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-player-choice.registered-active {
+        .dh-choice.registered-active {
 
             border-color: #a96cff;
 
@@ -493,7 +625,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-player-finder {
+        .dh-player-finder {
 
             margin-top: 9px;
 
@@ -509,13 +641,13 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-player-finder.hidden {
+        .dh-player-finder.hidden {
 
             display: none !important;
         }
 
 
-        .registered-player-finder label {
+        .dh-player-finder label {
 
             display: block;
 
@@ -529,7 +661,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-player-find-row {
+        .dh-find-row {
 
             display: grid;
 
@@ -541,7 +673,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-player-code-input {
+        .dh-code-input {
 
             min-width: 0;
 
@@ -571,13 +703,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-player-code-input:focus {
-
-            border-color: #a96cff;
-        }
-
-
-        .registered-find-btn {
+        .dh-find-button {
 
             min-height: 43px;
 
@@ -604,7 +730,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-find-status {
+        .dh-find-status {
 
             min-height: 18px;
 
@@ -616,19 +742,19 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-find-status.success {
+        .dh-find-status.success {
 
             color: #75ffc1;
         }
 
 
-        .registered-find-status.error {
+        .dh-find-status.error {
 
             color: #ff9292;
         }
 
 
-        .me-name-field {
+        .dh-me-name {
 
             border-color:
                 #00aaff !important;
@@ -643,7 +769,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .registered-name-field {
+        .dh-registered-name {
 
             border-color:
                 #a96cff !important;
@@ -658,7 +784,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .v21-selection-summary {
+        .dh-selection-summary {
 
             margin-top: 10px;
 
@@ -678,7 +804,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .my-player-code-card {
+        .dh-player-code-card {
 
             max-width: 420px;
 
@@ -705,7 +831,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .my-player-code-label {
+        .dh-player-code-label {
 
             color: #9d8cb4;
 
@@ -719,7 +845,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .my-player-code-value {
+        .dh-player-code-value {
 
             margin-top: 3px;
 
@@ -733,7 +859,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .my-player-code-help {
+        .dh-player-code-help {
 
             margin-top: 4px;
 
@@ -743,7 +869,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .match-player-badge {
+        .dh-match-badge {
 
             display: inline-flex;
 
@@ -770,13 +896,13 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .match-player-badge.hidden {
+        .dh-match-badge.hidden {
 
             display: none !important;
         }
 
 
-        .match-player-badge.you {
+        .dh-match-badge.you {
 
             border:
                 1px solid
@@ -788,7 +914,7 @@ function installRegisteredPlayerStyles() {
         }
 
 
-        .match-player-badge.registered {
+        .dh-match-badge.registered {
 
             border:
                 1px solid
@@ -800,35 +926,340 @@ function installRegisteredPlayerStyles() {
         }
 
 
+        /* MATCH REQUESTS */
+
+        .dh-requests-card {
+
+            max-width: 700px;
+
+            margin:
+                12px
+                auto;
+
+            padding: 12px;
+
+            border:
+                1px solid
+                #44525a;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #141b1f,
+                    #090d0f
+                );
+
+            text-align: left;
+        }
+
+
+        .dh-requests-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .dh-requests-title {
+
+            color: #00aaff;
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .dh-refresh {
+
+            min-height: 34px;
+
+            padding:
+                5px
+                10px;
+
+            border:
+                1px solid
+                #384b55;
+
+            border-radius: 7px;
+
+            background: #111a1f;
+
+            color: #c4d0d5;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .dh-request-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            margin-top: 10px;
+        }
+
+
+        .dh-request {
+
+            padding: 10px;
+
+            border:
+                1px solid
+                #29373e;
+
+            border-radius: 9px;
+
+            background: #070a0c;
+        }
+
+
+        .dh-request.incoming {
+
+            border-left:
+                4px solid
+                #a96cff;
+        }
+
+
+        .dh-request.outgoing {
+
+            border-left:
+                4px solid
+                #00aaff;
+        }
+
+
+        .dh-request.accepted {
+
+            border-left:
+                4px solid
+                #00c878;
+        }
+
+
+        .dh-request.disputed {
+
+            border-left:
+                4px solid
+                #e14444;
+        }
+
+
+        .dh-request-title {
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 900;
+        }
+
+
+        .dh-request-meta {
+
+            margin-top: 4px;
+
+            color: #85969d;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+        }
+
+
+        .dh-request-result {
+
+            margin-top: 7px;
+
+            color: #d3dce0;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .dh-request-stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 6px;
+
+            margin-top: 8px;
+        }
+
+
+        .dh-request-stat {
+
+            padding: 6px;
+
+            border-radius: 6px;
+
+            background: #101619;
+
+            color: #92a0a7;
+
+            font-size: 10px;
+        }
+
+
+        .dh-request-stat strong {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color: white;
+
+            font-size: 13px;
+        }
+
+
+        .dh-request-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    1fr
+                );
+
+            gap: 6px;
+
+            margin-top: 9px;
+        }
+
+
+        .dh-accept {
+
+            min-height: 42px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #087247;
+
+            color: white;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+
+        .dh-dispute,
+        .dh-cancel {
+
+            min-height: 42px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #792323;
+
+            color: white;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+
+        .dh-request-status {
+
+            margin-top: 7px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+
+        .dh-request-status.pending {
+
+            color: #ffd16e;
+        }
+
+
+        .dh-request-status.accepted {
+
+            color: #74ffc1;
+        }
+
+
+        .dh-request-status.disputed {
+
+            color: #ff8d8d;
+        }
+
+
+        .dh-request-empty {
+
+            padding: 12px;
+
+            color: #819097;
+
+            font-size: 12px;
+
+            text-align: center;
+        }
+
+
         @media (
             max-width:
             650px
         ) {
 
-            .v21-player-grid {
+            .dh-player-grid {
 
                 grid-template-columns:
                     1fr;
             }
 
 
-            .v21-player-options {
+            .dh-find-row {
 
                 grid-template-columns:
-                    repeat(
-                        3,
-                        1fr
-                    );
+                    1fr;
             }
 
 
-            .registered-player-find-row {
+            .dh-request-stats {
 
                 grid-template-columns:
                     1fr;
             }
 
         }
+
     `;
 
 
@@ -839,10 +1270,10 @@ function installRegisteredPlayerStyles() {
 
 
 /* =========================================================
-   BUILD PLAYER UI
+   BUILD PLAYER SELECTION
 ========================================================= */
 
-function installPlayerIdentityV21() {
+function installPlayerSelectionV22() {
 
     const nameScreenElement =
         document.getElementById(
@@ -858,37 +1289,30 @@ function installPlayerIdentityV21() {
     }
 
 
-    const oldPanel =
-        document.getElementById(
-            "player-identity-panel"
-        );
+    [
+        "player-identity-panel",
+        "v21-player-panel",
+        "v22-player-panel"
+    ].forEach(
+        id => {
+
+            const old =
+                document.getElementById(
+                    id
+                );
 
 
-    if (
-        oldPanel
-    ) {
+            if (
+                old
+            ) {
 
-        oldPanel.remove();
-    }
-
-
-    if (
-        document.getElementById(
-            "v21-player-panel"
-        )
-    ) {
-
-        identityPanel =
-            document.getElementById(
-                "v21-player-panel"
-            );
+                old.remove();
+            }
+        }
+    );
 
 
-        return;
-    }
-
-
-    const firstSetupRow =
+    const firstRow =
         nameScreenElement
             .querySelector(
                 ".setup-row"
@@ -896,420 +1320,299 @@ function installPlayerIdentityV21() {
 
 
     if (
-        !firstSetupRow
+        !firstRow
     ) {
 
         return;
     }
 
 
-    identityPanel =
+    identityPanelV22 =
         document.createElement(
             "div"
         );
 
 
-    identityPanel.id =
-        "v21-player-panel";
+    identityPanelV22.id =
+        "v22-player-panel";
 
 
-    identityPanel.className =
-        "v21-player-panel";
+    identityPanelV22.className =
+        "dh-player-panel";
 
 
-    identityPanel.innerHTML = `
+    identityPanelV22.innerHTML = `
 
-        <div class="v21-player-heading">
+        <div class="dh-player-heading">
 
             Choose Players
 
         </div>
 
 
-        <p class="v21-player-help">
+        <p class="dh-player-help">
 
-            One side must be your signed-in Dart Hub
-            account. The opponent can be a guest or
-            another registered Dart Hub player.
+            One side is your Dart Hub account.
+            The opponent can be a guest or another
+            registered Dart Hub player.
 
         </p>
 
 
-        <div class="v21-player-grid">
+        <div class="dh-player-grid">
 
 
-            <div
-                id="v21-player-card-1"
-                class="v21-player-card"
-            >
-
-                <div class="v21-player-card-title">
-
-                    Player 1
-
-                </div>
+            ${playerSelectionCardHTML(1)}
 
 
-                <div class="v21-player-options">
-
-                    <button
-                        id="v21-p1-me"
-                        class="v21-player-choice"
-                        type="button"
-                    >
-                        👤 Me
-                    </button>
-
-                    <button
-                        id="v21-p1-guest"
-                        class="v21-player-choice"
-                        type="button"
-                    >
-                        Guest
-                    </button>
-
-                    <button
-                        id="v21-p1-registered"
-                        class="v21-player-choice"
-                        type="button"
-                    >
-                        ☁ Registered
-                    </button>
-
-                </div>
-
-
-                <div
-                    id="v21-p1-finder"
-                    class="registered-player-finder hidden"
-                >
-
-                    <label>
-                        Dart Hub Player Code
-                    </label>
-
-
-                    <div class="registered-player-find-row">
-
-                        <input
-                            id="v21-p1-code"
-                            class="registered-player-code-input"
-                            type="text"
-                            maxlength="8"
-                            placeholder="PLAYER CODE"
-                            autocomplete="off"
-                        >
-
-                        <button
-                            id="v21-p1-find"
-                            class="registered-find-btn"
-                            type="button"
-                        >
-                            Find
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        id="v21-p1-status"
-                        class="registered-find-status"
-                    ></div>
-
-                </div>
-
-            </div>
-
-
-
-            <div
-                id="v21-player-card-2"
-                class="v21-player-card"
-            >
-
-                <div class="v21-player-card-title">
-
-                    Player 2
-
-                </div>
-
-
-                <div class="v21-player-options">
-
-                    <button
-                        id="v21-p2-me"
-                        class="v21-player-choice"
-                        type="button"
-                    >
-                        👤 Me
-                    </button>
-
-                    <button
-                        id="v21-p2-guest"
-                        class="v21-player-choice"
-                        type="button"
-                    >
-                        Guest
-                    </button>
-
-                    <button
-                        id="v21-p2-registered"
-                        class="v21-player-choice"
-                        type="button"
-                    >
-                        ☁ Registered
-                    </button>
-
-                </div>
-
-
-                <div
-                    id="v21-p2-finder"
-                    class="registered-player-finder hidden"
-                >
-
-                    <label>
-                        Dart Hub Player Code
-                    </label>
-
-
-                    <div class="registered-player-find-row">
-
-                        <input
-                            id="v21-p2-code"
-                            class="registered-player-code-input"
-                            type="text"
-                            maxlength="8"
-                            placeholder="PLAYER CODE"
-                            autocomplete="off"
-                        >
-
-                        <button
-                            id="v21-p2-find"
-                            class="registered-find-btn"
-                            type="button"
-                        >
-                            Find
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        id="v21-p2-status"
-                        class="registered-find-status"
-                    ></div>
-
-                </div>
-
-            </div>
+            ${playerSelectionCardHTML(2)}
 
         </div>
 
 
         <div
-            id="v21-selection-summary"
-            class="v21-selection-summary"
+            id="dh-selection-summary"
+            class="dh-selection-summary"
         ></div>
+
     `;
 
 
     nameScreenElement.insertBefore(
 
-        identityPanel,
+        identityPanelV22,
 
-        firstSetupRow
+        firstRow
     );
 
 
-    document
-        .getElementById(
-            "v21-p1-me"
-        )
-        .onclick =
-            () =>
-                chooseMeSlot(
-                    1
-                );
+    for (
+        const slot
+        of [
+            1,
+            2
+        ]
+    ) {
 
-
-    document
-        .getElementById(
-            "v21-p2-me"
-        )
-        .onclick =
-            () =>
-                chooseMeSlot(
-                    2
-                );
-
-
-    document
-        .getElementById(
-            "v21-p1-guest"
-        )
-        .onclick =
-            () =>
-                chooseOpponentType(
-                    1,
-                    "guest"
-                );
-
-
-    document
-        .getElementById(
-            "v21-p2-guest"
-        )
-        .onclick =
-            () =>
-                chooseOpponentType(
-                    2,
-                    "guest"
-                );
-
-
-    document
-        .getElementById(
-            "v21-p1-registered"
-        )
-        .onclick =
-            () =>
-                chooseOpponentType(
-                    1,
-                    "registered"
-                );
-
-
-    document
-        .getElementById(
-            "v21-p2-registered"
-        )
-        .onclick =
-            () =>
-                chooseOpponentType(
-                    2,
-                    "registered"
-                );
-
-
-    document
-        .getElementById(
-            "v21-p1-find"
-        )
-        .onclick =
-            () =>
-                findRegisteredPlayer(
-                    1
-                );
-
-
-    document
-        .getElementById(
-            "v21-p2-find"
-        )
-        .onclick =
-            () =>
-                findRegisteredPlayer(
-                    2
-                );
-
-
-    document
-        .getElementById(
-            "v21-p1-code"
-        )
-        .addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key ===
-                    "Enter"
-                ) {
-
-                    findRegisteredPlayer(
-                        1
+        document
+            .getElementById(
+                `dh-p${slot}-me`
+            )
+            .onclick =
+                () =>
+                    chooseMeV22(
+                        slot
                     );
-                }
-            }
-        );
 
 
-    document
-        .getElementById(
-            "v21-p2-code"
-        )
-        .addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key ===
-                    "Enter"
-                ) {
-
-                    findRegisteredPlayer(
-                        2
+        document
+            .getElementById(
+                `dh-p${slot}-guest`
+            )
+            .onclick =
+                () =>
+                    chooseOpponentTypeV22(
+                        slot,
+                        "guest"
                     );
+
+
+        document
+            .getElementById(
+                `dh-p${slot}-registered`
+            )
+            .onclick =
+                () =>
+                    chooseOpponentTypeV22(
+                        slot,
+                        "registered"
+                    );
+
+
+        document
+            .getElementById(
+                `dh-p${slot}-find`
+            )
+            .onclick =
+                () =>
+                    findRegisteredPlayerV22(
+                        slot
+                    );
+
+
+        document
+            .getElementById(
+                `dh-p${slot}-code`
+            )
+            .addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        findRegisteredPlayerV22(
+                            slot
+                        );
+                    }
                 }
-            }
-        );
+            );
+    }
 
 
-    updateIdentityUIV21();
+    updatePlayerSelectionV22();
+}
+
+
+function playerSelectionCardHTML(
+    slot
+) {
+
+    return `
+
+        <div class="dh-player-card">
+
+            <div class="dh-player-card-title">
+
+                Player ${slot}
+
+            </div>
+
+
+            <div class="dh-player-options">
+
+                <button
+                    id="dh-p${slot}-me"
+                    class="dh-choice"
+                    type="button"
+                >
+                    👤 Me
+                </button>
+
+
+                <button
+                    id="dh-p${slot}-guest"
+                    class="dh-choice"
+                    type="button"
+                >
+                    Guest
+                </button>
+
+
+                <button
+                    id="dh-p${slot}-registered"
+                    class="dh-choice"
+                    type="button"
+                >
+                    ☁ Registered
+                </button>
+
+            </div>
+
+
+            <div
+                id="dh-p${slot}-finder"
+                class="dh-player-finder hidden"
+            >
+
+                <label>
+                    Dart Hub Player Code
+                </label>
+
+
+                <div class="dh-find-row">
+
+                    <input
+                        id="dh-p${slot}-code"
+                        class="dh-code-input"
+                        type="text"
+                        maxlength="8"
+                        placeholder="PLAYER CODE"
+                        autocomplete="off"
+                    >
+
+
+                    <button
+                        id="dh-p${slot}-find"
+                        class="dh-find-button"
+                        type="button"
+                    >
+                        Find
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="dh-p${slot}-status"
+                    class="dh-find-status"
+                ></div>
+
+            </div>
+
+        </div>
+    `;
 }
 
 
 /* =========================================================
-   MY PLAYER CODE CARD
+   PLAYER CODE
 ========================================================= */
 
-function installMyPlayerCodeCard() {
+function installPlayerCodeCardV22() {
 
-    if (
+    let card =
         document.getElementById(
             "my-player-code-card"
-        )
-    ) {
-
-        refreshMyPlayerCodeCard();
-
-
-        return;
-    }
-
-
-    const userBarElement =
-        document.getElementById(
-            "dart-hub-user-bar"
         );
 
 
     if (
-        !userBarElement
+        !card
     ) {
 
-        return;
-    }
+        const userBar =
+            document.getElementById(
+                "dart-hub-user-bar"
+            );
 
 
-    const card =
-        document.createElement(
-            "div"
+        if (
+            !userBar
+        ) {
+
+            return;
+        }
+
+
+        card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.id =
+            "my-player-code-card";
+
+
+        card.className =
+            "dh-player-code-card";
+
+
+        userBar.insertAdjacentElement(
+
+            "afterend",
+
+            card
         );
-
-
-    card.id =
-        "my-player-code-card";
-
-
-    card.className =
-        "my-player-code-card";
+    }
 
 
     card.innerHTML = `
 
-        <div class="my-player-code-label">
+        <div class="dh-player-code-label">
 
             Your Dart Hub Player Code
 
@@ -1317,57 +1620,163 @@ function installMyPlayerCodeCard() {
 
 
         <div
-            id="my-player-code-value"
-            class="my-player-code-value"
+            id="dh-player-code-value"
+            class="dh-player-code-value"
         >
             --------
         </div>
 
 
-        <div class="my-player-code-help">
+        <div class="dh-player-code-help">
 
-            Give this code to another Dart Hub player
-            so they can select your registered profile.
+            Give this code to another Dart Hub player.
 
         </div>
     `;
 
 
-    userBarElement.insertAdjacentElement(
-
-        "afterend",
-
-        card
-    );
-
-
-    refreshMyPlayerCodeCard();
+    refreshPlayerCodeV22();
 }
 
 
-function refreshMyPlayerCodeCard() {
+function refreshPlayerCodeV22() {
 
-    const valueElement =
+    const value =
         document.getElementById(
-            "my-player-code-value"
+            "dh-player-code-value"
         );
 
 
     if (
-        !valueElement
+        value
+    ) {
+
+        value.textContent =
+            getMyPlayerCodeV22() ||
+            "--------";
+    }
+}
+
+
+/* =========================================================
+   MATCH REQUEST CARD
+========================================================= */
+
+function installMatchRequestsCard() {
+
+    if (
+        document.getElementById(
+            "dh-match-requests-card"
+        )
+    ) {
+
+        matchRequestsCard =
+            document.getElementById(
+                "dh-match-requests-card"
+            );
+
+
+        return;
+    }
+
+
+    const codeCard =
+        document.getElementById(
+            "my-player-code-card"
+        );
+
+
+    const modeScreenElement =
+        document.getElementById(
+            "mode-screen"
+        );
+
+
+    if (
+        !modeScreenElement
     ) {
 
         return;
     }
 
 
-    const code =
-        getMyPlayerCode();
+    matchRequestsCard =
+        document.createElement(
+            "div"
+        );
 
 
-    valueElement.textContent =
-        code ||
-        "--------";
+    matchRequestsCard.id =
+        "dh-match-requests-card";
+
+
+    matchRequestsCard.className =
+        "dh-requests-card";
+
+
+    matchRequestsCard.innerHTML = `
+
+        <div class="dh-requests-header">
+
+            <div class="dh-requests-title">
+
+                📨 Match Confirmations
+
+            </div>
+
+
+            <button
+                id="dh-refresh-requests"
+                class="dh-refresh"
+                type="button"
+            >
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+        <div
+            id="dh-request-list"
+            class="dh-request-list"
+        >
+
+            <div class="dh-request-empty">
+
+                Checking match requests…
+
+            </div>
+
+        </div>
+    `;
+
+
+    if (
+        codeCard
+    ) {
+
+        codeCard.insertAdjacentElement(
+
+            "afterend",
+
+            matchRequestsCard
+        );
+
+
+    } else {
+
+        modeScreenElement.appendChild(
+            matchRequestsCard
+        );
+    }
+
+
+    document
+        .getElementById(
+            "dh-refresh-requests"
+        )
+        .onclick =
+            loadMatchRequests;
 }
 
 
@@ -1375,7 +1784,7 @@ function refreshMyPlayerCodeCard() {
    CHOOSE ME
 ========================================================= */
 
-function chooseMeSlot(
+function chooseMeV22(
     slot
 ) {
 
@@ -1390,7 +1799,7 @@ function chooseMeSlot(
 
 
     const opponentSlot =
-        getOpponentSlot();
+        getOpponentSlotV22();
 
 
     if (
@@ -1408,19 +1817,19 @@ function chooseMeSlot(
     }
 
 
-    saveIdentityState();
+    savePlayerConfigurationV22();
 
-    updateIdentityUIV21();
+    updatePlayerSelectionV22();
 
-    updateMatchPlayerBadges();
+    updateMatchBadgesV22();
 }
 
 
 /* =========================================================
-   CHOOSE GUEST OR REGISTERED
+   OPPONENT TYPE
 ========================================================= */
 
-function chooseOpponentType(
+function chooseOpponentTypeV22(
     slot,
     type
 ) {
@@ -1431,7 +1840,7 @@ function chooseOpponentType(
     ) {
 
         alert(
-            "That player is currently your signed-in Dart Hub account. Select Me on the other side first."
+            "That side is currently your Dart Hub account. Select Me on the other player first."
         );
 
 
@@ -1459,11 +1868,11 @@ function chooseOpponentType(
     }
 
 
-    saveIdentityState();
+    savePlayerConfigurationV22();
 
-    updateIdentityUIV21();
+    updatePlayerSelectionV22();
 
-    updateMatchPlayerBadges();
+    updateMatchBadgesV22();
 }
 
 
@@ -1471,7 +1880,7 @@ function chooseOpponentType(
    FIND REGISTERED PLAYER
 ========================================================= */
 
-async function findRegisteredPlayer(
+async function findRegisteredPlayerV22(
     slot
 ) {
 
@@ -1484,26 +1893,26 @@ async function findRegisteredPlayer(
     }
 
 
-    const codeInput =
+    const input =
         document.getElementById(
-            `v21-p${slot}-code`
+            `dh-p${slot}-code`
         );
 
 
     const status =
         document.getElementById(
-            `v21-p${slot}-status`
+            `dh-p${slot}-status`
         );
 
 
     const code =
-        normalisePlayerCode(
-            codeInput.value
+        dhNormalizeCode(
+            input.value
         );
 
 
     status.className =
-        "registered-find-status";
+        "dh-find-status";
 
 
     if (
@@ -1512,7 +1921,7 @@ async function findRegisteredPlayer(
     ) {
 
         status.textContent =
-            "Enter the 8-character Dart Hub player code.";
+            "Enter the 8-character player code.";
 
 
         status.classList.add(
@@ -1526,13 +1935,13 @@ async function findRegisteredPlayer(
 
     if (
         code ===
-        normalisePlayerCode(
-            getMyPlayerCode()
+        dhNormalizeCode(
+            getMyPlayerCodeV22()
         )
     ) {
 
         status.textContent =
-            "That is your own Dart Hub account.";
+            "That is your own account.";
 
 
         status.classList.add(
@@ -1588,11 +1997,8 @@ async function findRegisteredPlayer(
                 null;
 
 
-            saveIdentityState();
-
-
             status.textContent =
-                "No Dart Hub player found with that code.";
+                "Player not found.";
 
 
             status.classList.add(
@@ -1600,20 +2006,21 @@ async function findRegisteredPlayer(
             );
 
 
+            savePlayerConfigurationV22();
+
+
             return;
         }
 
 
         if (
-            typeof currentDartHubUser !==
-                "undefined" &&
             currentDartHubUser &&
             data.user_id ===
                 currentDartHubUser.id
         ) {
 
             status.textContent =
-                "That is your own Dart Hub account.";
+                "That is your own account.";
 
 
             status.classList.add(
@@ -1644,16 +2051,12 @@ async function findRegisteredPlayer(
             "registered";
 
 
-        saveIdentityState();
+        savePlayerConfigurationV22();
 
 
-        const nameInput =
-            getNameInput(
-                slot
-            );
-
-
-        nameInput.value =
+        getNameInputV22(
+            slot
+        ).value =
             data.display_name;
 
 
@@ -1661,12 +2064,11 @@ async function findRegisteredPlayer(
             `Found: ${data.display_name} ✓`;
 
 
-        status.classList.add(
-            "success"
-        );
+        status.className =
+            "dh-find-status success";
 
 
-        updateIdentityUIV21();
+        updatePlayerSelectionV22();
 
 
     } catch (
@@ -1674,13 +2076,12 @@ async function findRegisteredPlayer(
     ) {
 
         console.error(
-            "Dart Hub registered player lookup:",
             error
         );
 
 
         status.textContent =
-            "Could not search for the player. Check your connection.";
+            "Unable to find player.";
 
 
         status.classList.add(
@@ -1691,13 +2092,13 @@ async function findRegisteredPlayer(
 
 
 /* =========================================================
-   UPDATE NAME SCREEN
+   UPDATE PLAYER SCREEN
 ========================================================= */
 
-function updateIdentityUIV21() {
+function updatePlayerSelectionV22() {
 
     if (
-        !identityPanel
+        !identityPanelV22
     ) {
 
         return;
@@ -1709,11 +2110,11 @@ function updateIdentityUIV21() {
 
 
     const opponentSlot =
-        getOpponentSlot();
+        getOpponentSlotV22();
 
 
-    const accountName =
-        getSignedInDartHubName();
+    const myName =
+        getSignedInPlayerNameV22();
 
 
     for (
@@ -1724,58 +2125,58 @@ function updateIdentityUIV21() {
         ]
     ) {
 
-        const meButton =
+        const me =
             document.getElementById(
-                `v21-p${slot}-me`
+                `dh-p${slot}-me`
             );
 
 
-        const guestButton =
+        const guest =
             document.getElementById(
-                `v21-p${slot}-guest`
+                `dh-p${slot}-guest`
             );
 
 
-        const registeredButton =
+        const registered =
             document.getElementById(
-                `v21-p${slot}-registered`
+                `dh-p${slot}-registered`
             );
 
 
         const finder =
             document.getElementById(
-                `v21-p${slot}-finder`
+                `dh-p${slot}-finder`
             );
 
 
-        const input =
-            getNameInput(
+        const nameInput =
+            getNameInputV22(
                 slot
             );
 
 
-        meButton.classList.remove(
+        me.classList.remove(
             "me-active"
         );
 
 
-        guestButton.classList.remove(
+        guest.classList.remove(
             "guest-active"
         );
 
 
-        registeredButton.classList.remove(
+        registered.classList.remove(
             "registered-active"
         );
 
 
-        input.classList.remove(
-            "me-name-field"
+        nameInput.classList.remove(
+            "dh-me-name"
         );
 
 
-        input.classList.remove(
-            "registered-name-field"
+        nameInput.classList.remove(
+            "dh-registered-name"
         );
 
 
@@ -1784,21 +2185,21 @@ function updateIdentityUIV21() {
             meSlot
         ) {
 
-            meButton.classList.add(
+            me.classList.add(
                 "me-active"
             );
 
 
-            input.value =
-                accountName;
+            nameInput.value =
+                myName;
 
 
-            input.readOnly =
+            nameInput.readOnly =
                 true;
 
 
-            input.classList.add(
-                "me-name-field"
+            nameInput.classList.add(
+                "dh-me-name"
             );
 
 
@@ -1816,7 +2217,7 @@ function updateIdentityUIV21() {
             "registered"
         ) {
 
-            registeredButton.classList.add(
+            registered.classList.add(
                 "registered-active"
             );
 
@@ -1826,12 +2227,12 @@ function updateIdentityUIV21() {
             );
 
 
-            input.readOnly =
+            nameInput.readOnly =
                 true;
 
 
-            input.classList.add(
-                "registered-name-field"
+            nameInput.classList.add(
+                "dh-registered-name"
             );
 
 
@@ -1841,14 +2242,14 @@ function updateIdentityUIV21() {
                     slot
             ) {
 
-                input.value =
+                nameInput.value =
                     dartHubRegisteredOpponent
                         .display_name;
 
 
                 document
                     .getElementById(
-                        `v21-p${slot}-code`
+                        `dh-p${slot}-code`
                     )
                     .value =
                         dartHubRegisteredOpponent
@@ -1857,7 +2258,7 @@ function updateIdentityUIV21() {
 
                 const status =
                     document.getElementById(
-                        `v21-p${slot}-status`
+                        `dh-p${slot}-status`
                     );
 
 
@@ -1866,29 +2267,33 @@ function updateIdentityUIV21() {
 
 
                 status.className =
-                    "registered-find-status success";
+                    "dh-find-status success";
 
 
             } else {
 
-                input.value =
+                nameInput.value =
                     "";
 
 
                 const status =
                     document.getElementById(
-                        `v21-p${slot}-status`
+                        `dh-p${slot}-status`
                     );
 
 
                 status.textContent =
                     "Enter the player's Dart Hub code.";
+
+
+                status.className =
+                    "dh-find-status";
             }
 
 
         } else {
 
-            guestButton.classList.add(
+            guest.classList.add(
                 "guest-active"
             );
 
@@ -1898,20 +2303,20 @@ function updateIdentityUIV21() {
             );
 
 
-            input.readOnly =
+            nameInput.readOnly =
                 false;
 
 
             if (
-                normaliseDartHubName(
-                    input.value
+                dhNormalizeName(
+                    nameInput.value
                 ) ===
-                normaliseDartHubName(
-                    accountName
+                dhNormalizeName(
+                    myName
                 )
             ) {
 
-                input.value =
+                nameInput.value =
                     "";
             }
         }
@@ -1920,7 +2325,7 @@ function updateIdentityUIV21() {
 
     const summary =
         document.getElementById(
-            "v21-selection-summary"
+            "dh-selection-summary"
         );
 
 
@@ -1936,7 +2341,7 @@ function updateIdentityUIV21() {
 
             summary.textContent =
 
-                `Player ${meSlot}: ${accountName} (YOU) • ` +
+                `Player ${meSlot}: ${myName} (YOU) • ` +
 
                 `Player ${opponentSlot}: ` +
 
@@ -1947,7 +2352,7 @@ function updateIdentityUIV21() {
 
             summary.textContent =
 
-                `Player ${meSlot}: ${accountName} (YOU) • ` +
+                `Player ${meSlot}: ${myName} (YOU) • ` +
 
                 `Player ${opponentSlot}: Guest`;
         }
@@ -1959,12 +2364,12 @@ function updateIdentityUIV21() {
    CRICKET
 ========================================================= */
 
-function updateIdentityForGameMode(
+function setPlayerPanelGameModeV22(
     mode
 ) {
 
     if (
-        !identityPanel
+        !identityPanelV22
     ) {
 
         return;
@@ -1976,69 +2381,58 @@ function updateIdentityForGameMode(
         "cricket"
     ) {
 
-        identityPanel.classList.add(
+        identityPanelV22.classList.add(
             "hidden"
         );
 
 
-        const p1 =
-            getNameInput(
-                1
-            );
-
-
-        const p2 =
-            getNameInput(
+        for (
+            const slot
+            of [
+                1,
                 2
+            ]
+        ) {
+
+            const input =
+                getNameInputV22(
+                    slot
+                );
+
+
+            input.readOnly =
+                false;
+
+
+            input.classList.remove(
+                "dh-me-name"
             );
 
 
-        p1.readOnly =
-            false;
-
-
-        p2.readOnly =
-            false;
-
-
-        p1.classList.remove(
-            "me-name-field"
-        );
-
-
-        p1.classList.remove(
-            "registered-name-field"
-        );
-
-
-        p2.classList.remove(
-            "me-name-field"
-        );
-
-
-        p2.classList.remove(
-            "registered-name-field"
-        );
+            input.classList.remove(
+                "dh-registered-name"
+            );
+        }
 
 
         return;
     }
 
 
-    identityPanel.classList.remove(
+    identityPanelV22.classList.remove(
         "hidden"
     );
 
 
-    updateIdentityUIV21();
+    updatePlayerSelectionV22();
 }
 
 
 /* =========================================================
-   VALIDATE BEFORE MATCH SETUP
+   VALIDATION
 ========================================================= */
 
-function validatePlayersBeforeContinue(
+function validatePlayersV22(
     event
 ) {
 
@@ -2053,24 +2447,24 @@ function validatePlayersBeforeContinue(
     }
 
 
+    const myName =
+        getSignedInPlayerNameV22();
+
+
     const opponentSlot =
-        getOpponentSlot();
+        getOpponentSlotV22();
 
 
     const opponentInput =
-        getNameInput(
+        getNameInputV22(
             opponentSlot
         );
 
 
-    const accountName =
-        getSignedInDartHubName();
-
-
-    getNameInput(
+    getNameInputV22(
         dartHubAccountPlayerSlot
     ).value =
-        accountName;
+        myName;
 
 
     if (
@@ -2090,7 +2484,7 @@ function validatePlayersBeforeContinue(
 
 
             alert(
-                "Find and select the registered Dart Hub opponent before continuing."
+                "Find the registered opponent before continuing."
             );
 
 
@@ -2121,7 +2515,7 @@ function validatePlayersBeforeContinue(
 
 
         alert(
-            `Enter the guest name for Player ${opponentSlot}.`
+            `Enter the guest player's name.`
         );
 
 
@@ -2133,11 +2527,11 @@ function validatePlayersBeforeContinue(
 
 
     if (
-        normaliseDartHubName(
+        dhNormalizeName(
             guestName
         ) ===
-        normaliseDartHubName(
-            accountName
+        dhNormalizeName(
+            myName
         )
     ) {
 
@@ -2147,7 +2541,7 @@ function validatePlayersBeforeContinue(
 
 
         alert(
-            "The guest player cannot have the same name as your Dart Hub profile."
+            "The guest cannot have the same name as your account."
         );
 
 
@@ -2160,7 +2554,7 @@ function validatePlayersBeforeContinue(
    SCOREBOARD BADGES
 ========================================================= */
 
-function installMatchPlayerBadges() {
+function installMatchBadgesV22() {
 
     for (
         const slot
@@ -2171,7 +2565,7 @@ function installMatchPlayerBadges() {
     ) {
 
         const box =
-            getPlayerBoxV21(
+            getPlayerBoxV22(
                 slot
             );
 
@@ -2186,7 +2580,7 @@ function installMatchPlayerBadges() {
 
         if (
             !box.querySelector(
-                `.match-player-badge.you[data-slot="${slot}"]`
+                `.dh-match-badge.you[data-slot="${slot}"]`
             )
         ) {
 
@@ -2197,13 +2591,11 @@ function installMatchPlayerBadges() {
 
 
             badge.className =
-                "match-player-badge you hidden";
+                "dh-match-badge you hidden";
 
 
             badge.dataset.slot =
-                String(
-                    slot
-                );
+                slot;
 
 
             badge.textContent =
@@ -2218,7 +2610,7 @@ function installMatchPlayerBadges() {
 
         if (
             !box.querySelector(
-                `.match-player-badge.registered[data-slot="${slot}"]`
+                `.dh-match-badge.registered[data-slot="${slot}"]`
             )
         ) {
 
@@ -2229,13 +2621,11 @@ function installMatchPlayerBadges() {
 
 
             badge.className =
-                "match-player-badge registered hidden";
+                "dh-match-badge registered hidden";
 
 
             badge.dataset.slot =
-                String(
-                    slot
-                );
+                slot;
 
 
             badge.textContent =
@@ -2249,15 +2639,15 @@ function installMatchPlayerBadges() {
     }
 
 
-    updateMatchPlayerBadges();
+    updateMatchBadgesV22();
 }
 
 
-function updateMatchPlayerBadges() {
+function updateMatchBadgesV22() {
 
     document
         .querySelectorAll(
-            ".match-player-badge.you"
+            ".dh-match-badge.you"
         )
         .forEach(
             badge => {
@@ -2277,16 +2667,10 @@ function updateMatchPlayerBadges() {
 
     document
         .querySelectorAll(
-            ".match-player-badge.registered"
+            ".dh-match-badge.registered"
         )
         .forEach(
             badge => {
-
-                const slot =
-                    Number(
-                        badge.dataset.slot
-                    );
-
 
                 const registeredSlot =
 
@@ -2304,7 +2688,9 @@ function updateMatchPlayerBadges() {
 
                     "hidden",
 
-                    slot !==
+                    Number(
+                        badge.dataset.slot
+                    ) !==
                     registeredSlot
                 );
             }
@@ -2313,37 +2699,34 @@ function updateMatchPlayerBadges() {
 
 
 /* =========================================================
-   OVERRIDE ACCOUNT PLAYER INDEX
+   ACCOUNT PLAYER INDEX
 ========================================================= */
 
-function installAccountPlayerIndexOverride() {
+function installAccountIndexOverrideV22() {
 
     if (
-        typeof getAccountPlayerIndex !==
+        typeof getAccountPlayerIndex ===
         "function"
     ) {
 
-        return;
+        getAccountPlayerIndex =
+            function () {
+
+                return (
+
+                    dartHubAccountPlayerSlot -
+                    1
+                );
+            };
     }
-
-
-    getAccountPlayerIndex =
-        function () {
-
-            return (
-
-                dartHubAccountPlayerSlot -
-                1
-            );
-        };
 }
 
 
 /* =========================================================
-   MATCH AVERAGE
+   AVERAGE
 ========================================================= */
 
-function registeredMatchAverage(
+function v22MatchAverage(
     player
 ) {
 
@@ -2369,67 +2752,13 @@ function registeredMatchAverage(
 
 
 /* =========================================================
-   UUID
+   REGISTERED MATCH SUBMISSION
 ========================================================= */
 
-function makeDartHubMatchUID() {
+async function submitRegisteredMatchV22() {
 
     if (
-        crypto &&
-        typeof crypto.randomUUID ===
-            "function"
-    ) {
-
-        return crypto.randomUUID();
-    }
-
-
-    return (
-
-        Date.now()
-            .toString(
-                16
-            )
-
-        +
-
-        "-"
-
-        +
-
-        Math.random()
-            .toString(
-                16
-            )
-            .slice(
-                2
-            )
-
-        +
-
-        "-"
-
-        +
-
-        Math.random()
-            .toString(
-                16
-            )
-            .slice(
-                2
-            )
-    );
-}
-
-
-/* =========================================================
-   SAVE REGISTERED MATCH
-========================================================= */
-
-async function saveRegisteredCloudMatch() {
-
-    if (
-        registeredCloudSaveRunning
+        dartHubCloudSubmissionRunning
     ) {
 
         return;
@@ -2447,8 +2776,6 @@ async function saveRegisteredCloudMatch() {
 
 
     if (
-        typeof currentDartHubUser ===
-            "undefined" ||
         !currentDartHubUser
     ) {
 
@@ -2456,19 +2783,19 @@ async function saveRegisteredCloudMatch() {
     }
 
 
-    registeredCloudSaveRunning =
+    dartHubCloudSubmissionRunning =
         true;
 
 
     try {
 
-        const userIndex =
+        const myIndex =
             dartHubAccountPlayerSlot -
             1;
 
 
         const opponentIndex =
-            userIndex ===
+            myIndex ===
             0
 
                 ? 1
@@ -2476,9 +2803,9 @@ async function saveRegisteredCloudMatch() {
                 : 0;
 
 
-        const userPlayer =
+        const myPlayer =
             players[
-                userIndex
+                myIndex
             ];
 
 
@@ -2488,14 +2815,14 @@ async function saveRegisteredCloudMatch() {
             ];
 
 
-        const userAverage =
-            registeredMatchAverage(
-                userPlayer
+        const myAverage =
+            v22MatchAverage(
+                myPlayer
             );
 
 
         const opponentAverage =
-            registeredMatchAverage(
+            v22MatchAverage(
                 opponentPlayer
             );
 
@@ -2517,11 +2844,11 @@ async function saveRegisteredCloudMatch() {
         } =
             await dartHubSupabase
                 .rpc(
-                    "record_registered_match",
+                    "submit_registered_match",
                     {
 
                         p_match_uid:
-                            makeDartHubMatchUID(),
+                            getCurrentMatchUID(),
 
                         p_opponent_id:
                             dartHubRegisteredOpponent
@@ -2541,9 +2868,10 @@ async function saveRegisteredCloudMatch() {
                         p_winner_id:
                             winnerID,
 
+
                         p_user_average:
                             Number(
-                                userAverage.toFixed(
+                                myAverage.toFixed(
                                     2
                                 )
                             ),
@@ -2555,9 +2883,10 @@ async function saveRegisteredCloudMatch() {
                                 )
                             ),
 
+
                         p_user_points:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .pointsScored ||
                                 0
                             ),
@@ -2569,9 +2898,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_darts:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .dartsThrown ||
                                 0
                             ),
@@ -2583,9 +2913,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_100s:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .scores100 ||
                                 0
                             ),
@@ -2597,9 +2928,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_140s:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .scores140 ||
                                 0
                             ),
@@ -2611,9 +2943,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_180s:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .scores180 ||
                                 0
                             ),
@@ -2625,9 +2958,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_checkouts:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .checkouts ||
                                 0
                             ),
@@ -2639,9 +2973,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_checkout_attempts:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .checkoutAttempts ||
                                 0
                             ),
@@ -2653,9 +2988,10 @@ async function saveRegisteredCloudMatch() {
                                 0
                             ),
 
+
                         p_user_best_checkout:
                             Number(
-                                userPlayer.stats
+                                myPlayer.stats
                                     .bestCheckout ||
                                 0
                             ),
@@ -2679,18 +3015,25 @@ async function saveRegisteredCloudMatch() {
 
 
         console.log(
-            "Registered Dart Hub match saved:",
+            "Dart Hub result submitted:",
             data
         );
 
 
-        if (
-            typeof refreshCloudProfile ===
-            "function"
-        ) {
+        localStorage.removeItem(
+            DH_MATCH_UID_KEY
+        );
 
-            await refreshCloudProfile();
-        }
+
+        await loadMatchRequests();
+
+
+        alert(
+
+            `Result sent to ${dartHubRegisteredOpponent.display_name} for confirmation.\n\n` +
+
+            `Career statistics will update when they accept the result.`
+        );
 
 
     } catch (
@@ -2698,32 +3041,35 @@ async function saveRegisteredCloudMatch() {
     ) {
 
         console.error(
-            "Dart Hub registered match save failed:",
+            "Result submission failed:",
             error
         );
 
 
         alert(
-            "The match finished, but Dart Hub could not update both registered profiles. Check your internet connection."
+
+            "The match finished, but Dart Hub could not send the result for confirmation.\n\n" +
+
+            "Check your internet connection."
         );
 
 
     } finally {
 
-        registeredCloudSaveRunning =
+        dartHubCloudSubmissionRunning =
             false;
     }
 }
 
 
 /* =========================================================
-   OVERRIDE CLOUD MATCH SAVE
+   OVERRIDE CLOUD SAVE
 ========================================================= */
 
-function installRegisteredMatchSaveOverride() {
+function installCloudSaveOverrideV22() {
 
     if (
-        window.__dartHubV21CloudSaveOverride
+        window.__dartHubV22CloudSave
     ) {
 
         return;
@@ -2736,7 +3082,7 @@ function installRegisteredMatchSaveOverride() {
     ) {
 
         console.warn(
-            "Dart Hub cloud save function was not found."
+            "Cloud save function was not found."
         );
 
 
@@ -2744,11 +3090,11 @@ function installRegisteredMatchSaveOverride() {
     }
 
 
-    window.__dartHubV21CloudSaveOverride =
+    window.__dartHubV22CloudSave =
         true;
 
 
-    const originalGuestCloudSave =
+    const originalGuestSave =
         saveCompletedCloudMatch;
 
 
@@ -2761,80 +3107,645 @@ function installRegisteredMatchSaveOverride() {
                 dartHubRegisteredOpponent
             ) {
 
-                await saveRegisteredCloudMatch();
+                await submitRegisteredMatchV22();
 
 
                 return;
             }
 
 
-            await originalGuestCloudSave();
+            await originalGuestSave();
         };
 }
 
 
 /* =========================================================
-   WATCH PROFILE NAME / CODE
+   LOAD MATCH REQUESTS
 ========================================================= */
 
-function watchCurrentProfile() {
+async function loadMatchRequests() {
 
-    const nameElement =
+    const container =
         document.getElementById(
-            "current-user-name"
+            "dh-request-list"
         );
 
 
     if (
-        nameElement
+        !container ||
+        !currentDartHubUser
     ) {
 
-        const observer =
-            new MutationObserver(
-                () => {
-
-                    updateIdentityUIV21();
-
-                    refreshMyPlayerCodeCard();
-                }
-            );
-
-
-        observer.observe(
-
-            nameElement,
-
-            {
-
-                childList:
-                    true,
-
-                characterData:
-                    true,
-
-                subtree:
-                    true
-            }
-        );
+        return;
     }
 
 
-    setTimeout(
-        refreshMyPlayerCodeCard,
-        500
-    );
+    container.innerHTML = `
+
+        <div class="dh-request-empty">
+
+            Loading…
+
+        </div>
+    `;
 
 
-    setTimeout(
-        refreshMyPlayerCodeCard,
-        1500
-    );
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dartHubSupabase
+
+                .from(
+                    "match_requests"
+                )
+
+                .select(
+                    "*"
+                )
+
+                .order(
+                    "created_at",
+                    {
+                        ascending:
+                            false
+                    }
+                )
+
+                .limit(
+                    20
+                );
 
 
-    setTimeout(
-        refreshMyPlayerCodeCard,
-        3000
-    );
+        if (
+            error
+        ) {
+
+            throw error;
+        }
+
+
+        renderMatchRequests(
+            data ||
+            []
+        );
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Match request load failed:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="dh-request-empty">
+
+                Unable to load match confirmations.
+
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   RENDER REQUESTS
+========================================================= */
+
+function renderMatchRequests(
+    requests
+) {
+
+    const container =
+        document.getElementById(
+            "dh-request-list"
+        );
+
+
+    if (
+        !container
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !requests.length
+    ) {
+
+        container.innerHTML = `
+
+            <div class="dh-request-empty">
+
+                No match confirmations yet.
+
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+    container.innerHTML =
+        requests
+            .map(
+                request =>
+                    matchRequestHTML(
+                        request
+                    )
+            )
+            .join(
+                ""
+            );
+
+
+    container
+        .querySelectorAll(
+            "[data-accept-request]"
+        )
+        .forEach(
+            button => {
+
+                button.onclick =
+                    () =>
+                        respondToMatchRequest(
+
+                            Number(
+                                button.dataset
+                                    .acceptRequest
+                            ),
+
+                            "accept"
+                        );
+            }
+        );
+
+
+    container
+        .querySelectorAll(
+            "[data-dispute-request]"
+        )
+        .forEach(
+            button => {
+
+                button.onclick =
+                    () =>
+                        respondToMatchRequest(
+
+                            Number(
+                                button.dataset
+                                    .disputeRequest
+                            ),
+
+                            "dispute"
+                        );
+            }
+        );
+
+
+    container
+        .querySelectorAll(
+            "[data-cancel-request]"
+        )
+        .forEach(
+            button => {
+
+                button.onclick =
+                    () =>
+                        cancelMatchRequest(
+
+                            Number(
+                                button.dataset
+                                    .cancelRequest
+                            )
+                        );
+            }
+        );
+}
+
+
+/* =========================================================
+   REQUEST HTML
+========================================================= */
+
+function matchRequestHTML(
+    request
+) {
+
+    const incoming =
+
+        request.opponent_id ===
+        currentDartHubUser.id;
+
+
+    const outgoing =
+        !incoming;
+
+
+    const opponentName =
+
+        incoming
+
+            ? request.submitter_name
+
+            : request.opponent_name;
+
+
+    const winnerName =
+
+        request.winner_id ===
+        request.submitted_by
+
+            ? request.submitter_name
+
+            : request.opponent_name;
+
+
+    const date =
+        new Date(
+            request.created_at
+        )
+            .toLocaleString();
+
+
+    const typeClass =
+
+        request.status ===
+        "accepted"
+
+            ? "accepted"
+
+            : request.status ===
+              "disputed"
+
+                ? "disputed"
+
+                : incoming
+
+                    ? "incoming"
+
+                    : "outgoing";
+
+
+    let actionHTML =
+        "";
+
+
+    if (
+        request.status ===
+            "pending" &&
+        incoming
+    ) {
+
+        actionHTML = `
+
+            <div class="dh-request-actions">
+
+                <button
+                    class="dh-accept"
+                    data-accept-request="${request.id}"
+                >
+                    ✓ Accept Result
+                </button>
+
+
+                <button
+                    class="dh-dispute"
+                    data-dispute-request="${request.id}"
+                >
+                    ✕ Dispute
+                </button>
+
+            </div>
+        `;
+    }
+
+
+    if (
+        request.status ===
+            "pending" &&
+        outgoing
+    ) {
+
+        actionHTML = `
+
+            <div class="dh-request-actions">
+
+                <button
+                    class="dh-cancel"
+                    data-cancel-request="${request.id}"
+                >
+                    Cancel Request
+                </button>
+
+            </div>
+        `;
+    }
+
+
+    const statusText =
+
+        request.status ===
+        "pending"
+
+            ? (
+                incoming
+
+                    ? "ACTION REQUIRED"
+
+                    : "WAITING FOR OPPONENT"
+            )
+
+            : request.status.toUpperCase();
+
+
+    return `
+
+        <div
+            class="dh-request ${typeClass}"
+        >
+
+            <div class="dh-request-title">
+
+                ${
+                    incoming
+
+                        ? "Result submitted by"
+
+                        : "Result sent to"
+                }
+
+                ${dhEscapeHTML(
+                    opponentName
+                )}
+
+            </div>
+
+
+            <div class="dh-request-meta">
+
+                ${dhEscapeHTML(
+                    request.game_mode
+                )}
+
+                • ${date}
+
+                • Starting score:
+                ${request.starting_score}
+
+            </div>
+
+
+            <div class="dh-request-result">
+
+                Winner:
+                ${dhEscapeHTML(
+                    winnerName
+                )}
+
+            </div>
+
+
+            <div class="dh-request-stats">
+
+                <div class="dh-request-stat">
+
+                    ${dhEscapeHTML(
+                        request.submitter_name
+                    )}
+
+                    <strong>
+
+                        Avg
+                        ${Number(
+                            request.submitter_average ||
+                            0
+                        ).toFixed(2)}
+
+                        • ${request.submitter_180s || 0}
+                        × 180
+
+                    </strong>
+
+                </div>
+
+
+                <div class="dh-request-stat">
+
+                    ${dhEscapeHTML(
+                        request.opponent_name
+                    )}
+
+                    <strong>
+
+                        Avg
+                        ${Number(
+                            request.opponent_average ||
+                            0
+                        ).toFixed(2)}
+
+                        • ${request.opponent_180s || 0}
+                        × 180
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="dh-request-status ${request.status}"
+            >
+
+                ${statusText}
+
+            </div>
+
+
+            ${actionHTML}
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   ACCEPT / DISPUTE
+========================================================= */
+
+async function respondToMatchRequest(
+    requestID,
+    decision
+) {
+
+    const verb =
+
+        decision ===
+        "accept"
+
+            ? "accept"
+
+            : "dispute";
+
+
+    if (
+        !confirm(
+            `Are you sure you want to ${verb} this match result?`
+        )
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dartHubSupabase
+                .rpc(
+                    "respond_registered_match",
+                    {
+
+                        p_request_id:
+                            requestID,
+
+                        p_decision:
+                            decision
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+        }
+
+
+        console.log(
+            "Match response:",
+            data
+        );
+
+
+        await loadMatchRequests();
+
+
+        if (
+            decision ===
+            "accept"
+        ) {
+
+            if (
+                typeof refreshCloudProfile ===
+                "function"
+            ) {
+
+                await refreshCloudProfile();
+            }
+
+
+            alert(
+                "Result accepted. Both Dart Hub profiles have been updated."
+            );
+
+
+        } else {
+
+            alert(
+                "Result disputed. No career statistics were changed."
+            );
+        }
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "Dart Hub could not process the match response."
+        );
+    }
+}
+
+
+/* =========================================================
+   CANCEL OUTGOING REQUEST
+========================================================= */
+
+async function cancelMatchRequest(
+    requestID
+) {
+
+    if (
+        !confirm(
+            "Cancel this pending match result?"
+        )
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        const {
+            error
+        } =
+            await dartHubSupabase
+                .rpc(
+                    "cancel_registered_match",
+                    {
+
+                        p_request_id:
+                            requestID
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+        }
+
+
+        await loadMatchRequests();
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "Could not cancel the result."
+        );
+    }
 }
 
 
@@ -2842,7 +3753,7 @@ function watchCurrentProfile() {
    MODE BUTTONS
 ========================================================= */
 
-function connectModeButtonsV21() {
+function connectModeButtonsV22() {
 
     document
         .querySelectorAll(
@@ -2858,7 +3769,7 @@ function connectModeButtonsV21() {
                         setTimeout(
                             () => {
 
-                                updateIdentityForGameMode(
+                                setPlayerPanelGameModeV22(
                                     button.dataset.mode
                                 );
 
@@ -2876,7 +3787,7 @@ function connectModeButtonsV21() {
    MATCH BUTTONS
 ========================================================= */
 
-function connectMatchButtonsV21() {
+function connectMatchButtonsV22() {
 
     const continueButton =
         document.getElementById(
@@ -2892,36 +3803,39 @@ function connectMatchButtonsV21() {
 
             "click",
 
-            validatePlayersBeforeContinue,
+            validatePlayersV22,
 
             true
         );
     }
 
 
-    const startMatchButton =
+    const startButton =
         document.getElementById(
             "start-match"
         );
 
 
     if (
-        startMatchButton
+        startButton
     ) {
 
-        startMatchButton.addEventListener(
+        startButton.addEventListener(
             "click",
             () => {
 
-                saveIdentityState();
+                createNewMatchUID();
+
+
+                savePlayerConfigurationV22();
 
 
                 setTimeout(
                     () => {
 
-                        installMatchPlayerBadges();
+                        installMatchBadgesV22();
 
-                        updateMatchPlayerBadges();
+                        updateMatchBadgesV22();
 
                     },
                     0
@@ -2945,12 +3859,15 @@ function connectMatchButtonsV21() {
             "click",
             () => {
 
+                getCurrentMatchUID();
+
+
                 setTimeout(
                     () => {
 
-                        installMatchPlayerBadges();
+                        installMatchBadgesV22();
 
-                        updateMatchPlayerBadges();
+                        updateMatchBadgesV22();
 
                     },
                     0
@@ -2962,31 +3879,119 @@ function connectMatchButtonsV21() {
 
 
 /* =========================================================
+   WATCH ACCOUNT
+========================================================= */
+
+function watchAccountV22() {
+
+    const element =
+        document.getElementById(
+            "current-user-name"
+        );
+
+
+    if (
+        element
+    ) {
+
+        const observer =
+            new MutationObserver(
+                () => {
+
+                    refreshPlayerCodeV22();
+
+                    updatePlayerSelectionV22();
+
+
+                    setTimeout(
+                        loadMatchRequests,
+                        50
+                    );
+                }
+            );
+
+
+        observer.observe(
+
+            element,
+
+            {
+
+                childList:
+                    true,
+
+                subtree:
+                    true,
+
+                characterData:
+                    true
+            }
+        );
+    }
+
+
+    setTimeout(
+        () => {
+
+            refreshPlayerCodeV22();
+
+            loadMatchRequests();
+
+        },
+        800
+    );
+
+
+    setTimeout(
+        () => {
+
+            refreshPlayerCodeV22();
+
+            loadMatchRequests();
+
+        },
+        2500
+    );
+}
+
+
+/* =========================================================
    INITIALISE
 ========================================================= */
 
-function initialiseDartHubPlayersV21() {
+function initialiseDartHubV22() {
 
-    installRegisteredPlayerStyles();
-
-    installPlayerIdentityV21();
-
-    installMyPlayerCodeCard();
-
-    installMatchPlayerBadges();
-
-    installAccountPlayerIndexOverride();
-
-    installRegisteredMatchSaveOverride();
-
-    watchCurrentProfile();
-
-    connectModeButtonsV21();
-
-    connectMatchButtonsV21();
+    installV22Styles();
 
 
-    updateIdentityForGameMode(
+    installPlayerSelectionV22();
+
+
+    installPlayerCodeCardV22();
+
+
+    installMatchRequestsCard();
+
+
+    installMatchBadgesV22();
+
+
+    installAccountIndexOverrideV22();
+
+
+    installCloudSaveOverrideV22();
+
+
+    connectModeButtonsV22();
+
+
+    connectMatchButtonsV22();
+
+
+    watchAccountV22();
+
+
+    setPlayerPanelGameModeV22(
 
         typeof selectedMode !==
         "undefined"
@@ -2997,15 +4002,16 @@ function initialiseDartHubPlayersV21() {
     );
 
 
-    updateIdentityUIV21();
+    updatePlayerSelectionV22();
 
-    updateMatchPlayerBadges();
+
+    updateMatchBadgesV22();
 
 
     console.log(
-        "Dart Hub registered-player system v21 ready."
+        "Dart Hub v22 confirmation system ready."
     );
 }
 
 
-initialiseDartHubPlayersV21();
+initialiseDartHubV22();

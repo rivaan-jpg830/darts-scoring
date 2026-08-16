@@ -3,7 +3,7 @@
 
 /* =========================================================
    DART HUB AUTH LOADER
-   VERSION 21
+   VERSION 22
 ========================================================= */
 
 
@@ -59,10 +59,10 @@ function loadDartHubScript(
 
 
 /* =========================================================
-   START DART HUB V21
+   START DART HUB V22
 ========================================================= */
 
-async function startDartHubV21() {
+async function startDartHubV22() {
 
     try {
 
@@ -77,7 +77,7 @@ async function startDartHubV21() {
 
 
         console.log(
-            "Dart Hub v21 ready."
+            "Dart Hub v22 ready."
         );
 
 
@@ -98,4 +98,4 @@ async function startDartHubV21() {
 }
 
 
-startDartHubV21();
+startDartHubV22();

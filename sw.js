@@ -3,12 +3,12 @@
 
 /* =========================================================
    DART HUB SERVICE WORKER
-   VERSION 21
+   VERSION 22
 ========================================================= */
 
 
 const CACHE_NAME =
-    "dart-hub-v21";
+    "dart-hub-v22";
 
 
 const APP_FILES = [
@@ -76,6 +76,7 @@ self.addEventListener(
 
             caches
                 .keys()
+
                 .then(
                     cacheNames => {
 
@@ -104,6 +105,7 @@ self.addEventListener(
                         );
                     }
                 )
+
                 .then(
                     () => {
 
@@ -166,9 +168,7 @@ self.addEventListener(
 
 
         /*
-           Supabase authentication and
-           database requests must use
-           the live network.
+           SUPABASE REQUESTS ARE ALWAYS LIVE.
         */
 
         if (
@@ -182,7 +182,7 @@ self.addEventListener(
 
 
         /*
-           HTML NAVIGATION
+           PAGE NAVIGATION
         */
 
         if (
@@ -195,6 +195,7 @@ self.addEventListener(
                 fetch(
                     event.request
                 )
+
                     .then(
                         response => {
 
@@ -206,6 +207,7 @@ self.addEventListener(
                                 .open(
                                     CACHE_NAME
                                 )
+
                                 .then(
                                     cache => {
 
@@ -220,6 +222,7 @@ self.addEventListener(
                             return response;
                         }
                     )
+
                     .catch(
                         async () => {
 
@@ -258,6 +261,7 @@ self.addEventListener(
             fetch(
                 event.request
             )
+
                 .then(
                     response => {
 
@@ -279,6 +283,7 @@ self.addEventListener(
                                 .open(
                                     CACHE_NAME
                                 )
+
                                 .then(
                                     cache => {
 
@@ -294,6 +299,7 @@ self.addEventListener(
                         return response;
                     }
                 )
+
                 .catch(
                     async () => {
 
