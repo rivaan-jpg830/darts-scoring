@@ -53,10 +53,841 @@
         href="style.css"
     >
 
+
+    <!-- =================================================
+         LOGIN / ACCOUNT STYLING
+    ================================================== -->
+
+    <style>
+
+        .auth-screen {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 30000;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 18px;
+
+            overflow-y: auto;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #173241 0%,
+                    #07141d 38%,
+                    #030303 100%
+                );
+        }
+
+
+        .auth-screen.hidden {
+            display: none !important;
+        }
+
+
+        .auth-card {
+
+            width: 100%;
+
+            max-width: 430px;
+
+            padding: 26px 22px;
+
+            border:
+                1px solid
+                #294654;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #171d21,
+                    #090c0e
+                );
+
+            box-shadow:
+                0 15px 50px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.65
+                );
+
+            text-align: center;
+        }
+
+
+        .auth-logo {
+
+            font-size: 68px;
+
+            line-height: 1;
+
+            margin-bottom: 6px;
+
+            filter:
+                drop-shadow(
+                    0 0 15px
+                    rgba(
+                        0,
+                        170,
+                        255,
+                        0.55
+                    )
+                );
+        }
+
+
+        .auth-title {
+
+            margin:
+                3px
+                0;
+
+            color: #00aaff;
+
+            font-size: 38px;
+
+            font-weight: 900;
+
+            text-shadow:
+                0 0 12px
+                rgba(
+                    0,
+                    170,
+                    255,
+                    0.55
+                );
+        }
+
+
+        .auth-tagline {
+
+            margin:
+                4px
+                0
+                22px;
+
+            color: #9aa7ad;
+
+            font-size: 14px;
+        }
+
+
+        .auth-divider {
+
+            height: 1px;
+
+            margin:
+                18px
+                0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #33505d,
+                    transparent
+                );
+        }
+
+
+        .auth-card h2 {
+
+            margin:
+                3px
+                0
+                7px;
+
+            color: #ffffff;
+
+            font-size: 24px;
+        }
+
+
+        .auth-subtitle {
+
+            margin:
+                0
+                0
+                18px;
+
+            color: #8e9da4;
+
+            font-size: 13px;
+
+            line-height: 1.45;
+        }
+
+
+        .auth-field {
+
+            margin-bottom: 13px;
+
+            text-align: left;
+        }
+
+
+        .auth-field label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #bec8cc;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .auth-field input {
+
+            width: 100%;
+
+            min-height: 50px;
+
+            padding:
+                11px
+                13px;
+
+            border:
+                1px solid
+                #39464c;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            background: #050708;
+
+            color: white;
+
+            font-size: 16px;
+        }
+
+
+        .auth-field input:focus {
+
+            border-color: #00aaff;
+
+            box-shadow:
+                0 0 0
+                2px
+                rgba(
+                    0,
+                    170,
+                    255,
+                    0.14
+                );
+        }
+
+
+        .auth-primary-btn {
+
+            width: 100%;
+
+            min-height: 52px;
+
+            margin-top: 5px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00aaff,
+                    #006eb8
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+
+        .auth-primary-btn:disabled {
+
+            opacity: 0.5;
+
+            cursor: default;
+        }
+
+
+        .auth-link-btn {
+
+            margin-top: 12px;
+
+            border: none;
+
+            background: transparent;
+
+            color: #00aaff;
+
+            font-size: 13px;
+
+            cursor: pointer;
+        }
+
+
+        .auth-switch {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            margin-top: 20px;
+
+            color: #8e9da4;
+
+            font-size: 13px;
+        }
+
+
+        .auth-text-link {
+
+            padding: 0;
+
+            border: none;
+
+            background: transparent;
+
+            color: #00ff9d;
+
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+
+        .auth-message {
+
+            margin:
+                12px
+                0;
+
+            padding:
+                10px
+                12px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            line-height: 1.4;
+
+            text-align: left;
+        }
+
+
+        .auth-message.error {
+
+            background: #351010;
+
+            border:
+                1px solid
+                #8a2b2b;
+
+            color: #ffb6b6;
+        }
+
+
+        .auth-message.success {
+
+            background: #0c2f22;
+
+            border:
+                1px solid
+                #15764d;
+
+            color: #a5ffd5;
+        }
+
+
+        .auth-message.info {
+
+            background: #102733;
+
+            border:
+                1px solid
+                #20536d;
+
+            color: #b8e8ff;
+        }
+
+
+        .auth-security-note {
+
+            margin-top: 22px;
+
+            padding-top: 14px;
+
+            border-top:
+                1px solid
+                #242b2f;
+
+            color: #68757a;
+
+            font-size: 11px;
+        }
+
+
+        .dart-hub-user-bar {
+
+            display: grid;
+
+            grid-template-columns:
+                auto
+                1fr
+                auto;
+
+            align-items: center;
+
+            gap: 10px;
+
+            max-width: 700px;
+
+            margin:
+                0
+                auto
+                12px;
+
+            padding:
+                9px
+                10px;
+
+            border:
+                1px solid
+                #29414c;
+
+            border-radius: 10px;
+
+            background: #0b151a;
+
+            text-align: left;
+        }
+
+
+        .dart-hub-user-bar.hidden {
+            display: none !important;
+        }
+
+
+        .user-avatar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 50%;
+
+            background: #132a35;
+
+            font-size: 22px;
+        }
+
+
+        .user-info {
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-width: 0;
+        }
+
+
+        .user-welcome {
+
+            color: #7f9097;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        #current-user-name {
+
+            overflow: hidden;
+
+            color: #00aaff;
+
+            font-size: 15px;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .user-email {
+
+            overflow: hidden;
+
+            margin-top: 1px;
+
+            color: #74858c;
+
+            font-size: 10px;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .user-sign-out {
+
+            min-height: 38px;
+
+            padding:
+                6px
+                10px;
+
+            border:
+                1px solid
+                #713232;
+
+            border-radius: 7px;
+
+            background: #3a1010;
+
+            color: #ffbaba;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        @media (max-width: 650px) {
+
+            .auth-card {
+
+                padding:
+                    22px
+                    16px;
+
+                border-radius: 14px;
+            }
+
+
+            .auth-logo {
+
+                font-size: 58px;
+            }
+
+
+            .auth-title {
+
+                font-size: 32px;
+            }
+
+
+            .dart-hub-user-bar {
+
+                margin-bottom: 8px;
+            }
+
+
+            .user-avatar {
+
+                width: 36px;
+
+                height: 36px;
+
+                font-size: 18px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
 <body data-game-tab="score">
+
+
+<!-- =====================================================
+     SIGN IN / CREATE ACCOUNT
+===================================================== -->
+
+<div
+    id="auth-screen"
+    class="auth-screen"
+>
+
+    <div class="auth-card">
+
+        <div class="auth-logo">
+            🎯
+        </div>
+
+
+        <h1 class="auth-title">
+            Dart Hub
+        </h1>
+
+
+        <p class="auth-tagline">
+            Your darts. Your stats. Your game.
+        </p>
+
+
+        <div class="auth-divider"></div>
+
+
+        <h2 id="auth-form-title">
+            Sign In
+        </h2>
+
+
+        <p
+            id="auth-form-subtitle"
+            class="auth-subtitle"
+        >
+            Sign in to your Dart Hub account.
+        </p>
+
+
+        <div
+            id="auth-name-row"
+            class="auth-field hidden"
+        >
+
+            <label for="auth-display-name">
+                Player Name
+            </label>
+
+            <input
+                id="auth-display-name"
+                type="text"
+                autocomplete="name"
+                maxlength="40"
+                placeholder="e.g. Ishen"
+            >
+
+        </div>
+
+
+        <div class="auth-field">
+
+            <label for="auth-email">
+                Email
+            </label>
+
+            <input
+                id="auth-email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+            >
+
+        </div>
+
+
+        <div class="auth-field">
+
+            <label for="auth-password">
+                Password
+            </label>
+
+            <input
+                id="auth-password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Password"
+            >
+
+        </div>
+
+
+        <div
+            id="auth-confirm-password-row"
+            class="auth-field hidden"
+        >
+
+            <label for="auth-confirm-password">
+                Confirm Password
+            </label>
+
+            <input
+                id="auth-confirm-password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Confirm password"
+            >
+
+        </div>
+
+
+        <div
+            id="auth-message"
+            class="auth-message hidden"
+        ></div>
+
+
+        <button
+            id="auth-primary-btn"
+            class="auth-primary-btn"
+            type="button"
+        >
+            Sign In
+        </button>
+
+
+        <button
+            id="auth-forgot-btn"
+            class="auth-link-btn"
+            type="button"
+        >
+            Forgot Password?
+        </button>
+
+
+        <div class="auth-switch">
+
+            <span id="auth-switch-text">
+                Don't have an account?
+            </span>
+
+            <button
+                id="auth-switch-btn"
+                class="auth-text-link"
+                type="button"
+            >
+                Create Account
+            </button>
+
+        </div>
+
+
+        <div class="auth-security-note">
+            🔒 Secure Dart Hub account
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     PASSWORD RESET
+===================================================== -->
+
+<div
+    id="password-reset-screen"
+    class="auth-screen hidden"
+>
+
+    <div class="auth-card">
+
+        <div class="auth-logo">
+            🎯
+        </div>
+
+
+        <h1 class="auth-title">
+            Dart Hub
+        </h1>
+
+
+        <h2>
+            New Password
+        </h2>
+
+
+        <p class="auth-subtitle">
+            Choose a new password for your Dart Hub account.
+        </p>
+
+
+        <div class="auth-field">
+
+            <label for="reset-new-password">
+                New Password
+            </label>
+
+            <input
+                id="reset-new-password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="New password"
+            >
+
+        </div>
+
+
+        <div class="auth-field">
+
+            <label for="reset-confirm-password">
+                Confirm New Password
+            </label>
+
+            <input
+                id="reset-confirm-password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Confirm new password"
+            >
+
+        </div>
+
+
+        <div
+            id="reset-message"
+            class="auth-message hidden"
+        ></div>
+
+
+        <button
+            id="reset-password-btn"
+            class="auth-primary-btn"
+            type="button"
+        >
+            Save New Password
+        </button>
+
+    </div>
+
+</div>
+
 
 
 <!-- =====================================================
@@ -65,8 +896,50 @@
 
 <div
     id="mode-screen"
-    class="card"
+    class="card hidden"
 >
+
+
+    <!-- SIGNED-IN ACCOUNT -->
+
+    <div
+        id="dart-hub-user-bar"
+        class="dart-hub-user-bar hidden"
+    >
+
+        <div class="user-avatar">
+            👤
+        </div>
+
+
+        <div class="user-info">
+
+            <span class="user-welcome">
+                Signed in as
+            </span>
+
+            <strong id="current-user-name">
+                Player
+            </strong>
+
+            <span
+                id="current-user-email"
+                class="user-email"
+            ></span>
+
+        </div>
+
+
+        <button
+            id="sign-out-btn"
+            class="user-sign-out"
+            type="button"
+        >
+            Sign Out
+        </button>
+
+    </div>
+
 
     <div class="app-brand">
 
@@ -1254,25 +2127,57 @@
     <div class="cricket-info card">
 
         <div class="cricket-row">
-            <span>Team A</span>
-            <strong id="cricket-team-a">Team A</strong>
+
+            <span>
+                Team A
+            </span>
+
+            <strong id="cricket-team-a">
+                Team A
+            </strong>
+
         </div>
 
+
         <div class="cricket-row">
-            <span>Team B</span>
-            <strong id="cricket-team-b">Team B</strong>
+
+            <span>
+                Team B
+            </span>
+
+            <strong id="cricket-team-b">
+                Team B
+            </strong>
+
         </div>
+
 
         <hr>
 
-        <div class="cricket-row">
-            <span>Batting</span>
-            <strong id="cricket-batting-name">Batting</strong>
-        </div>
 
         <div class="cricket-row">
-            <span>Bowling</span>
-            <strong id="cricket-bowling-name">Bowling</strong>
+
+            <span>
+                Batting
+            </span>
+
+            <strong id="cricket-batting-name">
+                Batting
+            </strong>
+
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span>
+                Bowling
+            </span>
+
+            <strong id="cricket-bowling-name">
+                Bowling
+            </strong>
+
         </div>
 
 
@@ -1313,14 +2218,23 @@
 
 
         <div class="cricket-row">
-            <span>Innings</span>
-            <strong id="cricket-innings">1</strong>
+
+            <span>
+                Innings
+            </span>
+
+            <strong id="cricket-innings">
+                1
+            </strong>
+
         </div>
 
 
         <div class="cricket-row">
 
-            <span>Total Wickets</span>
+            <span>
+                Total Wickets
+            </span>
 
             <input
                 id="cricket-total-wickets"
@@ -1334,26 +2248,58 @@
 
 
         <div class="cricket-row">
-            <span>Next Wicket</span>
-            <strong id="cricket-danger">1</strong>
+
+            <span>
+                Next Wicket
+            </span>
+
+            <strong id="cricket-danger">
+                1
+            </strong>
+
         </div>
 
-        <div class="cricket-row">
-            <span>Target</span>
-            <strong id="cricket-target">–</strong>
-        </div>
 
         <div class="cricket-row">
-            <span>Phase</span>
-            <strong id="cricket-phase">Bowling Turn</strong>
+
+            <span>
+                Target
+            </span>
+
+            <strong id="cricket-target">
+                –
+            </strong>
+
         </div>
 
+
         <div class="cricket-row">
-            <span>Darts Left</span>
-            <strong id="cricket-darts-left">3</strong>
+
+            <span>
+                Phase
+            </span>
+
+            <strong id="cricket-phase">
+                Bowling Turn
+            </strong>
+
+        </div>
+
+
+        <div class="cricket-row">
+
+            <span>
+                Darts Left
+            </span>
+
+            <strong id="cricket-darts-left">
+                3
+            </strong>
+
         </div>
 
     </div>
+
 
 
     <div class="cricket-controls card">
@@ -1377,7 +2323,11 @@
             class="btn-secondary"
         >
             Miss Scoring Zone
-            <span>+1 Run</span>
+
+            <span>
+                +1 Run
+            </span>
+
         </button>
 
         <button
@@ -1385,7 +2335,11 @@
             class="btn-secondary"
         >
             Dart Falls Out
-            <span>+1 Run + Extra Dart</span>
+
+            <span>
+                +1 Run + Extra Dart
+            </span>
+
         </button>
 
         <button
@@ -1399,22 +2353,44 @@
     </div>
 
 
+
     <div class="dartboard card">
 
         <h2 class="bowling-heading">
             Bowling
         </h2>
 
-        <h3>Singles</h3>
-        <div id="cricket-bowl-singles" class="ring"></div>
+        <h3>
+            Singles
+        </h3>
 
-        <h3>Doubles</h3>
-        <div id="cricket-bowl-doubles" class="ring"></div>
+        <div
+            id="cricket-bowl-singles"
+            class="ring"
+        ></div>
 
-        <h3>Trebles</h3>
-        <div id="cricket-bowl-trebles" class="ring"></div>
+
+        <h3>
+            Doubles
+        </h3>
+
+        <div
+            id="cricket-bowl-doubles"
+            class="ring"
+        ></div>
+
+
+        <h3>
+            Trebles
+        </h3>
+
+        <div
+            id="cricket-bowl-trebles"
+            class="ring"
+        ></div>
 
     </div>
+
 
 
     <div class="dartboard card">
@@ -1423,14 +2399,34 @@
             Batting
         </h2>
 
-        <h3>Singles</h3>
-        <div id="cricket-bat-singles" class="ring"></div>
+        <h3>
+            Singles
+        </h3>
 
-        <h3>Doubles</h3>
-        <div id="cricket-bat-doubles" class="ring"></div>
+        <div
+            id="cricket-bat-singles"
+            class="ring"
+        ></div>
 
-        <h3>Trebles</h3>
-        <div id="cricket-bat-trebles" class="ring"></div>
+
+        <h3>
+            Doubles
+        </h3>
+
+        <div
+            id="cricket-bat-doubles"
+            class="ring"
+        ></div>
+
+
+        <h3>
+            Trebles
+        </h3>
+
+        <div
+            id="cricket-bat-trebles"
+            class="ring"
+        ></div>
 
     </div>
 
@@ -1445,7 +2441,29 @@
 </div>
 
 
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<!-- =====================================================
+     DART HUB GAME
+===================================================== -->
+
 <script src="script.js"></script>
+
+
+<!-- =====================================================
+     DART HUB ACCOUNTS
+===================================================== -->
+
+<script src="auth.js"></script>
+
 
 </body>
 

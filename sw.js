@@ -3,10 +3,12 @@
 
 /* =========================================================
    DART HUB SERVICE WORKER
+   VERSION 21
 ========================================================= */
 
+
 const CACHE_NAME =
-    "dart-hub-v15";
+    "dart-hub-v21";
 
 
 const APP_FILES = [
@@ -18,6 +20,12 @@ const APP_FILES = [
     "./style.css",
 
     "./script.js",
+
+    "./auth.js",
+
+    "./auth-core.js",
+
+    "./players.js",
 
     "./manifest.json",
 
@@ -41,18 +49,15 @@ self.addEventListener(
                     CACHE_NAME
                 )
                 .then(
-                    cache =>
-                        cache.addAll(
+                    cache => {
+
+                        return cache.addAll(
                             APP_FILES
-                        )
+                        );
+                    }
                 )
         );
 
-
-        /*
-           Activate immediately rather
-           than waiting for old version.
-        */
 
         self.skipWaiting();
     }
@@ -72,33 +77,67 @@ self.addEventListener(
             caches
                 .keys()
                 .then(
-                    names =>
+                    cacheNames => {
 
-                        Promise.all(
+                        return Promise.all(
 
-                            names.map(
-                                name => {
+                            cacheNames.map(
+                                cacheName => {
 
                                     if (
-                                        name !==
+                                        cacheName.startsWith(
+                                            "dart-hub-"
+                                        ) &&
+                                        cacheName !==
                                         CACHE_NAME
                                     ) {
 
                                         return caches.delete(
-                                            name
+                                            cacheName
                                         );
                                     }
 
 
-                                    return null;
+                                    return Promise.resolve();
                                 }
                             )
-                        )
+                        );
+                    }
+                )
+                .then(
+                    () => {
+
+                        return self.clients.claim();
+                    }
                 )
         );
+    }
+);
 
 
-        self.clients.claim();
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+self.addEventListener(
+    "message",
+    event => {
+
+        if (
+            !event.data
+        ) {
+
+            return;
+        }
+
+
+        if (
+            event.data.type ===
+            "SKIP_WAITING"
+        ) {
+
+            self.skipWaiting();
+        }
     }
 );
 
@@ -111,10 +150,6 @@ self.addEventListener(
     "fetch",
     event => {
 
-        /*
-           Only deal with GET requests.
-        */
-
         if (
             event.request.method !==
             "GET"
@@ -124,52 +159,143 @@ self.addEventListener(
         }
 
 
+        const requestURL =
+            new URL(
+                event.request.url
+            );
+
+
+        /*
+           Supabase authentication and
+           database requests must use
+           the live network.
+        */
+
+        if (
+            requestURL.hostname.includes(
+                "supabase.co"
+            )
+        ) {
+
+            return;
+        }
+
+
+        /*
+           HTML NAVIGATION
+        */
+
+        if (
+            event.request.mode ===
+            "navigate"
+        ) {
+
+            event.respondWith(
+
+                fetch(
+                    event.request
+                )
+                    .then(
+                        response => {
+
+                            const copy =
+                                response.clone();
+
+
+                            caches
+                                .open(
+                                    CACHE_NAME
+                                )
+                                .then(
+                                    cache => {
+
+                                        cache.put(
+                                            "./index.html",
+                                            copy
+                                        );
+                                    }
+                                );
+
+
+                            return response;
+                        }
+                    )
+                    .catch(
+                        async () => {
+
+                            const cached =
+                                await caches.match(
+                                    "./index.html"
+                                );
+
+
+                            if (
+                                cached
+                            ) {
+
+                                return cached;
+                            }
+
+
+                            return caches.match(
+                                "./"
+                            );
+                        }
+                    )
+            );
+
+
+            return;
+        }
+
+
+        /*
+           APP FILES
+        */
+
         event.respondWith(
 
             fetch(
                 event.request
             )
-
                 .then(
                     response => {
 
-                        /*
-                           Save a fresh copy
-                           for offline use.
-                        */
-
-                        const copy =
-                            response.clone();
-
-
-                        caches
-                            .open(
-                                CACHE_NAME
+                        if (
+                            response &&
+                            (
+                                response.status ===
+                                200 ||
+                                response.type ===
+                                "opaque"
                             )
-                            .then(
-                                cache => {
+                        ) {
 
-                                    cache.put(
+                            const copy =
+                                response.clone();
 
-                                        event.request,
 
-                                        copy
-                                    );
-                                }
-                            );
+                            caches
+                                .open(
+                                    CACHE_NAME
+                                )
+                                .then(
+                                    cache => {
+
+                                        cache.put(
+                                            event.request,
+                                            copy
+                                        );
+                                    }
+                                );
+                        }
 
 
                         return response;
                     }
                 )
-
                 .catch(
                     async () => {
-
-                        /*
-                           Internet unavailable:
-                           use saved copy.
-                        */
 
                         const cached =
                             await caches.match(
@@ -182,22 +308,6 @@ self.addEventListener(
                         ) {
 
                             return cached;
-                        }
-
-
-                        /*
-                           For page navigation,
-                           return main app.
-                        */
-
-                        if (
-                            event.request.mode ===
-                            "navigate"
-                        ) {
-
-                            return caches.match(
-                                "./index.html"
-                            );
                         }
 
 
