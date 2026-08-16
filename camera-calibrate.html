@@ -10,10 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Dart Hub Camera Control
-    </title>
-
+    <title>Dart Hub Camera Control</title>
 
     <style>
 
@@ -21,505 +18,299 @@
             box-sizing: border-box;
         }
 
-
         html,
         body {
-
             margin: 0;
-
             min-height: 100%;
-
             background:
                 radial-gradient(
                     circle at top,
                     #162733,
                     #050708 55%
                 );
-
             color: white;
-
-            font-family:
-                Arial,
-                sans-serif;
+            font-family: Arial, sans-serif;
         }
 
-
         body {
-
             padding: 8px;
-
             text-align: center;
         }
 
-
         h1 {
-
-            margin:
-                5px
-                0
-                9px;
-
+            margin: 5px 0 9px;
             color: #00aaff;
         }
 
-
         .card {
-
-            max-width: 1400px;
-
-            margin:
-                8px auto;
-
+            max-width: 1450px;
+            margin: 8px auto;
             padding: 10px;
-
-            border:
-                1px solid
-                #293941;
-
+            border: 1px solid #293941;
             border-radius: 12px;
-
             background: #0b1013;
         }
 
-
         .join-row {
-
             display: grid;
-
-            grid-template-columns:
-                1fr auto;
-
+            grid-template-columns: 1fr auto;
             gap: 8px;
-
             max-width: 500px;
-
             margin: auto;
         }
 
-
         input {
-
             min-height: 46px;
-
             padding: 8px;
-
-            border:
-                1px solid
-                #44545b;
-
+            border: 1px solid #44545b;
             border-radius: 8px;
-
             background: #020303;
-
             color: white;
-
             font-size: 19px;
-
             font-weight: bold;
-
             text-align: center;
-
             text-transform: uppercase;
-
             letter-spacing: 4px;
         }
 
-
         button {
-
             min-height: 42px;
-
-            padding:
-                7px
-                10px;
-
+            padding: 7px 10px;
             border: none;
-
             border-radius: 8px;
-
             background: #0078b8;
-
             color: white;
-
             font-weight: bold;
-
             cursor: pointer;
         }
 
-
         button:disabled {
-
             opacity: 0.35;
-
             cursor: default;
         }
 
-
         button.active {
-
-            outline:
-                3px solid
-                white;
+            outline: 3px solid white;
         }
-
 
         .secondary {
             background: #087247;
         }
 
-
         .warning {
             background: #782323;
         }
-
 
         .purple {
             background: #6941aa;
         }
 
-
         .status {
-
             margin-top: 6px;
-
             color: #96a8b0;
         }
 
-
         .workspace {
-
             display: grid;
-
             grid-template-columns:
-                minmax(
-                    0,
-                    1fr
-                )
-                285px;
-
+                minmax(0, 1fr)
+                300px;
             gap: 10px;
-
             align-items: start;
         }
 
-
         .image-wrap {
-
             position: relative;
-
             overflow: auto;
-
-            max-height:
-                calc(
-                    100vh - 125px
-                );
-
+            max-height: calc(100vh - 125px);
             background: black;
-
             border-radius: 10px;
         }
 
-
         #calibration-canvas {
-
             display: block;
-
             max-width: 100%;
-
             margin: auto;
-
             touch-action: none;
-
             cursor: crosshair;
         }
 
-
         .side-panel {
-
             position: sticky;
-
             top: 8px;
-
-            max-height:
-                calc(
-                    100vh - 25px
-                );
-
+            max-height: calc(100vh - 25px);
             overflow-y: auto;
-
             padding: 9px;
-
-            border:
-                1px solid
-                #30424b;
-
+            border: 1px solid #30424b;
             border-radius: 10px;
-
             background: #080d10;
-
             text-align: left;
         }
 
-
         .panel-title {
-
-            margin:
-                2px
-                0
-                8px;
-
+            margin: 2px 0 8px;
             color: #00aaff;
-
             font-size: 18px;
-
             font-weight: 900;
         }
 
-
         .camera-state {
-
             padding: 9px;
-
             margin-bottom: 8px;
-
             border-radius: 8px;
-
             background: #0c1d24;
-
             color: #00ff9d;
-
             font-size: 14px;
-
             font-weight: 900;
-
             text-align: center;
         }
 
-
         .control-stack {
-
             display: grid;
-
             gap: 6px;
         }
 
-
         .control-stack button {
-
             width: 100%;
         }
 
-
         .zoom-box {
-
-            margin:
-                8px
-                0;
-
+            margin: 8px 0;
             padding: 9px;
-
-            border:
-                1px solid
-                #2c3e46;
-
+            border: 1px solid #2c3e46;
             border-radius: 8px;
-
             background: #101619;
         }
 
-
         .zoom-heading {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             gap: 8px;
-
             margin-bottom: 7px;
         }
 
-
         .zoom-value {
-
             color: #00ff9d;
-
             font-size: 18px;
-
             font-weight: 900;
         }
 
-
         #pc-zoom-slider {
-
             width: 100%;
         }
 
-
         .zoom-buttons {
-
             display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
+            grid-template-columns: repeat(2, 1fr);
             gap: 5px;
-
             margin-top: 6px;
         }
 
-
         .ring-tools {
-
             display: grid;
-
             gap: 5px;
-
             margin-top: 8px;
         }
-
 
         .outer-double {
             background: #0078b8;
         }
 
-
         .inner-double {
             background: #6e42b5;
         }
-
 
         .outer-treble {
             background: #087247;
         }
 
-
         .inner-treble {
             background: #aa6316;
         }
-
 
         .bull-tool {
             background: #a9255e;
         }
 
-
         .help {
-
-            margin:
-                8px
-                0;
-
+            margin: 8px 0;
             color: #98a9b0;
-
             font-size: 11px;
-
             line-height: 1.45;
         }
 
-
         .result-box {
-
             margin-top: 9px;
-
             padding: 10px;
-
-            border:
-                1px solid
-                #29434e;
-
+            border: 1px solid #29434e;
             border-radius: 8px;
-
             background: #07151c;
-
             text-align: center;
         }
 
-
         .result-dart {
-
             color: #00ff9d;
-
             font-size: 24px;
-
             font-weight: 900;
         }
 
-
         .result-small {
-
             margin-top: 3px;
-
             color: #80939c;
-
             font-size: 11px;
         }
 
-
         .warning-message {
-
             margin-top: 7px;
-
             padding: 7px;
-
             border-radius: 7px;
-
             background: #381313;
-
             color: #ffb1b1;
-
             font-size: 11px;
-
             font-weight: 800;
         }
 
+        .impact-help {
+            margin-top: 8px;
+            padding: 7px;
+            border-radius: 7px;
+            background: #10232c;
+            color: #b9dbe7;
+            font-size: 11px;
+            line-height: 1.4;
+        }
 
         .hidden {
             display: none !important;
         }
 
-
-        @media (
-            max-width:
-            850px
-        ) {
+        @media (max-width: 850px) {
 
             .workspace {
-
-                grid-template-columns:
-                    1fr;
+                grid-template-columns: 1fr;
             }
 
-
             .side-panel {
-
                 position: static;
-
                 max-height: none;
             }
 
-
             .image-wrap {
-
                 max-height: 70vh;
             }
-
         }
 
     </style>
 
 </head>
 
-
 <body data-camera-page="calibrate">
 
 
 <h1>
-    🎯 Dart Hub Camera Control
+    🎯 Dart Hub Camera Control V6
 </h1>
-
 
 
 <div class="card">
@@ -532,10 +323,7 @@
             placeholder="ABC123"
         >
 
-
-        <button
-            id="connect-camera"
-        >
+        <button id="connect-camera">
             Connect
         </button>
 
@@ -552,7 +340,6 @@
 </div>
 
 
-
 <div
     id="calibration-workspace"
     class="card hidden"
@@ -560,8 +347,6 @@
 
     <div class="workspace">
 
-
-        <!-- LIVE CAMERA -->
 
         <div class="image-wrap">
 
@@ -571,9 +356,6 @@
 
         </div>
 
-
-
-        <!-- RIGHT CONTROL PANEL -->
 
         <div class="side-panel">
 
@@ -598,6 +380,14 @@
                     class="secondary"
                 >
                     💾 Save Calibration
+                </button>
+
+
+                <button
+                    id="pc-recalibrate"
+                    class="purple"
+                >
+                    ♻ Recalibrate
                 </button>
 
 
@@ -627,9 +417,6 @@
             </div>
 
 
-
-            <!-- ZOOM -->
-
             <div class="zoom-box">
 
                 <div class="zoom-heading">
@@ -637,7 +424,6 @@
                     <strong>
                         🔍 Zoom
                     </strong>
-
 
                     <span
                         id="pc-zoom-value"
@@ -690,17 +476,13 @@
             </div>
 
 
-
             <div
                 id="recalibration-warning"
-                class="warning-message hidden"
+                class="warning-message"
             >
-                ⚠ Camera zoom changed. Recalibrate before automatic scoring.
+                ⚠ Calibration has not been saved for this camera position yet.
             </div>
 
-
-
-            <!-- CALIBRATION TOOLS -->
 
             <div class="panel-title">
                 Calibration
@@ -755,15 +537,13 @@
                 id="calibration-help"
                 class="help"
             >
-                Drag the cyan points onto the outer edge of the double ring.
+                Drag the cyan points onto the OUTER edge of the double ring.
             </div>
 
 
             <div class="control-stack">
 
-                <button
-                    id="toggle-grid"
-                >
+                <button id="toggle-grid">
                     👁 Hide Grid
                 </button>
 
@@ -776,17 +556,12 @@
                 </button>
 
 
-                <button
-                    id="request-frame"
-                >
+                <button id="request-frame">
                     📷 Fresh Frame
                 </button>
 
             </div>
 
-
-
-            <!-- DETECTED DART -->
 
             <div class="result-box">
 
@@ -810,6 +585,21 @@
 
             </div>
 
+
+            <div class="impact-help">
+
+                🎯 After a dart is detected, a large
+                <strong>yellow/red target marker</strong>
+                appears on the camera image exactly where Dart Hub believes the dart entered the board.
+
+                <br><br>
+
+                If the marker is on the correct hole but the number is wrong, the scoring map is wrong.
+
+                If the marker itself is in the wrong place, dart-tip detection needs adjusting.
+
+            </div>
+
         </div>
 
     </div>
@@ -817,17 +607,8 @@
 </div>
 
 
-
-<script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-></script>
-
-
-<script
-    src="camera.js?v=5"
-></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="camera.js?v=6"></script>
 
 </body>
-
 </html>
