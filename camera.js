@@ -2,17 +2,21 @@
 
 
 /* =========================================================
-   DART HUB CAMERA V7
+   DART HUB CAMERA
 
-   - LIVE PHONE CAMERA
-   - PC REMOTE CONTROL
-   - PC / PHONE ZOOM
-   - RECALIBRATION FROM PC
-   - DRAGGABLE CALIBRATION
-   - SEGMENT ROTATION CORRECTION
-   - IMPROVED DART TIP SELECTION
-   - PC IMPACT MARKER
-   - SAFE RE-ARM / BASELINE RESET
+   STABLE CAMERA SCRIPT
+
+   FEATURES
+   - Phone camera
+   - Supabase camera session
+   - PC live calibration
+   - PC remote controls
+   - Zoom from PC or phone
+   - Recalibration from PC
+   - Safe board re-arm
+   - Automatic detection
+   - Multi-frame impact voting
+   - Impact marker on PC
 ========================================================= */
 
 
@@ -48,7 +52,7 @@ let cameraChannel =
 
 
 /* =========================================================
-   DARTBOARD
+   BOARD
 ========================================================= */
 
 const DART_SEGMENTS = [
@@ -80,43 +84,67 @@ const DART_SEGMENTS = [
 const CALIBRATION_ANCHORS = [
 
     {
-        number: 20,
-        index: 0
+        number:
+            20,
+
+        index:
+            0
     },
 
     {
-        number: 18,
-        index: 2
+        number:
+            18,
+
+        index:
+            2
     },
 
     {
-        number: 6,
-        index: 5
+        number:
+            6,
+
+        index:
+            5
     },
 
     {
-        number: 15,
-        index: 7
+        number:
+            15,
+
+        index:
+            7
     },
 
     {
-        number: 3,
-        index: 10
+        number:
+            3,
+
+        index:
+            10
     },
 
     {
-        number: 7,
-        index: 12
+        number:
+            7,
+
+        index:
+            12
     },
 
     {
-        number: 11,
-        index: 15
+        number:
+            11,
+
+        index:
+            15
     },
 
     {
-        number: 9,
-        index: 17
+        number:
+            9,
+
+        index:
+            17
     }
 
 ];
@@ -192,6 +220,80 @@ function mean(
 }
 
 
+function median(
+    values
+) {
+
+    if (
+        !values.length
+    ) {
+
+        return 0;
+    }
+
+
+    const sorted =
+        [
+            ...values
+        ].sort(
+            (
+                a,
+                b
+            ) =>
+                a -
+                b
+        );
+
+
+    const middle =
+        Math.floor(
+            sorted.length /
+            2
+        );
+
+
+    if (
+        sorted.length %
+        2
+    ) {
+
+        return sorted[
+            middle
+        ];
+    }
+
+
+    return (
+
+        sorted[
+            middle -
+                1
+        ]
+
+        +
+
+        sorted[
+            middle
+        ]
+
+    ) / 2;
+}
+
+
+function sleep(
+    milliseconds
+) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                milliseconds
+            )
+    );
+}
+
+
 function roundToStep(
     value,
     step
@@ -251,7 +353,7 @@ function signedAngleDifference(
     b
 ) {
 
-    let difference =
+    let result =
         normaliseAngle(
             a
         )
@@ -264,42 +366,34 @@ function signedAngleDifference(
 
 
     if (
-        difference >
+        result >
         Math.PI
     ) {
 
-        difference -=
+        result -=
             Math.PI *
             2;
     }
 
 
     if (
-        difference <
+        result <
         -Math.PI
     ) {
 
-        difference +=
+        result +=
             Math.PI *
             2;
     }
 
 
-    return difference;
+    return result;
 }
 
 
 function circularMean(
-    angles
+    values
 ) {
-
-    if (
-        !angles.length
-    ) {
-
-        return 0;
-    }
-
 
     let sin =
         0;
@@ -309,18 +403,18 @@ function circularMean(
         0;
 
 
-    angles.forEach(
-        angle => {
+    values.forEach(
+        value => {
 
             sin +=
                 Math.sin(
-                    angle
+                    value
                 );
 
 
             cos +=
                 Math.cos(
-                    angle
+                    value
                 );
         }
     );
@@ -329,20 +423,6 @@ function circularMean(
     return Math.atan2(
         sin,
         cos
-    );
-}
-
-
-function sleep(
-    milliseconds
-) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                milliseconds
-            )
     );
 }
 
@@ -366,7 +446,7 @@ async function requireCameraLogin() {
     ) {
 
         alert(
-            "Open normal Dart Hub in this browser and sign in first."
+            "Open normal Dart Hub and sign in first."
         );
 
 
@@ -381,7 +461,7 @@ async function requireCameraLogin() {
 
 
 /* =========================================================
-   LINEAR ALGEBRA
+   MATRIX
 ========================================================= */
 
 function solveLinearSystem(
@@ -443,8 +523,8 @@ function solveLinearSystem(
         [
             rows[column],
             rows[pivot]
-        ] = [
-
+        ] =
+        [
             rows[pivot],
             rows[column]
         ];
@@ -457,12 +537,13 @@ function solveLinearSystem(
         if (
             Math.abs(
                 divisor
-            ) <
+            )
+            <
             1e-10
         ) {
 
             throw new Error(
-                "Calibration geometry is unstable."
+                "Unstable calibration."
             );
         }
 
@@ -520,10 +601,6 @@ function solveLinearSystem(
     );
 }
 
-
-/* =========================================================
-   LEAST-SQUARES HOMOGRAPHY
-========================================================= */
 
 function computeLeastSquaresHomography(
     source,
@@ -841,7 +918,7 @@ function invert3x3(
 
 
 /* =========================================================
-   SCORE BOARD POSITION
+   SCORE
 ========================================================= */
 
 function scoreBoardPoint(
@@ -867,16 +944,12 @@ function scoreBoardPoint(
     ) {
 
         return {
-
             label:
                 "Bull",
-
             score:
                 50,
-
             number:
                 25,
-
             multiplier:
                 2
         };
@@ -889,16 +962,12 @@ function scoreBoardPoint(
     ) {
 
         return {
-
             label:
                 "25",
-
             score:
                 25,
-
             number:
                 25,
-
             multiplier:
                 1
         };
@@ -911,16 +980,12 @@ function scoreBoardPoint(
     ) {
 
         return {
-
             label:
                 "Miss",
-
             score:
                 0,
-
             number:
                 0,
-
             multiplier:
                 0
         };
@@ -928,14 +993,16 @@ function scoreBoardPoint(
 
 
     let angle =
+        Math.atan2(
+            x,
+            -y
+        );
+
+
+    angle =
         normaliseAngle(
 
-            Math.atan2(
-                x,
-                -y
-            )
-
-            -
+            angle -
 
             (
                 calibration.segmentOffset ||
@@ -981,17 +1048,12 @@ function scoreBoardPoint(
     ) {
 
         return {
-
             label:
-                "D" +
-                number,
-
+                `D${number}`,
             score:
                 number *
                 2,
-
             number,
-
             multiplier:
                 2
         };
@@ -1009,17 +1071,12 @@ function scoreBoardPoint(
     ) {
 
         return {
-
             label:
-                "T" +
-                number,
-
+                `T${number}`,
             score:
                 number *
                 3,
-
             number,
-
             multiplier:
                 3
         };
@@ -1027,17 +1084,13 @@ function scoreBoardPoint(
 
 
     return {
-
         label:
             String(
                 number
             ),
-
         score:
             number,
-
         number,
-
         multiplier:
             1
     };
@@ -1045,7 +1098,7 @@ function scoreBoardPoint(
 
 
 /* =========================================================
-   PHONE STATE
+   PHONE
 ========================================================= */
 
 let phoneVideo;
@@ -1094,6 +1147,14 @@ let phoneDetecting =
     false;
 
 
+let phoneRearming =
+    false;
+
+
+let phoneAnalysing =
+    false;
+
+
 let phoneStableFrames =
     0;
 
@@ -1108,10 +1169,6 @@ let phoneDartsInVisit =
 
 let phoneLastDetectionTime =
     0;
-
-
-let phoneRearming =
-    false;
 
 
 let phoneZoom = {
@@ -1134,7 +1191,7 @@ let phoneZoom = {
 
 
 /* =========================================================
-   PHONE INITIALISE
+   PHONE INIT
 ========================================================= */
 
 async function initialisePhone() {
@@ -1268,13 +1325,13 @@ async function initialisePhone() {
 
 
     setPhoneStatus(
-        "Signed in ✓ Start the rear camera."
+        "Start the rear camera."
     );
 }
 
 
 /* =========================================================
-   START PHONE CAMERA
+   PHONE CAMERA
 ========================================================= */
 
 async function startPhoneCamera() {
@@ -1343,7 +1400,7 @@ async function startPhoneCamera() {
 
 
         setPhoneStatus(
-            "Put the phone in its final position. You should not need to touch it again."
+            "Put the phone in its final position."
         );
 
 
@@ -1362,14 +1419,14 @@ async function startPhoneCamera() {
 
 
         setPhoneStatus(
-            "Could not start camera. Check Chrome camera permissions."
+            "Could not start camera."
         );
     }
 }
 
 
 /* =========================================================
-   PHONE ZOOM
+   ZOOM
 ========================================================= */
 
 function configurePhoneZoom() {
@@ -1382,37 +1439,20 @@ function configurePhoneZoom() {
     }
 
 
-    let capabilities =
-        {};
+    const capabilities =
+        phoneVideoTrack.getCapabilities
+            ?
+            phoneVideoTrack.getCapabilities()
+            :
+            {};
 
 
-    let settings =
-        {};
-
-
-    try {
-
-        capabilities =
-
-            phoneVideoTrack.getCapabilities
-                ? phoneVideoTrack.getCapabilities()
-                : {};
-
-
-        settings =
-
-            phoneVideoTrack.getSettings
-                ? phoneVideoTrack.getSettings()
-                : {};
-
-    } catch (
-        error
-    ) {
-
-        console.warn(
-            error
-        );
-    }
+    const settings =
+        phoneVideoTrack.getSettings
+            ?
+            phoneVideoTrack.getSettings()
+            :
+            {};
 
 
     if (
@@ -1467,7 +1507,7 @@ function configurePhoneZoom() {
 
 
 async function setPhoneZoom(
-    requestedValue,
+    requested,
     localChange =
         false
 ) {
@@ -1485,9 +1525,7 @@ async function setPhoneZoom(
         clamp(
 
             roundToStep(
-
-                requestedValue,
-
+                requested,
                 phoneZoom.step
             ),
 
@@ -1503,7 +1541,6 @@ async function setPhoneZoom(
             .applyConstraints({
 
                 advanced: [
-
                     {
                         zoom:
                             value
@@ -1528,8 +1565,8 @@ async function setPhoneZoom(
 
 
         if (
-            phoneCalibration ||
-            localChange
+            localChange ||
+            phoneCalibration
         ) {
 
             invalidateCalibration();
@@ -1544,13 +1581,7 @@ async function setPhoneZoom(
     ) {
 
         console.warn(
-            "Zoom error:",
             error
-        );
-
-
-        setPhoneStatus(
-            "The phone camera rejected that zoom level."
         );
     }
 }
@@ -1613,22 +1644,17 @@ function setPhoneZoomUI() {
         slider.disabled =
             true;
 
-
         out.disabled =
             true;
-
 
         zoomIn.disabled =
             true;
 
-
         value.textContent =
             "N/A";
 
-
         status.textContent =
-            "This phone/browser does not expose camera zoom.";
-
+            "Browser zoom not available.";
 
         return;
     }
@@ -1637,134 +1663,54 @@ function setPhoneZoomUI() {
     slider.min =
         phoneZoom.min;
 
-
     slider.max =
         phoneZoom.max;
-
 
     slider.step =
         phoneZoom.step;
 
-
     slider.value =
         phoneZoom.value;
-
 
     slider.disabled =
         false;
 
-
     out.disabled =
         false;
-
 
     zoomIn.disabled =
         false;
 
 
     value.textContent =
-
         `${phoneZoom.value.toFixed(1)}×`;
 
 
     status.textContent =
 
-        `${phoneZoom.min.toFixed(1)}× – ${phoneZoom.max.toFixed(1)}×`;
+        `${phoneZoom.min.toFixed(1)}× – ` +
+
+        `${phoneZoom.max.toFixed(1)}×`;
 }
 
 
 /* =========================================================
-   INVALIDATE CALIBRATION
-========================================================= */
-
-function invalidateCalibration() {
-
-    phoneCalibrationValid =
-        false;
-
-
-    stopAutomaticDetection();
-
-
-    setPhoneState(
-        "RECALIBRATION REQUIRED"
-    );
-
-
-    setPhoneStatus(
-        "Camera view changed. Recalibrate from the PC."
-    );
-
-
-    broadcastCameraStatus();
-}
-
-
-/* =========================================================
-   CREATE SESSION
+   SESSION
 ========================================================= */
 
 async function createPhoneSession() {
 
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await cameraSupabase
-                .rpc(
-                    "create_dart_hub_camera_session"
-                );
+    const {
+        data,
+        error
+    } =
+        await cameraSupabase
+            .rpc(
+                "create_dart_hub_camera_session"
+            );
 
 
-        if (
-            error
-        ) {
-
-            throw error;
-        }
-
-
-        cameraSession = {
-
-            id:
-                data.id,
-
-            code:
-                data.session_code
-        };
-
-
-        document
-            .getElementById(
-                "session-code"
-            )
-            .textContent =
-                cameraSession.code;
-
-
-        document
-            .getElementById(
-                "toggle-live-feed"
-            )
-            .disabled =
-                false;
-
-
-        subscribePhoneDatabase();
-
-
-        await openPhoneBroadcastChannel();
-
-
-        startPhoneLiveFeed();
-
-
-        broadcastCameraStatus();
-
-
-    } catch (
+    if (
         error
     ) {
 
@@ -1772,19 +1718,54 @@ async function createPhoneSession() {
             error
         );
 
-
         setPhoneStatus(
-            "Could not create camera session."
+            "Could not create session."
         );
+
+        return;
     }
+
+
+    cameraSession = {
+
+        id:
+            data.id,
+
+        code:
+            data.session_code
+    };
+
+
+    document
+        .getElementById(
+            "session-code"
+        )
+        .textContent =
+            cameraSession.code;
+
+
+    document
+        .getElementById(
+            "toggle-live-feed"
+        )
+        .disabled =
+            false;
+
+
+    subscribePhoneDatabase();
+
+
+    await openPhoneChannel();
+
+
+    startPhoneLiveFeed();
+
+
+    broadcastCameraStatus();
 }
 
 
-/* =========================================================
-   PHONE REALTIME CHANNEL
-========================================================= */
-
-async function openPhoneBroadcastChannel() {
+async function openPhoneChannel() {
 
     if (
         cameraChannel
@@ -1814,10 +1795,8 @@ async function openPhoneBroadcastChannel() {
                     "request-frame"
             },
 
-            () => {
-
-                sendLiveCameraFrame();
-            }
+            () =>
+                sendLiveCameraFrame()
         );
 
 
@@ -1831,452 +1810,104 @@ async function openPhoneBroadcastChannel() {
                     "camera-command"
             },
 
-            message => {
-
+            message =>
                 handlePCCommand(
                     message.payload
-                );
-            }
+                )
         );
 
 
-    await cameraChannel.subscribe();
+    await cameraChannel
+        .subscribe();
 }
 
-
-/* =========================================================
-   REMOTE COMMANDS
-========================================================= */
 
 async function handlePCCommand(
     command
 ) {
 
     if (
-        !command ||
-        !command.action
+        !command?.action
     ) {
 
         return;
     }
 
 
-    if (
-        command.action ===
-        "start-detection"
+    switch (
+        command.action
     ) {
 
-        startAutomaticDetection();
+        case "start-detection":
 
-        return;
-    }
-
-
-    if (
-        command.action ===
-        "reset-baseline"
-    ) {
-
-        await rearmFromCurrentBoard();
-
-        return;
-    }
-
-
-    if (
-        command.action ===
-        "stop-detection"
-    ) {
-
-        stopAutomaticDetection();
-
-        return;
-    }
-
-
-    if (
-        command.action ===
-        "set-zoom"
-    ) {
-
-        await setPhoneZoom(
-            Number(
-                command.value
-            )
-        );
-
-        return;
-    }
-
-
-    if (
-        command.action ===
-        "start-live-feed"
-    ) {
-
-        startPhoneLiveFeed();
-
-        return;
-    }
-
-
-    if (
-        command.action ===
-        "begin-recalibration"
-    ) {
-
-        stopAutomaticDetection();
-
-
-        phoneCalibrationValid =
-            false;
-
-
-        startPhoneLiveFeed();
-
-
-        setPhoneState(
-            "RECALIBRATING"
-        );
-
-
-        setPhoneStatus(
-            "Adjust calibration from the PC, then press Save Calibration."
-        );
-
-
-        broadcastCameraStatus();
-
-        return;
-    }
-}
-
-
-/* =========================================================
-   SAFE RE-ARM
-========================================================= */
-
-async function rearmFromCurrentBoard() {
-
-    if (
-        phoneRearming ||
-        !phoneStream
-    ) {
-
-        return;
-    }
-
-
-    phoneRearming =
-        true;
-
-
-    const wasDetecting =
-        phoneDetecting;
-
-
-    /*
-       Pause detection without invalidating
-       calibration.
-    */
-
-    phoneDetecting =
-        false;
-
-
-    if (
-        phoneDetectionTimer
-    ) {
-
-        clearInterval(
-            phoneDetectionTimer
-        );
-
-
-        phoneDetectionTimer =
-            null;
-    }
-
-
-    setPhoneState(
-        "PAUSING DETECTION…"
-    );
-
-
-    setPhoneStatus(
-        "Preparing a new board baseline."
-    );
-
-
-    broadcastCameraStatus();
-
-
-    /*
-       Let any arm movement / vibration settle.
-    */
-
-    await sleep(
-        700
-    );
-
-
-    setPhoneState(
-        "WAITING FOR CAMERA TO SETTLE…"
-    );
-
-
-    broadcastCameraStatus();
-
-
-    let previous =
-        captureAnalysisFrame();
-
-
-    let stableCount =
-        0;
-
-
-    const maximumChecks =
-        12;
-
-
-    for (
-        let check = 0;
-        check < maximumChecks;
-        check++
-    ) {
-
-        await sleep(
-            250
-        );
-
-
-        const current =
-            captureAnalysisFrame();
-
-
-        const difference =
-            compareFrames(
-                previous,
-                current
-            );
-
-
-        if (
-            difference &&
-            difference.count <
-            250
-        ) {
-
-            stableCount++;
-
-
-        } else {
-
-            stableCount =
-                0;
-        }
-
-
-        previous =
-            current;
-
-
-        if (
-            stableCount >=
-            3
-        ) {
+            startAutomaticDetection();
 
             break;
-        }
-    }
 
 
-    setPhoneState(
-        "CAPTURING BASELINE…"
-    );
+        case "reset-baseline":
+
+            await rearmFromCurrentBoard();
+
+            break;
 
 
-    broadcastCameraStatus();
+        case "stop-detection":
+
+            stopAutomaticDetection();
+
+            break;
 
 
-    const frame =
-        captureAnalysisFrame();
+        case "set-zoom":
 
-
-    phoneBaseline =
-        cloneAnalysisFrame(
-            frame
-        );
-
-
-    phoneEmptyReference =
-        cloneAnalysisFrame(
-            frame
-        );
-
-
-    phoneDartsInVisit =
-        0;
-
-
-    phoneStableFrames =
-        0;
-
-
-    phoneLastDifference =
-        0;
-
-
-    phoneLastDetectionTime =
-        0;
-
-
-    /*
-       Automatically resume if detection
-       was already running before the re-arm.
-    */
-
-    if (
-        wasDetecting &&
-        phoneCalibrationValid
-    ) {
-
-        phoneDetecting =
-            true;
-
-
-        phoneDetectionTimer =
-            setInterval(
-                detectionTick,
-                350
+            await setPhoneZoom(
+                Number(
+                    command.value
+                )
             );
 
-
-        document
-            .getElementById(
-                "start-detection"
-            )
-            .textContent =
-                "🎯 Automatic Detection ON";
+            break;
 
 
-        document
-            .getElementById(
-                "stop-detection"
-            )
-            .disabled =
+        case "start-live-feed":
+
+            startPhoneLiveFeed();
+
+            break;
+
+
+        case "begin-recalibration":
+
+            stopAutomaticDetection();
+
+            phoneCalibrationValid =
                 false;
-    }
 
+            startPhoneLiveFeed();
 
-    setPhoneState(
-        "READY — DART 1"
-    );
+            setPhoneState(
+                "RECALIBRATING"
+            );
 
+            broadcastCameraStatus();
 
-    setPhoneStatus(
-
-        wasDetecting
-
-            ? "New baseline captured ✓ Detection resumed."
-
-            : "New baseline captured ✓"
-    );
-
-
-    phoneRearming =
-        false;
-
-
-    broadcastCameraStatus();
-}
-
-
-/* =========================================================
-   PHONE STATUS BROADCAST
-========================================================= */
-
-async function broadcastCameraStatus() {
-
-    if (
-        !cameraChannel
-    ) {
-
-        return;
-    }
-
-
-    try {
-
-        await cameraChannel.send({
-
-            type:
-                "broadcast",
-
-            event:
-                "camera-status",
-
-            payload: {
-
-                detecting:
-                    phoneDetecting,
-
-                calibrationValid:
-                    phoneCalibrationValid,
-
-                dartsInVisit:
-                    phoneDartsInVisit,
-
-                zoom:
-                    phoneZoom,
-
-                rearming:
-                    phoneRearming,
-
-                state:
-
-                    document
-                        .getElementById(
-                            "phone-state"
-                        )
-                        ?.textContent
-
-                    ||
-
-                    ""
-            }
-        });
-
-
-    } catch (
-        error
-    ) {
-
-        console.warn(
-            error
-        );
+            break;
     }
 }
 
 
 /* =========================================================
-   LIVE CAMERA FEED
+   LIVE FEED
 ========================================================= */
 
 function togglePhoneLiveFeed() {
 
-    if (
-        phoneLiveFeed
-    ) {
-
-        stopPhoneLiveFeed();
-
-
-    } else {
-
+    phoneLiveFeed
+        ?
+        stopPhoneLiveFeed()
+        :
         startPhoneLiveFeed();
-    }
 }
 
 
@@ -2310,14 +1941,9 @@ function startPhoneLiveFeed() {
     }
 
 
-    if (
+    clearInterval(
         phoneLiveTimer
-    ) {
-
-        clearInterval(
-            phoneLiveTimer
-        );
-    }
+    );
 
 
     sendLiveCameraFrame();
@@ -2337,14 +1963,9 @@ function stopPhoneLiveFeed() {
         false;
 
 
-    if (
+    clearInterval(
         phoneLiveTimer
-    ) {
-
-        clearInterval(
-            phoneLiveTimer
-        );
-    }
+    );
 
 
     phoneLiveTimer =
@@ -2368,7 +1989,7 @@ function stopPhoneLiveFeed() {
 
 
 /* =========================================================
-   CAPTURE FRAME
+   FRAME
 ========================================================= */
 
 function capturePhoneFrame(
@@ -2377,7 +1998,6 @@ function capturePhoneFrame(
 ) {
 
     const scale =
-
         Math.min(
 
             1,
@@ -2443,10 +2063,6 @@ function capturePhoneFrame(
 }
 
 
-/* =========================================================
-   SEND LIVE FRAME
-========================================================= */
-
 async function sendLiveCameraFrame() {
 
     if (
@@ -2468,7 +2084,7 @@ async function sendLiveCameraFrame() {
     const image =
         phoneCanvas.toDataURL(
             "image/jpeg",
-            0.50
+            0.5
         );
 
 
@@ -2498,96 +2114,92 @@ async function sendLiveCameraFrame() {
 
 
 /* =========================================================
-   PHONE DATABASE LISTENER
+   DATABASE CALIBRATION
 ========================================================= */
 
 function subscribePhoneDatabase() {
 
-    const channel =
-        cameraSupabase
+    cameraSupabase
+        .channel(
+            `camera-db-${cameraSession.id}`
+        )
 
-            .channel(
-                `camera-db-${cameraSession.id}`
-            )
+        .on(
 
-            .on(
+            "postgres_changes",
 
-                "postgres_changes",
+            {
+                event:
+                    "UPDATE",
 
-                {
+                schema:
+                    "public",
 
-                    event:
-                        "UPDATE",
+                table:
+                    "camera_sessions",
 
-                    schema:
-                        "public",
+                filter:
+                    `id=eq.${cameraSession.id}`
+            },
 
-                    table:
-                        "camera_sessions",
+            payload => {
 
-                    filter:
-                        `id=eq.${cameraSession.id}`
-                },
-
-                payload => {
-
-                    const calibration =
-                        payload.new
-                            .calibration;
+                const calibration =
+                    payload.new
+                        .calibration;
 
 
-                    if (
-                        calibration &&
-                        calibration.version >=
-                            6
-                    ) {
+                if (
+                    calibration &&
+                    calibration.version >=
+                        9
+                ) {
 
-                        phoneCalibration =
-                            calibration;
-
-
-                        phoneCalibrationValid =
-                            true;
+                    phoneCalibration =
+                        calibration;
 
 
-                        document
-                            .getElementById(
-                                "start-detection"
-                            )
-                            .disabled =
-                                false;
+                    phoneCalibrationValid =
+                        true;
 
 
-                        document
-                            .getElementById(
-                                "reset-baseline"
-                            )
-                            .disabled =
-                                false;
+                    document
+                        .getElementById(
+                            "start-detection"
+                        )
+                        .disabled =
+                            false;
 
 
-                        setPhoneState(
-                            "CALIBRATED"
-                        );
+                    document
+                        .getElementById(
+                            "reset-baseline"
+                        )
+                        .disabled =
+                            false;
 
 
-                        setPhoneStatus(
-                            "Calibration received ✓ Start detection from the PC."
-                        );
+                    setPhoneState(
+                        "CALIBRATED"
+                    );
 
 
-                        broadcastCameraStatus();
-                    }
+                    setPhoneStatus(
+                        "Calibration received."
+                    );
+
+
+                    broadcastCameraStatus();
                 }
-            );
+            }
+        )
 
-
-    channel.subscribe();
+        .subscribe();
 }
 
 
 /* =========================================================
-   GREYSCALE
+   GREY FRAMES
 ========================================================= */
 
 function imageToGrey(
@@ -2617,7 +2229,6 @@ function imageToGrey(
     ) {
 
         grey[j] =
-
             Math.round(
 
                 source[i] *
@@ -2685,63 +2296,7 @@ function cloneAnalysisFrame(
 
 
 /* =========================================================
-   NORMAL BASELINE
-========================================================= */
-
-function captureBoardBaseline() {
-
-    if (
-        !phoneStream
-    ) {
-
-        return;
-    }
-
-
-    const frame =
-        captureAnalysisFrame();
-
-
-    phoneBaseline =
-        cloneAnalysisFrame(
-            frame
-        );
-
-
-    phoneEmptyReference =
-        cloneAnalysisFrame(
-            frame
-        );
-
-
-    phoneDartsInVisit =
-        0;
-
-
-    phoneStableFrames =
-        0;
-
-
-    phoneLastDifference =
-        0;
-
-
-    setPhoneState(
-        "READY — DART 1"
-    );
-
-
-    setPhoneStatus(
-        "Board baseline captured."
-    );
-
-
-    broadcastCameraStatus();
-}
-
-
-/* =========================================================
-   FRAME DIFFERENCE
+   DIFFERENCE
 ========================================================= */
 
 function compareFrames(
@@ -2828,16 +2383,14 @@ function compareFrames(
 
 
     return {
-
         count,
-
         pixels
     };
 }
 
 
 /* =========================================================
-   IMAGE PIXEL -> BOARD
+   CAMERA PIXEL -> BOARD
 ========================================================= */
 
 function imagePixelToBoard(
@@ -2849,19 +2402,13 @@ function imagePixelToBoard(
 
     const scaleX =
 
-        phoneCalibration.imageWidth
-
-        /
-
+        phoneCalibration.imageWidth /
         width;
 
 
     const scaleY =
 
-        phoneCalibration.imageHeight
-
-        /
-
+        phoneCalibration.imageHeight /
         height;
 
 
@@ -2912,383 +2459,9 @@ function imagePixelToBoard(
 
 
 /* =========================================================
-   COMPONENTS
-========================================================= */
+   FALLBACK DETECTOR
 
-function findComponents(
-    pixels
-) {
-
-    const cellSize =
-        4;
-
-
-    const cells =
-        new Map();
-
-
-    pixels.forEach(
-        pixel => {
-
-            const x =
-                Math.floor(
-                    pixel.x /
-                    cellSize
-                );
-
-
-            const y =
-                Math.floor(
-                    pixel.y /
-                    cellSize
-                );
-
-
-            cells.set(
-                `${x},${y}`,
-                pixel
-            );
-        }
-    );
-
-
-    const visited =
-        new Set();
-
-
-    const components =
-        [];
-
-
-    for (
-        const startingKey
-        of cells.keys()
-    ) {
-
-        if (
-            visited.has(
-                startingKey
-            )
-        ) {
-
-            continue;
-        }
-
-
-        const queue = [
-            startingKey
-        ];
-
-
-        const component =
-            [];
-
-
-        visited.add(
-            startingKey
-        );
-
-
-        while (
-            queue.length
-        ) {
-
-            const key =
-                queue.pop();
-
-
-            const pixel =
-                cells.get(
-                    key
-                );
-
-
-            if (
-                pixel
-            ) {
-
-                component.push(
-                    pixel
-                );
-            }
-
-
-            const [
-                x,
-                y
-            ] =
-                key
-                    .split(
-                        ","
-                    )
-                    .map(
-                        Number
-                    );
-
-
-            for (
-                let dx = -1;
-                dx <= 1;
-                dx++
-            ) {
-
-                for (
-                    let dy = -1;
-                    dy <= 1;
-                    dy++
-                ) {
-
-                    if (
-                        dx === 0 &&
-                        dy === 0
-                    ) {
-
-                        continue;
-                    }
-
-
-                    const neighbour =
-                        `${x + dx},${y + dy}`;
-
-
-                    if (
-                        cells.has(
-                            neighbour
-                        ) &&
-                        !visited.has(
-                            neighbour
-                        )
-                    ) {
-
-                        visited.add(
-                            neighbour
-                        );
-
-
-                        queue.push(
-                            neighbour
-                        );
-                    }
-                }
-            }
-        }
-
-
-        if (
-            component.length >
-            6
-        ) {
-
-            components.push(
-                component
-            );
-        }
-    }
-
-
-    return components.sort(
-        (
-            a,
-            b
-        ) =>
-            b.length -
-            a.length
-    );
-}
-
-
-/* =========================================================
-   PRINCIPAL AXIS
-========================================================= */
-
-function principalAxis(
-    points
-) {
-
-    const centreX =
-        mean(
-            points.map(
-                point =>
-                    point.x
-            )
-        );
-
-
-    const centreY =
-        mean(
-            points.map(
-                point =>
-                    point.y
-            )
-        );
-
-
-    let xx =
-        0;
-
-
-    let yy =
-        0;
-
-
-    let xy =
-        0;
-
-
-    points.forEach(
-        point => {
-
-            const x =
-                point.x -
-                centreX;
-
-
-            const y =
-                point.y -
-                centreY;
-
-
-            xx +=
-                x * x;
-
-
-            yy +=
-                y * y;
-
-
-            xy +=
-                x * y;
-        }
-    );
-
-
-    const angle =
-
-        0.5 *
-
-        Math.atan2(
-            2 * xy,
-            xx - yy
-        );
-
-
-    return {
-
-        centreX,
-
-        centreY,
-
-        x:
-            Math.cos(
-                angle
-            ),
-
-        y:
-            Math.sin(
-                angle
-            )
-    };
-}
-
-
-/* =========================================================
-   END WIDTH
-========================================================= */
-
-function measureEndWidth(
-    projectedPoints,
-    axis,
-    useStart
-) {
-
-    if (
-        projectedPoints.length <
-        10
-    ) {
-
-        return Infinity;
-    }
-
-
-    const count =
-        Math.max(
-
-            5,
-
-            Math.round(
-                projectedPoints.length *
-                0.16
-            )
-        );
-
-
-    const sample =
-
-        useStart
-
-            ? projectedPoints.slice(
-                0,
-                count
-            )
-
-            : projectedPoints.slice(
-                -count
-            );
-
-
-    const perpendicular =
-        sample.map(
-            point => {
-
-                const dx =
-                    point.x -
-                    axis.centreX;
-
-
-                const dy =
-                    point.y -
-                    axis.centreY;
-
-
-                return (
-
-                    -dx *
-                    axis.y
-
-                    +
-
-                    dy *
-                    axis.x
-                );
-            }
-        );
-
-
-    const centre =
-        mean(
-            perpendicular
-        );
-
-
-    return Math.sqrt(
-
-        mean(
-
-            perpendicular.map(
-                value =>
-                    Math.pow(
-                        value -
-                        centre,
-                        2
-                    )
-            )
-        )
-    );
-}
-
-
-/* =========================================================
-   FIND IMPACT
+   dart-detector.js overrides this function.
 ========================================================= */
 
 function findImpactPoint(
@@ -3297,25 +2470,26 @@ function findImpactPoint(
     height
 ) {
 
-    const components =
-        findComponents(
-            difference.pixels
-        );
-
-
-    for (
-        const component
-        of components.slice(
-            0,
-            8
-        )
+    if (
+        !difference?.pixels?.length
     ) {
 
-        const points =
-            [];
+        return null;
+    }
 
 
-        component.forEach(
+    let best =
+        null;
+
+
+    /*
+       Very simple safe fallback:
+       choose the changed board point deepest inside
+       the playable board.
+    */
+
+    difference.pixels
+        .forEach(
             pixel => {
 
                 const board =
@@ -3329,367 +2503,481 @@ function findImpactPoint(
                     );
 
 
-                if (
+                const radius =
                     Math.hypot(
                         board.x,
                         board.y
-                    )
-                    <=
-                    1.12
+                    );
+
+
+                if (
+                    radius >
+                    1.025
                 ) {
 
-                    points.push({
+                    return;
+                }
 
-                        ...board,
 
-                        difference:
-                            pixel.difference
-                    });
+                if (
+                    !best ||
+                    radius <
+                    best.radius
+                ) {
+
+                    best = {
+
+                        x:
+                            board.x,
+
+                        y:
+                            board.y,
+
+                        radius
+                    };
                 }
             }
         );
 
 
+    return best;
+}
+
+
+/* =========================================================
+   BASELINE
+========================================================= */
+
+function captureBoardBaseline() {
+
+    const frame =
+        captureAnalysisFrame();
+
+
+    phoneBaseline =
+        cloneAnalysisFrame(
+            frame
+        );
+
+
+    phoneEmptyReference =
+        cloneAnalysisFrame(
+            frame
+        );
+
+
+    phoneDartsInVisit =
+        0;
+
+
+    phoneStableFrames =
+        0;
+
+
+    phoneLastDifference =
+        0;
+
+
+    setPhoneState(
+        "READY — DART 1"
+    );
+
+
+    broadcastCameraStatus();
+}
+
+
+/* =========================================================
+   SAFE RE-ARM
+========================================================= */
+
+async function rearmFromCurrentBoard() {
+
+    if (
+        phoneRearming ||
+        !phoneStream
+    ) {
+
+        return;
+    }
+
+
+    phoneRearming =
+        true;
+
+
+    const wasDetecting =
+        phoneDetecting;
+
+
+    phoneDetecting =
+        false;
+
+
+    clearInterval(
+        phoneDetectionTimer
+    );
+
+
+    phoneDetectionTimer =
+        null;
+
+
+    setPhoneState(
+        "WAITING FOR CAMERA TO SETTLE…"
+    );
+
+
+    broadcastCameraStatus();
+
+
+    let previous =
+        captureAnalysisFrame();
+
+
+    let stable =
+        0;
+
+
+    for (
+        let attempt = 0;
+        attempt < 15;
+        attempt++
+    ) {
+
+        await sleep(
+            250
+        );
+
+
+        const current =
+            captureAnalysisFrame();
+
+
+        const difference =
+            compareFrames(
+
+                previous,
+                current
+            );
+
+
         if (
-            points.length <
-            14
+            difference &&
+            difference.count <
+                250
+        ) {
+
+            stable++;
+
+
+        } else {
+
+            stable =
+                0;
+        }
+
+
+        previous =
+            current;
+
+
+        if (
+            stable >=
+            3
+        ) {
+
+            break;
+        }
+    }
+
+
+    const baseline =
+        captureAnalysisFrame();
+
+
+    phoneBaseline =
+        cloneAnalysisFrame(
+            baseline
+        );
+
+
+    phoneEmptyReference =
+        cloneAnalysisFrame(
+            baseline
+        );
+
+
+    phoneDartsInVisit =
+        0;
+
+
+    phoneStableFrames =
+        0;
+
+
+    phoneLastDifference =
+        0;
+
+
+    phoneLastDetectionTime =
+        0;
+
+
+    if (
+        wasDetecting &&
+        phoneCalibrationValid
+    ) {
+
+        phoneDetecting =
+            true;
+
+
+        phoneDetectionTimer =
+            setInterval(
+                detectionTick,
+                350
+            );
+    }
+
+
+    phoneRearming =
+        false;
+
+
+    setPhoneState(
+        "READY — DART 1"
+    );
+
+
+    setPhoneStatus(
+        "New baseline captured."
+    );
+
+
+    broadcastCameraStatus();
+}
+
+
+/* =========================================================
+   MULTI-FRAME IMPACT VOTE
+========================================================= */
+
+async function collectImpactVote() {
+
+    const candidates =
+        [];
+
+
+    let finalFrame =
+        null;
+
+
+    /*
+       Analyse five settled images.
+
+       One strange frame should no longer decide the score.
+    */
+
+    for (
+        let sample = 0;
+        sample < 5;
+        sample++
+    ) {
+
+        if (
+            sample >
+            0
+        ) {
+
+            await sleep(
+                90
+            );
+        }
+
+
+        const current =
+            captureAnalysisFrame();
+
+
+        finalFrame =
+            current;
+
+
+        const difference =
+            compareFrames(
+
+                phoneBaseline,
+                current
+            );
+
+
+        if (
+            !difference ||
+            difference.count <
+                350
         ) {
 
             continue;
         }
 
 
-        const axis =
-            principalAxis(
-                points
+        const impact =
+            findImpactPoint(
+
+                difference,
+                current.width,
+                current.height
             );
-
-
-        const ordered =
-
-            points
-                .map(
-                    point => ({
-
-                        ...point,
-
-                        projection:
-
-                            (
-                                point.x -
-                                axis.centreX
-                            )
-                            *
-                            axis.x
-
-                            +
-
-                            (
-                                point.y -
-                                axis.centreY
-                            )
-                            *
-                            axis.y
-                    })
-                )
-
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        a.projection -
-                        b.projection
-                );
-
-
-        const startWidth =
-            measureEndWidth(
-
-                ordered,
-
-                axis,
-
-                true
-            );
-
-
-        const endWidth =
-            measureEndWidth(
-
-                ordered,
-
-                axis,
-
-                false
-            );
-
-
-        const startPoint =
-            ordered[0];
-
-
-        const endPoint =
-            ordered[
-                ordered.length -
-                1
-            ];
-
-
-        let impact;
 
 
         if (
-            startWidth <
-            endWidth *
-            0.85
+            !impact
         ) {
 
-            impact =
-                startPoint;
+            continue;
         }
 
 
-        else if (
-            endWidth <
-            startWidth *
-            0.85
+        const radius =
+            Math.hypot(
+                impact.x,
+                impact.y
+            );
+
+
+        /*
+           HARD SAFETY MASK.
+        */
+
+        if (
+            !Number.isFinite(
+                radius
+            )
+
+            ||
+
+            radius >
+            1.025
         ) {
 
-            impact =
-                endPoint;
+            continue;
         }
 
 
-        else {
-
-            function endpointDensity(
-                candidate
-            ) {
-
-                let count =
-                    0;
-
-
-                points.forEach(
-                    point => {
-
-                        if (
-                            Math.hypot(
-
-                                point.x -
-                                candidate.x,
-
-                                point.y -
-                                candidate.y
-
-                            ) <
-                            0.065
-                        ) {
-
-                            count++;
-                        }
-                    }
-                );
-
-
-                return count;
-            }
-
-
-            const startDensity =
-                endpointDensity(
-                    startPoint
-                );
-
-
-            const endDensity =
-                endpointDensity(
-                    endPoint
-                );
-
-
-            impact =
-
-                startDensity <
-                endDensity
-
-                    ? startPoint
-
-                    : endPoint;
-        }
-
-
-        return {
+        candidates.push({
 
             x:
                 impact.x,
 
             y:
                 impact.y
+        });
+    }
+
+
+    if (
+        !candidates.length
+    ) {
+
+        return {
+            impact:
+                null,
+            frame:
+                finalFrame
         };
     }
 
 
-    return null;
-}
+    /*
+       Median vote.
+    */
+
+    let centre = {
+
+        x:
+            median(
+                candidates.map(
+                    candidate =>
+                        candidate.x
+                )
+            ),
+
+        y:
+            median(
+                candidates.map(
+                    candidate =>
+                        candidate.y
+                )
+            )
+    };
 
 
-/* =========================================================
-   CONFIDENCE
-========================================================= */
+    /*
+       Remove candidates far away from the voted result.
+    */
 
-function scoreConfidence(
-    x,
-    y
-) {
+    const filtered =
+        candidates.filter(
+            candidate =>
 
-    const radius =
-        Math.hypot(
-            x,
-            y
+                Math.hypot(
+
+                    candidate.x -
+                    centre.x,
+
+                    candidate.y -
+                    centre.y
+                )
+
+                <
+                0.10
         );
 
 
-    const rings =
-        phoneCalibration.rings;
+    if (
+        filtered.length >=
+        2
+    ) {
 
+        centre = {
 
-    const boundaries = [
-
-        rings.innerBull,
-
-        rings.outerBull,
-
-        rings.innerTreble,
-
-        rings.outerTreble,
-
-        rings.innerDouble,
-
-        rings.outerDouble
-    ];
-
-
-    const nearestRing =
-
-        Math.min(
-
-            ...boundaries.map(
-                boundary =>
-                    Math.abs(
-                        radius -
-                        boundary
+            x:
+                median(
+                    filtered.map(
+                        candidate =>
+                            candidate.x
                     )
-            )
-        );
+                ),
 
-
-    let angle =
-        normaliseAngle(
-
-            Math.atan2(
-                x,
-                -y
-            )
-
-            -
-
-            (
-                phoneCalibration.segmentOffset ||
-                0
-            )
-        );
-
-
-    const section =
-        Math.PI /
-        10;
-
-
-    const local =
-
-        (
-            angle +
-            section /
-            2
-        )
-
-        %
-
-        section;
-
-
-    const nearestSegment =
-
-        Math.min(
-
-            local,
-
-            section -
-            local
-        );
-
-
-    let confidence =
-        97;
-
-
-    if (
-        nearestRing <
-        0.012
-    ) {
-
-        confidence -=
-            35;
+            y:
+                median(
+                    filtered.map(
+                        candidate =>
+                            candidate.y
+                    )
+                )
+        };
     }
 
 
-    else if (
-        nearestRing <
-        0.025
-    ) {
+    return {
 
-        confidence -=
-            15;
-    }
+        impact:
+            centre,
 
+        frame:
+            finalFrame,
 
-    if (
-        nearestSegment <
-        0.025
-    ) {
-
-        confidence -=
-            35;
-    }
-
-
-    else if (
-        nearestSegment <
-        0.05
-    ) {
-
-        confidence -=
-            15;
-    }
-
-
-    return clamp(
-
-        Math.round(
-            confidence
-        ),
-
-        35,
-
-        98
-    );
+        votes:
+            filtered.length ||
+            candidates.length
+    };
 }
 
 
 /* =========================================================
-   START DETECTION
+   DETECTION
 ========================================================= */
 
 function startAutomaticDetection() {
@@ -3702,14 +2990,6 @@ function startAutomaticDetection() {
         setPhoneState(
             "CALIBRATION REQUIRED"
         );
-
-
-        setPhoneStatus(
-            "Save calibration from the PC first."
-        );
-
-
-        broadcastCameraStatus();
 
 
         return;
@@ -3742,14 +3022,9 @@ function startAutomaticDetection() {
             false;
 
 
-    if (
+    clearInterval(
         phoneDetectionTimer
-    ) {
-
-        clearInterval(
-            phoneDetectionTimer
-        );
-    }
+    );
 
 
     phoneDetectionTimer =
@@ -3759,18 +3034,9 @@ function startAutomaticDetection() {
         );
 
 
-    setPhoneState(
-        "READY — DART 1"
-    );
-
-
     broadcastCameraStatus();
 }
 
-
-/* =========================================================
-   STOP DETECTION
-========================================================= */
 
 function stopAutomaticDetection() {
 
@@ -3778,46 +3044,41 @@ function stopAutomaticDetection() {
         false;
 
 
-    if (
+    clearInterval(
         phoneDetectionTimer
-    ) {
-
-        clearInterval(
-            phoneDetectionTimer
-        );
-    }
+    );
 
 
     phoneDetectionTimer =
         null;
 
 
-    const startButton =
+    const button =
         document.getElementById(
             "start-detection"
         );
 
 
-    const stopButton =
+    if (
+        button
+    ) {
+
+        button.textContent =
+            "🎯 Start Automatic Detection";
+    }
+
+
+    const stop =
         document.getElementById(
             "stop-detection"
         );
 
 
     if (
-        startButton
+        stop
     ) {
 
-        startButton.textContent =
-            "🎯 Start Automatic Detection";
-    }
-
-
-    if (
-        stopButton
-    ) {
-
-        stopButton.disabled =
+        stop.disabled =
             true;
     }
 
@@ -3838,7 +3099,7 @@ function stopAutomaticDetection() {
 
 
 /* =========================================================
-   DETECTION LOOP
+   DETECTION TICK
 ========================================================= */
 
 async function detectionTick() {
@@ -3846,7 +3107,8 @@ async function detectionTick() {
     if (
         !phoneDetecting ||
         !phoneBaseline ||
-        phoneRearming
+        phoneRearming ||
+        phoneAnalysing
     ) {
 
         return;
@@ -3857,6 +3119,11 @@ async function detectionTick() {
         captureAnalysisFrame();
 
 
+    /*
+       Three darts already scored.
+       Wait for board to return to empty reference.
+    */
+
     if (
         phoneDartsInVisit >=
         3
@@ -3866,7 +3133,6 @@ async function detectionTick() {
             compareFrames(
 
                 phoneEmptyReference,
-
                 current
             );
 
@@ -3874,7 +3140,7 @@ async function detectionTick() {
         if (
             clear &&
             clear.count <
-            300
+                300
         ) {
 
             phoneBaseline =
@@ -3898,11 +3164,6 @@ async function detectionTick() {
             );
 
 
-            setPhoneStatus(
-                "Darts removed ✓ Ready for next player."
-            );
-
-
             broadcastCameraStatus();
         }
 
@@ -3915,7 +3176,6 @@ async function detectionTick() {
         compareFrames(
 
             phoneBaseline,
-
             current
         );
 
@@ -3927,6 +3187,10 @@ async function detectionTick() {
         return;
     }
 
+
+    /*
+       Hand / body movement.
+    */
 
     if (
         difference.count >
@@ -3946,12 +3210,13 @@ async function detectionTick() {
         );
 
 
-        broadcastCameraStatus();
-
-
         return;
     }
 
+
+    /*
+       Nothing substantial.
+    */
 
     if (
         difference.count <
@@ -4007,9 +3272,6 @@ async function detectionTick() {
         );
 
 
-        broadcastCameraStatus();
-
-
         return;
     }
 
@@ -4025,27 +3287,34 @@ async function detectionTick() {
     }
 
 
-    const impact =
-        findImpactPoint(
+    phoneAnalysing =
+        true;
 
-            difference,
 
-            current.width,
+    setPhoneState(
+        "ANALYSING DART…"
+    );
 
-            current.height
-        );
+
+    const vote =
+        await collectImpactVote();
+
+
+    phoneAnalysing =
+        false;
 
 
     if (
-        !impact
+        !vote.impact
     ) {
 
+        phoneStableFrames =
+            0;
+
+
         setPhoneState(
-            "DART FOUND — IMPACT UNCLEAR"
+            "DART UNCLEAR — WAITING…"
         );
-
-
-        broadcastCameraStatus();
 
 
         return;
@@ -4055,12 +3324,31 @@ async function detectionTick() {
     const result =
         scoreBoardPoint(
 
-            impact.x,
-
-            impact.y,
+            vote.impact.x,
+            vote.impact.y,
 
             phoneCalibration
         );
+
+
+    const confidence =
+
+        vote.votes >=
+        4
+
+            ?
+            96
+
+            :
+
+        vote.votes >=
+        3
+
+            ?
+            90
+
+            :
+            78;
 
 
     const detection = {
@@ -4068,16 +3356,15 @@ async function detectionTick() {
         ...result,
 
         boardX:
-            impact.x,
+            vote.impact.x,
 
         boardY:
-            impact.y,
+            vote.impact.y,
 
-        confidence:
-            scoreConfidence(
-                impact.x,
-                impact.y
-            ),
+        confidence,
+
+        votes:
+            vote.votes,
 
         dartNumber:
             phoneDartsInVisit +
@@ -4086,11 +3373,6 @@ async function detectionTick() {
         timestamp:
             Date.now()
     };
-
-
-    setPhoneState(
-        "DART LOCKED ✓"
-    );
 
 
     await publishDetection(
@@ -4109,22 +3391,40 @@ async function detectionTick() {
         0;
 
 
-    phoneBaseline =
-        cloneAnalysisFrame(
-            current
-        );
+    if (
+        vote.frame
+    ) {
+
+        phoneBaseline =
+            cloneAnalysisFrame(
+                vote.frame
+            );
+
+
+    } else {
+
+        phoneBaseline =
+            cloneAnalysisFrame(
+                current
+            );
+    }
 
 
     setPhoneState(
 
         `DART ${phoneDartsInVisit}: ` +
 
-        `${detection.label} = ${detection.score}`
+        `${detection.label} = ` +
+
+        `${detection.score}`
     );
 
 
     setPhoneStatus(
-        `${detection.confidence}% confidence`
+
+        `${detection.confidence}% confidence` +
+
+        ` • ${detection.votes} detector votes`
     );
 
 
@@ -4133,7 +3433,7 @@ async function detectionTick() {
 
 
 /* =========================================================
-   PUBLISH DETECTION
+   PUBLISH
 ========================================================= */
 
 async function publishDetection(
@@ -4194,7 +3494,34 @@ async function publishDetection(
 
 
 /* =========================================================
-   PHONE DISPLAY
+   CALIBRATION INVALIDATION
+========================================================= */
+
+function invalidateCalibration() {
+
+    phoneCalibrationValid =
+        false;
+
+
+    stopAutomaticDetection();
+
+
+    setPhoneState(
+        "RECALIBRATION REQUIRED"
+    );
+
+
+    setPhoneStatus(
+        "Camera view changed."
+    );
+
+
+    broadcastCameraStatus();
+}
+
+
+/* =========================================================
+   PHONE STATUS
 ========================================================= */
 
 function setPhoneState(
@@ -4237,8 +3564,56 @@ function setPhoneStatus(
 }
 
 
+async function broadcastCameraStatus() {
+
+    if (
+        !cameraChannel
+    ) {
+
+        return;
+    }
+
+
+    await cameraChannel.send({
+
+        type:
+            "broadcast",
+
+        event:
+            "camera-status",
+
+        payload: {
+
+            detecting:
+                phoneDetecting,
+
+            calibrationValid:
+                phoneCalibrationValid,
+
+            dartsInVisit:
+                phoneDartsInVisit,
+
+            zoom:
+                phoneZoom,
+
+            state:
+
+                document
+                    .getElementById(
+                        "phone-state"
+                    )
+                    ?.textContent
+
+                ||
+
+                ""
+        }
+    });
+}
+
+
 /* =========================================================
-   STOP PHONE CAMERA
+   STOP PHONE
 ========================================================= */
 
 function stopPhoneCamera() {
@@ -4249,17 +3624,12 @@ function stopPhoneCamera() {
     stopPhoneLiveFeed();
 
 
-    if (
-        phoneStream
-    ) {
-
-        phoneStream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
-    }
+    phoneStream
+        ?.getTracks()
+        .forEach(
+            track =>
+                track.stop()
+        );
 
 
     phoneStream =
@@ -4273,16 +3643,11 @@ function stopPhoneCamera() {
     setPhoneState(
         "CAMERA STOPPED"
     );
-
-
-    setPhoneStatus(
-        "Camera stopped."
-    );
 }
 
 
 /* =========================================================
-   PC STATE
+   PC CALIBRATION STATE
 ========================================================= */
 
 let pcCanvas;
@@ -4319,10 +3684,6 @@ let pcDragging =
 
 let pcCalibration =
     null;
-
-
-let pcNeedsRecalibration =
-    true;
 
 
 let pcLastDetection =
@@ -4368,7 +3729,7 @@ let pcHandles = {
 
 
 /* =========================================================
-   PC INITIALISE
+   PC INIT
 ========================================================= */
 
 async function initialisePC() {
@@ -4395,14 +3756,6 @@ async function initialisePC() {
 
     document
         .getElementById(
-            "reset-handles"
-        )
-        .onclick =
-            resetCalibrationHandles;
-
-
-    document
-        .getElementById(
             "save-calibration"
         )
         .onclick =
@@ -4415,22 +3768,6 @@ async function initialisePC() {
         )
         .onclick =
             beginPCRecalibration;
-
-
-    document
-        .getElementById(
-            "toggle-grid"
-        )
-        .onclick =
-            toggleGrid;
-
-
-    document
-        .getElementById(
-            "request-frame"
-        )
-        .onclick =
-            requestFreshFrame;
 
 
     document
@@ -4449,17 +3786,10 @@ async function initialisePC() {
             "pc-reset-baseline"
         )
         .onclick =
-            async () => {
-
-                setCalibrationStatus(
-                    "Re-arming from current board…"
-                );
-
-
-                await sendPhoneCommand(
+            () =>
+                sendPhoneCommand(
                     "reset-baseline"
                 );
-            };
 
 
     document
@@ -4471,6 +3801,30 @@ async function initialisePC() {
                 sendPhoneCommand(
                     "stop-detection"
                 );
+
+
+    document
+        .getElementById(
+            "reset-handles"
+        )
+        .onclick =
+            resetCalibrationHandles;
+
+
+    document
+        .getElementById(
+            "toggle-grid"
+        )
+        .onclick =
+            toggleGrid;
+
+
+    document
+        .getElementById(
+            "request-frame"
+        )
+        .onclick =
+            requestFreshFrame;
 
 
     document
@@ -4561,7 +3915,7 @@ async function initialisePC() {
 
 
 /* =========================================================
-   CONNECT PC
+   PC CONNECT
 ========================================================= */
 
 async function connectToPhone() {
@@ -4622,13 +3976,8 @@ async function connectToPhone() {
         !data
     ) {
 
-        console.error(
-            error
-        );
-
-
         setCalibrationStatus(
-            "Camera session not found."
+            "Session not found."
         );
 
 
@@ -4640,6 +3989,30 @@ async function connectToPhone() {
         data;
 
 
+    /*
+       Restore existing handles if available.
+    */
+
+    if (
+        data.calibration
+        ?.controlPoints
+    ) {
+
+        pcHandles =
+            JSON.parse(
+
+                JSON.stringify(
+                    data.calibration
+                        .controlPoints
+                )
+            );
+
+
+        pcCalibration =
+            data.calibration;
+    }
+
+
     document
         .getElementById(
             "calibration-workspace"
@@ -4649,12 +4022,7 @@ async function connectToPhone() {
         );
 
 
-    setCalibrationStatus(
-        "Connected ✓ Waiting for live phone camera…"
-    );
-
-
-    await openPCBroadcastChannel();
+    await openPCChannel();
 
 
     subscribePCDatabase();
@@ -4666,14 +4034,15 @@ async function connectToPhone() {
 
 
     await requestFreshFrame();
+
+
+    setCalibrationStatus(
+        "Connected ✓"
+    );
 }
 
 
-/* =========================================================
-   PC REALTIME CHANNEL
-========================================================= */
-
-async function openPCBroadcastChannel() {
+async function openPCChannel() {
 
     if (
         cameraChannel
@@ -4703,12 +4072,10 @@ async function openPCBroadcastChannel() {
                     "camera-frame"
             },
 
-            message => {
-
+            message =>
                 receiveLiveFrame(
                     message.payload
-                );
-            }
+                )
         );
 
 
@@ -4722,22 +4089,17 @@ async function openPCBroadcastChannel() {
                     "camera-status"
             },
 
-            message => {
-
+            message =>
                 receiveCameraStatus(
                     message.payload
-                );
-            }
+                )
         );
 
 
-    await cameraChannel.subscribe();
+    await cameraChannel
+        .subscribe();
 }
 
-
-/* =========================================================
-   SEND PHONE COMMAND
-========================================================= */
 
 async function sendPhoneCommand(
     action,
@@ -4775,47 +4137,7 @@ async function sendPhoneCommand(
 
 
 /* =========================================================
-   RECALIBRATE FROM PC
-========================================================= */
-
-async function beginPCRecalibration() {
-
-    await sendPhoneCommand(
-        "begin-recalibration"
-    );
-
-
-    setPCNeedsRecalibration(
-        true
-    );
-
-
-    pcShowGrid =
-        true;
-
-
-    document
-        .getElementById(
-            "toggle-grid"
-        )
-        .textContent =
-            "👁 Hide Grid";
-
-
-    setCalibrationStatus(
-        "Recalibration mode ✓ Adjust your existing points, then press Save Calibration."
-    );
-
-
-    await requestFreshFrame();
-
-
-    drawPCScene();
-}
-
-
-/* =========================================================
-   REQUEST FRAME
+   PC FRAME
 ========================================================= */
 
 async function requestFreshFrame() {
@@ -4845,8 +4167,69 @@ async function requestFreshFrame() {
 }
 
 
+function receiveLiveFrame(
+    payload
+) {
+
+    if (
+        !payload?.image
+    ) {
+
+        return;
+    }
+
+
+    const image =
+        new Image();
+
+
+    image.onload =
+        () => {
+
+            pcImage =
+                image;
+
+
+            const firstFrame =
+                !pcImageWidth;
+
+
+            pcImageWidth =
+                image.naturalWidth;
+
+
+            pcImageHeight =
+                image.naturalHeight;
+
+
+            pcCanvas.width =
+                pcImageWidth;
+
+
+            pcCanvas.height =
+                pcImageHeight;
+
+
+            if (
+                firstFrame &&
+                !pcHandles.outerDouble.length
+            ) {
+
+                seedCalibrationHandles();
+            }
+
+
+            drawPCScene();
+        };
+
+
+    image.src =
+        payload.image;
+}
+
+
 /* =========================================================
-   PHONE STATUS ON PC
+   PC STATUS
 ========================================================= */
 
 function receiveCameraStatus(
@@ -4887,29 +4270,6 @@ function receiveCameraStatus(
 
         updatePCZoomUI();
     }
-
-
-    if (
-        status.calibrationValid ===
-        false &&
-        pcCalibration
-    ) {
-
-        setPCNeedsRecalibration(
-            true
-        );
-    }
-
-
-    if (
-        status.state ===
-        "READY — DART 1"
-    ) {
-
-        setCalibrationStatus(
-            "Ready ✓ Waiting for Dart 1."
-        );
-    }
 }
 
 
@@ -4918,7 +4278,7 @@ function receiveCameraStatus(
 ========================================================= */
 
 function requestPCZoom(
-    requestedValue
+    requested
 ) {
 
     if (
@@ -4933,7 +4293,7 @@ function requestPCZoom(
         clamp(
 
             roundToStep(
-                requestedValue,
+                requested,
                 pcPhoneZoom.step
             ),
 
@@ -4950,7 +4310,7 @@ function requestPCZoom(
     updatePCZoomUI();
 
 
-    setPCNeedsRecalibration(
+    showRecalibrationWarning(
         true
     );
 
@@ -4984,13 +4344,13 @@ function updatePCZoomUI() {
         );
 
 
-    const out =
+    const minus =
         document.getElementById(
             "pc-zoom-out"
         );
 
 
-    const zoomIn =
+    const plus =
         document.getElementById(
             "pc-zoom-in"
         );
@@ -5003,22 +4363,14 @@ function updatePCZoomUI() {
         slider.disabled =
             true;
 
-
-        out.disabled =
+        minus.disabled =
             true;
 
-
-        zoomIn.disabled =
+        plus.disabled =
             true;
-
 
         value.textContent =
             "N/A";
-
-
-        status.textContent =
-            "Phone camera does not expose browser zoom.";
-
 
         return;
     }
@@ -5027,33 +4379,26 @@ function updatePCZoomUI() {
     slider.min =
         pcPhoneZoom.min;
 
-
     slider.max =
         pcPhoneZoom.max;
-
 
     slider.step =
         pcPhoneZoom.step;
 
-
     slider.value =
         pcPhoneZoom.value;
-
 
     slider.disabled =
         false;
 
-
-    out.disabled =
+    minus.disabled =
         false;
 
-
-    zoomIn.disabled =
+    plus.disabled =
         false;
 
 
     value.textContent =
-
         `${Number(
             pcPhoneZoom.value
         ).toFixed(1)}×`;
@@ -5061,113 +4406,14 @@ function updatePCZoomUI() {
 
     status.textContent =
 
-        `${pcPhoneZoom.min.toFixed(1)}× – ${pcPhoneZoom.max.toFixed(1)}×`;
+        `${pcPhoneZoom.min.toFixed(1)}× – ` +
+
+        `${pcPhoneZoom.max.toFixed(1)}×`;
 }
 
 
 /* =========================================================
-   RECALIBRATION WARNING
-========================================================= */
-
-function setPCNeedsRecalibration(
-    value
-) {
-
-    pcNeedsRecalibration =
-        value;
-
-
-    const warning =
-        document.getElementById(
-            "recalibration-warning"
-        );
-
-
-    if (
-        value
-    ) {
-
-        warning.classList.remove(
-            "hidden"
-        );
-
-
-    } else {
-
-        warning.classList.add(
-            "hidden"
-        );
-    }
-}
-
-
-/* =========================================================
-   RECEIVE LIVE FRAME
-========================================================= */
-
-function receiveLiveFrame(
-    payload
-) {
-
-    if (
-        !payload ||
-        !payload.image
-    ) {
-
-        return;
-    }
-
-
-    const image =
-        new Image();
-
-
-    image.onload =
-        () => {
-
-            pcImage =
-                image;
-
-
-            const firstImage =
-                !pcImageWidth;
-
-
-            pcImageWidth =
-                image.naturalWidth;
-
-
-            pcImageHeight =
-                image.naturalHeight;
-
-
-            pcCanvas.width =
-                pcImageWidth;
-
-
-            pcCanvas.height =
-                pcImageHeight;
-
-
-            if (
-                firstImage
-            ) {
-
-                seedCalibrationHandles();
-            }
-
-
-            drawPCScene();
-        };
-
-
-    image.src =
-        payload.image;
-}
-
-
-/* =========================================================
-   INITIAL CALIBRATION HANDLES
+   CALIBRATION HANDLES
 ========================================================= */
 
 function seedCalibrationHandles() {
@@ -5196,7 +4442,6 @@ function seedCalibrationHandles() {
 
 
     pcHandles.bull = [
-
         {
             x:
                 centre.x,
@@ -5241,7 +4486,7 @@ function seedCalibrationHandles() {
     rebuildPCCalibration();
 
 
-    setPCNeedsRecalibration(
+    showRecalibrationWarning(
         true
     );
 }
@@ -5297,10 +4542,6 @@ function makeRingHandles(
 }
 
 
-/* =========================================================
-   SELECT CALIBRATION RING
-========================================================= */
-
 function selectCalibrationRing(
     ring
 ) {
@@ -5321,46 +4562,15 @@ function selectCalibrationRing(
                     "active",
 
                     button.dataset.ring ===
-                        ring
+                    ring
                 );
             }
         );
 
 
-    const messages = {
-
-        outerDouble:
-            "Drag the cyan points onto the OUTER edge of the double ring.",
-
-        innerDouble:
-            "Drag the purple points onto the INNER edge of the double ring.",
-
-        outerTreble:
-            "Drag the green points onto the OUTER edge of the treble ring.",
-
-        innerTreble:
-            "Drag the orange points onto the INNER edge of the treble ring.",
-
-        bull:
-            "Drag the pink point onto the exact centre of the bull."
-    };
-
-
-    document
-        .getElementById(
-            "calibration-help"
-        )
-        .textContent =
-            messages[ring];
-
-
     drawPCScene();
 }
 
-
-/* =========================================================
-   POINTER POSITION
-========================================================= */
 
 function canvasPointer(
     event
@@ -5398,10 +4608,6 @@ function canvasPointer(
 }
 
 
-/* =========================================================
-   HANDLE DRAGGING
-========================================================= */
-
 function beginHandleDrag(
     event
 ) {
@@ -5418,11 +4624,11 @@ function beginHandleDrag(
         ];
 
 
-    let bestIndex =
+    let best =
         -1;
 
 
-    let bestDistance =
+    let distance =
         Infinity;
 
 
@@ -5432,7 +4638,7 @@ function beginHandleDrag(
             index
         ) => {
 
-            const distance =
+            const current =
                 Math.hypot(
 
                     pointer.x -
@@ -5444,15 +4650,14 @@ function beginHandleDrag(
 
 
             if (
-                distance <
-                bestDistance
+                current <
+                distance
             ) {
 
-                bestDistance =
-                    distance;
+                distance =
+                    current;
 
-
-                bestIndex =
+                best =
                     index;
             }
         }
@@ -5460,7 +4665,7 @@ function beginHandleDrag(
 
 
     if (
-        bestDistance >
+        distance >
         30
     ) {
 
@@ -5474,7 +4679,7 @@ function beginHandleDrag(
             pcActiveRing,
 
         index:
-            bestIndex
+            best
     };
 
 
@@ -5522,7 +4727,7 @@ function moveHandle(
     rebuildPCCalibration();
 
 
-    setPCNeedsRecalibration(
+    showRecalibrationWarning(
         true
     );
 
@@ -5538,25 +4743,28 @@ function endHandleDrag() {
 }
 
 
-/* =========================================================
-   RESET HANDLES
-========================================================= */
-
 function resetCalibrationHandles() {
 
-    if (
-        !pcImageWidth
-    ) {
+    pcHandles = {
 
-        return;
-    }
+        outerDouble:
+            [],
+
+        innerDouble:
+            [],
+
+        outerTreble:
+            [],
+
+        innerTreble:
+            [],
+
+        bull:
+            []
+    };
 
 
     seedCalibrationHandles();
-
-
-    pcLastDetection =
-        null;
 
 
     drawPCScene();
@@ -5579,44 +4787,39 @@ function rebuildPCCalibration() {
 
     try {
 
-        const source =
-            pcHandles.outerDouble;
-
-
         const destination =
 
-            CALIBRATION_ANCHORS
-                .map(
-                    anchor => {
+            CALIBRATION_ANCHORS.map(
+                anchor => {
 
-                        const angle =
+                    const angle =
 
-                            anchor.index *
-                            18 *
-                            Math.PI /
-                            180;
+                        anchor.index *
+                        18 *
+                        Math.PI /
+                        180;
 
 
-                        return {
+                    return {
 
-                            x:
-                                Math.sin(
-                                    angle
-                                ),
+                        x:
+                            Math.sin(
+                                angle
+                            ),
 
-                            y:
-                                -Math.cos(
-                                    angle
-                                )
-                        };
-                    }
-                );
+                        y:
+                            -Math.cos(
+                                angle
+                            )
+                    };
+                }
+            );
 
 
         const homography =
             computeLeastSquaresHomography(
 
-                source,
+                pcHandles.outerDouble,
 
                 destination
             );
@@ -5639,7 +4842,6 @@ function rebuildPCCalibration() {
                 transformPoint(
 
                     homography,
-
                     handle
                 );
 
@@ -5647,10 +4849,12 @@ function rebuildPCCalibration() {
             return {
 
                 x:
+
                     transformed.x -
                     mappedBull.x,
 
                 y:
+
                     transformed.y -
                     mappedBull.y
             };
@@ -5675,7 +4879,6 @@ function rebuildPCCalibration() {
 
 
         const scale =
-
             mean(
 
                 pcHandles.outerDouble
@@ -5723,7 +4926,7 @@ function rebuildPCCalibration() {
                         );
 
 
-                    const actualAngle =
+                    const actual =
                         normaliseAngle(
 
                             Math.atan2(
@@ -5733,7 +4936,7 @@ function rebuildPCCalibration() {
                         );
 
 
-                    const expectedAngle =
+                    const expected =
 
                         CALIBRATION_ANCHORS[
                             index
@@ -5752,26 +4955,18 @@ function rebuildPCCalibration() {
                     rotationErrors.push(
 
                         signedAngleDifference(
-
-                            actualAngle,
-
-                            expectedAngle
+                            actual,
+                            expected
                         )
                     );
                 }
             );
 
 
-        const segmentOffset =
-            circularMean(
-                rotationErrors
-            );
-
-
         pcCalibration = {
 
             version:
-                7,
+                9,
 
             homography,
 
@@ -5792,7 +4987,10 @@ function rebuildPCCalibration() {
                     1
                 ),
 
-            segmentOffset,
+            segmentOffset:
+                circularMean(
+                    rotationErrors
+                ),
 
             rings: {
 
@@ -5835,20 +5033,19 @@ function rebuildPCCalibration() {
         error
     ) {
 
-        pcCalibration =
-            null;
-
-
         console.warn(
-            "Calibration:",
             error
         );
+
+
+        pcCalibration =
+            null;
     }
 }
 
 
 /* =========================================================
-   BOARD -> CAMERA IMAGE
+   BOARD -> IMAGE
 ========================================================= */
 
 function boardToImage(
@@ -5900,7 +5097,7 @@ function boardToImage(
 
 
 /* =========================================================
-   DRAW PC SCENE
+   DRAW
 ========================================================= */
 
 function drawPCScene() {
@@ -5951,41 +5148,30 @@ function drawPCScene() {
 }
 
 
-/* =========================================================
-   DRAW SCORING GRID
-========================================================= */
-
 function drawScoringGrid() {
 
     const rings =
         pcCalibration.rings;
 
 
-    const ringValues = [
-
-        rings.innerBull,
-
-        rings.outerBull,
-
-        rings.innerTreble,
-
-        rings.outerTreble,
-
-        rings.innerDouble,
-
-        rings.outerDouble
-    ];
+    pcContext.strokeStyle =
+        "#39ff86";
 
 
     pcContext.lineWidth =
         2.5;
 
 
-    pcContext.strokeStyle =
-        "#39ff86";
+    [
 
+        rings.innerBull,
+        rings.outerBull,
+        rings.innerTreble,
+        rings.outerTreble,
+        rings.innerDouble,
+        rings.outerDouble
 
-    ringValues.forEach(
+    ].forEach(
         radius => {
 
             pcContext.beginPath();
@@ -6021,24 +5207,22 @@ function drawScoringGrid() {
                     );
 
 
-                if (
-                    degree ===
-                    0
-                ) {
+                degree ===
+                0
+
+                    ?
 
                     pcContext.moveTo(
                         point.x,
                         point.y
-                    );
+                    )
 
-
-                } else {
+                    :
 
                     pcContext.lineTo(
                         point.x,
                         point.y
                     );
-                }
             }
 
 
@@ -6106,15 +5290,11 @@ function drawScoringGrid() {
 
                 Math.sin(
                     angle
-                )
-                *
-                rings.outerDouble,
+                ),
 
                 -Math.cos(
                     angle
                 )
-                *
-                rings.outerDouble
             );
 
 
@@ -6138,117 +5318,110 @@ function drawScoringGrid() {
 }
 
 
-/* =========================================================
-   DRAW HANDLES
-========================================================= */
-
 function drawCalibrationHandles() {
 
-    const rings = [
-
+    [
         "outerDouble",
-
         "innerDouble",
-
         "outerTreble",
-
         "innerTreble",
-
         "bull"
-    ];
+    ]
+        .forEach(
+            ring => {
+
+                const active =
+                    ring ===
+                    pcActiveRing;
 
 
-    rings.forEach(
-        ring => {
+                pcHandles[
+                    ring
+                ]
+                    .forEach(
+                        handle => {
 
-            const active =
-                ring ===
-                pcActiveRing;
-
-
-            pcHandles[
-                ring
-            ]
-                .forEach(
-                    handle => {
-
-                        pcContext.beginPath();
+                            pcContext.beginPath();
 
 
-                        pcContext.arc(
+                            pcContext.arc(
 
-                            handle.x,
-                            handle.y,
+                                handle.x,
+                                handle.y,
 
-                            active
-                                ? 9
-                                : 5,
+                                active
+                                    ?
+                                    9
+                                    :
+                                    5,
 
-                            0,
+                                0,
 
-                            Math.PI *
-                            2
-                        );
+                                Math.PI *
+                                2
+                            );
 
-
-                        pcContext.fillStyle =
-                            RING_COLOURS[
-                                ring
-                            ];
-
-
-                        pcContext.fill();
-
-
-                        pcContext.strokeStyle =
-                            "#000";
-
-
-                        pcContext.lineWidth =
-                            active
-                                ? 3
-                                : 1;
-
-
-                        pcContext.stroke();
-
-
-                        if (
-                            active &&
-                            ring !==
-                            "bull"
-                        ) {
 
                             pcContext.fillStyle =
-                                "#fff";
+                                RING_COLOURS[
+                                    ring
+                                ];
 
 
-                            pcContext.font =
-                                "bold 12px Arial";
+                            pcContext.fill();
 
 
-                            pcContext.fillText(
+                            pcContext.strokeStyle =
+                                "#000";
 
-                                String(
-                                    handle.number
-                                ),
 
-                                handle.x +
-                                    10,
+                            pcContext.lineWidth =
+                                active
+                                    ?
+                                    3
+                                    :
+                                    1;
 
-                                handle.y -
-                                    7
-                            );
+
+                            pcContext.stroke();
+
+
+                            if (
+                                active &&
+                                ring !==
+                                    "bull"
+                            ) {
+
+                                pcContext.fillStyle =
+                                    "#fff";
+
+
+                                pcContext.font =
+                                    "bold 12px Arial";
+
+
+                                pcContext.fillText(
+
+                                    String(
+                                        handle.number
+                                    ),
+
+                                    handle.x +
+                                        10,
+
+                                    handle.y -
+                                        7
+                                );
+                            }
                         }
-                    }
-                );
-        }
-    );
+                    );
+            }
+        );
 }
 
 
 /* =========================================================
-   DART IMPACT MARKER
+   IMPACT MARKER
 ========================================================= */
 
 function drawLastImpactMarker() {
@@ -6347,34 +5520,37 @@ function drawLastImpactMarker() {
 
 
     pcContext.moveTo(
-        point.x - 27,
+        point.x -
+            28,
         point.y
     );
 
 
     pcContext.lineTo(
-        point.x + 27,
+        point.x +
+            28,
         point.y
     );
 
 
     pcContext.moveTo(
         point.x,
-        point.y - 27
+        point.y -
+            28
     );
 
 
     pcContext.lineTo(
         point.x,
-        point.y + 27
+        point.y +
+            28
     );
 
 
     pcContext.stroke();
 
 
-    const text =
-
+    const label =
         `${pcLastDetection.label} — ${pcLastDetection.score}`;
 
 
@@ -6384,7 +5560,7 @@ function drawLastImpactMarker() {
 
     const width =
         pcContext.measureText(
-            text
+            label
         ).width;
 
 
@@ -6395,13 +5571,13 @@ function drawLastImpactMarker() {
     pcContext.fillRect(
 
         point.x +
-        18,
+            18,
 
         point.y -
-        58,
+            58,
 
         width +
-        14,
+            14,
 
         29
     );
@@ -6413,19 +5589,19 @@ function drawLastImpactMarker() {
 
     pcContext.fillText(
 
-        text,
+        label,
 
         point.x +
-        25,
+            25,
 
         point.y -
-        36
+            36
     );
 }
 
 
 /* =========================================================
-   GRID TOGGLE
+   CALIBRATION CONTROLS
 ========================================================= */
 
 function toggleGrid() {
@@ -6441,13 +5617,53 @@ function toggleGrid() {
         .textContent =
 
             pcShowGrid
-
-                ? "👁 Hide Grid"
-
-                : "👁 Show Grid";
+                ?
+                "👁 Hide Grid"
+                :
+                "👁 Show Grid";
 
 
     drawPCScene();
+}
+
+
+async function beginPCRecalibration() {
+
+    await sendPhoneCommand(
+        "begin-recalibration"
+    );
+
+
+    showRecalibrationWarning(
+        true
+    );
+
+
+    pcShowGrid =
+        true;
+
+
+    await requestFreshFrame();
+
+
+    setCalibrationStatus(
+        "Recalibration mode ✓ Adjust points and save."
+    );
+}
+
+
+function showRecalibrationWarning(
+    visible
+) {
+
+    document
+        .getElementById(
+            "recalibration-warning"
+        )
+        .classList.toggle(
+            "hidden",
+            !visible
+        );
 }
 
 
@@ -6495,7 +5711,7 @@ async function savePCCalibration() {
     ) {
 
         alert(
-            "The multiplier rings are out of order. Check your calibration handles."
+            "Check the multiplier ring calibration."
         );
 
 
@@ -6503,55 +5719,35 @@ async function savePCCalibration() {
     }
 
 
-    try {
+    const {
+        error
+    } =
+        await cameraSupabase
 
-        const {
-            error
-        } =
-            await cameraSupabase
+            .from(
+                "camera_sessions"
+            )
 
-                .from(
-                    "camera_sessions"
-                )
+            .update({
 
-                .update({
+                calibration:
+                    pcCalibration,
 
-                    calibration:
-                        pcCalibration,
+                status:
+                    "calibrated",
 
-                    status:
-                        "calibrated",
+                updated_at:
+                    new Date()
+                        .toISOString()
+            })
 
-                    updated_at:
-                        new Date()
-                            .toISOString()
-                })
-
-                .eq(
-                    "id",
-                    pcSession.id
-                );
+            .eq(
+                "id",
+                pcSession.id
+            );
 
 
-        if (
-            error
-        ) {
-
-            throw error;
-        }
-
-
-        setPCNeedsRecalibration(
-            false
-        );
-
-
-        setCalibrationStatus(
-            "Calibration saved ✓ You can start automatic detection."
-        );
-
-
-    } catch (
+    if (
         error
     ) {
 
@@ -6563,69 +5759,74 @@ async function savePCCalibration() {
         alert(
             "Could not save calibration."
         );
+
+
+        return;
     }
+
+
+    showRecalibrationWarning(
+        false
+    );
+
+
+    setCalibrationStatus(
+        "Calibration saved ✓"
+    );
 }
 
 
 /* =========================================================
-   PC DATABASE DETECTION LISTENER
+   PC DETECTIONS
 ========================================================= */
 
 function subscribePCDatabase() {
 
-    const channel =
-        cameraSupabase
+    cameraSupabase
 
-            .channel(
-                `camera-results-${pcSession.id}`
-            )
+        .channel(
+            `camera-results-${pcSession.id}`
+        )
 
-            .on(
+        .on(
 
-                "postgres_changes",
+            "postgres_changes",
 
-                {
+            {
+                event:
+                    "UPDATE",
 
-                    event:
-                        "UPDATE",
+                schema:
+                    "public",
 
-                    schema:
-                        "public",
+                table:
+                    "camera_sessions",
 
-                    table:
-                        "camera_sessions",
+                filter:
+                    `id=eq.${pcSession.id}`
+            },
 
-                    filter:
-                        `id=eq.${pcSession.id}`
-                },
+            payload => {
 
-                payload => {
-
-                    const detection =
-                        payload.new
-                            .last_detection;
+                const detection =
+                    payload.new
+                        .last_detection;
 
 
-                    if (
-                        detection &&
-                        detection.timestamp
-                    ) {
+                if (
+                    detection?.timestamp
+                ) {
 
-                        showPCDetection(
-                            detection
-                        );
-                    }
+                    showPCDetection(
+                        detection
+                    );
                 }
-            );
+            }
+        )
 
-
-    channel.subscribe();
+        .subscribe();
 }
 
-
-/* =========================================================
-   SHOW DETECTION ON PC
-========================================================= */
 
 function showPCDetection(
     detection
@@ -6643,7 +5844,9 @@ function showPCDetection(
 
             `Dart ${detection.dartNumber}: ` +
 
-            `${detection.label} — ${detection.score}`;
+            `${detection.label} — ` +
+
+            `${detection.score}`;
 
 
     document
@@ -6652,7 +5855,17 @@ function showPCDetection(
         )
         .textContent =
 
-            `${detection.confidence}% confidence`;
+            `${detection.confidence}% confidence`
+
+            +
+
+            (
+                detection.votes
+                    ?
+                    ` • ${detection.votes} votes`
+                    :
+                    ""
+            );
 
 
     drawPCScene();
@@ -6660,7 +5873,7 @@ function showPCDetection(
 
 
 /* =========================================================
-   STATUS
+   PC STATUS
 ========================================================= */
 
 function setCalibrationStatus(

@@ -12,295 +12,176 @@
 
     <title>Dart Hub Camera</title>
 
-
     <style>
 
         * {
             box-sizing: border-box;
         }
 
-
         html,
         body {
-
             margin: 0;
-
             min-height: 100%;
-
             background: #030303;
-
             color: white;
-
-            font-family:
-                Arial,
-                sans-serif;
+            font-family: Arial, sans-serif;
         }
 
-
         body {
-
             padding: 10px;
-
             text-align: center;
         }
 
-
         h1 {
-
-            margin:
-                6px 0 12px;
-
+            margin: 6px 0 12px;
             color: #00aaff;
         }
 
-
         .card {
-
             width: 100%;
-
             max-width: 850px;
-
-            margin:
-                10px auto;
-
+            margin: 10px auto;
             padding: 12px;
-
-            border:
-                1px solid #293941;
-
+            border: 1px solid #293941;
             border-radius: 12px;
-
             background: #0b1013;
         }
 
-
         .camera-wrap {
-
             position: relative;
-
             overflow: hidden;
-
             width: 100%;
-
             background: black;
-
             border-radius: 10px;
         }
 
-
         video {
-
             display: block;
-
             width: 100%;
-
             height: auto;
         }
-
 
         canvas {
             display: none;
         }
 
-
         button {
-
             width: 100%;
-
             min-height: 50px;
-
             margin-top: 7px;
-
             border: none;
-
             border-radius: 8px;
-
             background: #0078b8;
-
             color: white;
-
             font-size: 16px;
-
             font-weight: bold;
-
             cursor: pointer;
         }
 
-
         button:disabled {
-
             opacity: 0.35;
-
             cursor: default;
         }
-
 
         .secondary {
             background: #087247;
         }
 
-
         .warning {
             background: #7a2222;
         }
-
 
         .purple {
             background: #6e42b5;
         }
 
-
         .code {
-
             margin: 8px 0;
-
             color: #c597ff;
-
             font-size: 34px;
-
             font-weight: 900;
-
             letter-spacing: 5px;
         }
 
-
         .status {
-
             margin-top: 10px;
-
             color: #9bb0ba;
-
             line-height: 1.5;
         }
 
-
         .phone-state {
-
             margin-top: 10px;
-
             padding: 11px;
-
-            border:
-                1px solid #294755;
-
+            border: 1px solid #294755;
             border-radius: 9px;
-
             background: #071116;
-
             color: #00ff9d;
-
             font-size: 18px;
-
             font-weight: 900;
         }
 
-
         .zoom-card {
-
             margin-top: 10px;
-
             padding: 10px;
-
-            border:
-                1px solid #34424a;
-
+            border: 1px solid #34424a;
             border-radius: 9px;
-
             background: #101619;
         }
 
-
         .zoom-top {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             gap: 10px;
-
             margin-bottom: 8px;
         }
 
-
         .zoom-value {
-
             color: #00ff9d;
-
             font-size: 20px;
-
             font-weight: 900;
         }
 
-
         #phone-zoom-slider {
-
             width: 100%;
         }
 
-
         .zoom-buttons {
-
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    2,
-                    1fr
-                );
-
+            grid-template-columns: 1fr 1fr;
             gap: 7px;
-
             margin-top: 7px;
         }
-
 
         .zoom-buttons button {
             margin: 0;
         }
 
-
         .detection {
-
-            border:
-                2px solid #00aaff;
-
+            border: 2px solid #00aaff;
             background: #07151c;
         }
 
-
         .dart-label {
-
             color: #00ff9d;
-
             font-size: 35px;
-
             font-weight: 900;
         }
 
-
         .score {
-
             color: white;
-
             font-size: 55px;
-
             font-weight: 1000;
         }
 
-
         .small {
-
             color: #87989f;
-
             font-size: 12px;
         }
 
     </style>
 
 </head>
-
 
 <body data-camera-page="phone">
 
@@ -311,7 +192,6 @@
 
 
 <div class="card">
-
 
     <div class="camera-wrap">
 
@@ -324,15 +204,10 @@
 
     </div>
 
-
-    <canvas
-        id="camera-canvas"
-    ></canvas>
+    <canvas id="camera-canvas"></canvas>
 
 
-    <button
-        id="start-camera"
-    >
+    <button id="start-camera">
         📷 Start Camera
     </button>
 
@@ -383,21 +258,16 @@
         Start the rear camera first.
     </div>
 
-
 </div>
-
 
 
 <div class="card zoom-card">
 
-
     <div class="zoom-top">
-
 
         <strong>
             🔍 Camera Zoom
         </strong>
-
 
         <span
             id="phone-zoom-value"
@@ -405,7 +275,6 @@
         >
             1.0×
         </span>
-
 
     </div>
 
@@ -423,7 +292,6 @@
 
     <div class="zoom-buttons">
 
-
         <button
             id="phone-zoom-out"
             class="secondary"
@@ -432,7 +300,6 @@
             − Zoom
         </button>
 
-
         <button
             id="phone-zoom-in"
             class="secondary"
@@ -440,7 +307,6 @@
         >
             + Zoom
         </button>
-
 
     </div>
 
@@ -453,18 +319,14 @@
         Zoom will be checked when the camera starts.
     </div>
 
-
 </div>
-
 
 
 <div class="card detection">
 
-
     <div class="small">
         LAST DETECTED DART
     </div>
-
 
     <div
         id="detected-dart"
@@ -473,7 +335,6 @@
         Waiting…
     </div>
 
-
     <div
         id="detected-score"
         class="score"
@@ -481,19 +342,15 @@
         –
     </div>
 
-
     <div
         id="detected-confidence"
         class="small"
     ></div>
 
-
 </div>
 
 
-
 <div class="card">
-
 
     <button
         id="start-detection"
@@ -528,28 +385,13 @@
         Stop Camera
     </button>
 
-
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-></script>
-
-
-<!-- Main camera system -->
-<script
-    src="camera.js?v=7"
-></script>
-
-
-<!-- Enhanced dart detector -->
-<script
-    src="dart-detector-v8.js?v=8"
-></script>
-
+<script src="camera.js?v=9"></script>
+<script src="dart-detector.js?v=9"></script>
 
 </body>
-
 </html>
