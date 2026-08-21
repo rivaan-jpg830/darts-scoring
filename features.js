@@ -9351,3 +9351,2895 @@ function initialiseDartHubV24() {
 
 
 initialiseDartHubV24();
+
+/* =========================================================
+   DART HUB COMMUNITY
+
+   FIND PLAYERS
+   PUBLIC PROFILES
+   LEADERBOARDS
+
+   KEEP INSIDE features.js
+========================================================= */
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let dartHubCommunityPlayer =
+    null;
+
+
+let dartHubCommunityMatches =
+    [];
+
+
+let dartHubCommunityProfileMode =
+    "overall";
+
+
+let dartHubLeaderboardMode =
+    "overall";
+
+
+let dartHubLeaderboardMetric =
+    "win_pct";
+
+
+let dartHubLeaderboardMinimum =
+    5;
+
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function dhCommunityEscape(
+    value
+) {
+
+    return String(
+        value ??
+        ""
+    )
+        .replace(
+
+            /[&<>'"]/g,
+
+            character => ({
+
+                "&":
+                    "&amp;",
+
+                "<":
+                    "&lt;",
+
+                ">":
+                    "&gt;",
+
+                "'":
+                    "&#39;",
+
+                '"':
+                    "&quot;"
+
+            })[character]
+        );
+}
+
+
+function dhCommunityPercentage(
+    numerator,
+    denominator
+) {
+
+    if (
+        !denominator
+    ) {
+
+        return "0.0%";
+    }
+
+
+    return (
+
+        (
+            Number(
+                numerator
+            )
+
+            /
+
+            Number(
+                denominator
+            )
+
+            *
+
+            100
+        )
+            .toFixed(
+                1
+            )
+
+        +
+
+        "%"
+    );
+}
+
+
+function dhCommunityMean(
+    values
+) {
+
+    const usable =
+        values
+            .map(
+                Number
+            )
+            .filter(
+                value =>
+                    Number.isFinite(
+                        value
+                    )
+
+                    &&
+
+                    value >
+                    0
+            );
+
+
+    if (
+        !usable.length
+    ) {
+
+        return 0;
+    }
+
+
+    return (
+
+        usable.reduce(
+            (
+                total,
+                value
+            ) =>
+                total +
+                value,
+            0
+        )
+
+        /
+
+        usable.length
+    );
+}
+
+
+function dhCommunityModeName(
+    match
+) {
+
+    if (
+        match.game_mode ===
+        "501 / Legs"
+    ) {
+
+        return "Legs";
+    }
+
+
+    return match.game_mode;
+}
+
+
+function dhCommunityFilterMatches(
+    matches,
+    mode
+) {
+
+    if (
+        mode ===
+        "overall"
+    ) {
+
+        return matches;
+    }
+
+
+    if (
+        [
+            "101",
+            "201",
+            "301",
+            "501"
+        ].includes(
+            mode
+        )
+    ) {
+
+        return matches.filter(
+            match =>
+
+                dhCommunityModeName(
+                    match
+                ) ===
+                    "Legs"
+
+                &&
+
+                Number(
+                    match.starting_score
+                ) ===
+                    Number(
+                        mode
+                    )
+        );
+    }
+
+
+    if (
+        mode ===
+        "legs"
+    ) {
+
+        return matches.filter(
+            match =>
+                dhCommunityModeName(
+                    match
+                ) ===
+                "Legs"
+        );
+    }
+
+
+    if (
+        mode ===
+        "sets"
+    ) {
+
+        return matches.filter(
+            match =>
+                dhCommunityModeName(
+                    match
+                ) ===
+                "Sets + Legs"
+        );
+    }
+
+
+    if (
+        mode ===
+        "cricket"
+    ) {
+
+        return matches.filter(
+            match =>
+                dhCommunityModeName(
+                    match
+                ) ===
+                "Cricket"
+        );
+    }
+
+
+    return matches;
+}
+
+
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+function dhCommunityStat(
+    label,
+    value
+) {
+
+    return `
+
+        <div class="dh-community-stat">
+
+            <span>
+
+                ${dhCommunityEscape(
+                    label
+                )}
+
+            </span>
+
+
+            <strong>
+
+                ${dhCommunityEscape(
+                    value
+                )}
+
+            </strong>
+
+        </div>
+    `;
+}
+
+
+
+/* =========================================================
+   INSTALL HOME BUTTONS
+========================================================= */
+
+function installDartHubCommunityButtons() {
+
+    const modeButtons =
+        document.querySelector(
+            "#mode-screen .mode-buttons"
+        );
+
+
+    if (
+        !modeButtons
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !document.getElementById(
+            "dart-hub-find-players-btn"
+        )
+    ) {
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.id =
+            "dart-hub-find-players-btn";
+
+
+        button.className =
+            "btn-secondary";
+
+
+        button.type =
+            "button";
+
+
+        button.innerHTML =
+            "🔎 Find Players";
+
+
+        button.onclick =
+            openDartHubPlayerSearch;
+
+
+        modeButtons.appendChild(
+            button
+        );
+    }
+
+
+    if (
+        !document.getElementById(
+            "dart-hub-leaderboards-btn"
+        )
+    ) {
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.id =
+            "dart-hub-leaderboards-btn";
+
+
+        button.className =
+            "btn-secondary";
+
+
+        button.type =
+            "button";
+
+
+        button.innerHTML =
+            "🏆 Leaderboards";
+
+
+        button.onclick =
+            openDartHubLeaderboards;
+
+
+        modeButtons.appendChild(
+            button
+        );
+    }
+}
+
+
+
+/* =========================================================
+   INSTALL SCREENS
+========================================================= */
+
+function installDartHubCommunityScreens() {
+
+    if (
+        !document.getElementById(
+            "dart-hub-player-search-screen"
+        )
+    ) {
+
+        const screen =
+            document.createElement(
+                "div"
+            );
+
+
+        screen.id =
+            "dart-hub-player-search-screen";
+
+
+        screen.className =
+            "dh-community-screen hidden";
+
+
+        screen.innerHTML = `
+
+            <div class="dh-community-page">
+
+                <div class="dh-community-header">
+
+                    <button
+                        id="dh-player-search-back"
+                        class="dh-community-back"
+                        type="button"
+                    >
+                        ← Dart Hub
+                    </button>
+
+
+                    <div>
+
+                        <div class="dh-community-title">
+
+                            🔎 Find Players
+
+                        </div>
+
+                        <div class="dh-community-subtitle">
+
+                            Search Dart Hub players by name
+                            or player code.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dh-community-search-card">
+
+                    <div class="dh-community-search-row">
+
+                        <input
+                            id="dh-community-search-input"
+                            class="dh-community-input"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Player name or code"
+                        >
+
+
+                        <button
+                            id="dh-community-search-btn"
+                            class="dh-community-primary"
+                            type="button"
+                        >
+                            Search
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="dh-community-search-results"
+                    class="dh-community-panel"
+                >
+
+                    <div class="dh-community-empty">
+
+                        Search for a registered Dart Hub player.
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+
+        document.body.appendChild(
+            screen
+        );
+
+
+        document
+            .getElementById(
+                "dh-player-search-back"
+            )
+            .onclick =
+                dhCommunityGoHome;
+
+
+        document
+            .getElementById(
+                "dh-community-search-btn"
+            )
+            .onclick =
+                searchDartHubPlayers;
+
+
+        document
+            .getElementById(
+                "dh-community-search-input"
+            )
+            .addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        searchDartHubPlayers();
+                    }
+                }
+            );
+    }
+
+
+
+    if (
+        !document.getElementById(
+            "dart-hub-public-profile-screen"
+        )
+    ) {
+
+        const screen =
+            document.createElement(
+                "div"
+            );
+
+
+        screen.id =
+            "dart-hub-public-profile-screen";
+
+
+        screen.className =
+            "dh-community-screen hidden";
+
+
+        screen.innerHTML = `
+
+            <div class="dh-community-page">
+
+                <div class="dh-community-header">
+
+                    <button
+                        id="dh-public-profile-back"
+                        class="dh-community-back"
+                        type="button"
+                    >
+                        ← Player Search
+                    </button>
+
+
+                    <div>
+
+                        <div
+                            id="dh-public-profile-title"
+                            class="dh-community-title"
+                        >
+                            Player
+                        </div>
+
+                        <div
+                            id="dh-public-profile-code"
+                            class="dh-community-subtitle"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dh-community-mode-menu">
+
+                    <button
+                        class="dh-community-mode active"
+                        data-dh-public-mode="overall"
+                    >
+                        Overall
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="legs"
+                    >
+                        Legs
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="101"
+                    >
+                        101
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="201"
+                    >
+                        201
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="301"
+                    >
+                        301
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="501"
+                    >
+                        501
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="sets"
+                    >
+                        Sets
+                    </button>
+
+                    <button
+                        class="dh-community-mode"
+                        data-dh-public-mode="cricket"
+                    >
+                        Cricket
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="dh-public-profile-content"
+                    class="dh-community-panel"
+                ></div>
+
+            </div>
+        `;
+
+
+        document.body.appendChild(
+            screen
+        );
+
+
+        document
+            .getElementById(
+                "dh-public-profile-back"
+            )
+            .onclick =
+                () => {
+
+                    hideDartHubCommunityScreens();
+
+
+                    document
+                        .getElementById(
+                            "dart-hub-player-search-screen"
+                        )
+                        .classList
+                        .remove(
+                            "hidden"
+                        );
+                };
+
+
+        screen
+            .querySelectorAll(
+                "[data-dh-public-mode]"
+            )
+            .forEach(
+                button => {
+
+                    button.onclick =
+                        () => {
+
+                            dartHubCommunityProfileMode =
+                                button.dataset
+                                    .dhPublicMode;
+
+
+                            screen
+                                .querySelectorAll(
+                                    "[data-dh-public-mode]"
+                                )
+                                .forEach(
+                                    item =>
+                                        item.classList.toggle(
+
+                                            "active",
+
+                                            item ===
+                                                button
+                                        )
+                                );
+
+
+                            renderDartHubPublicProfile();
+                        };
+                }
+            );
+    }
+
+
+
+    if (
+        !document.getElementById(
+            "dart-hub-leaderboard-screen"
+        )
+    ) {
+
+        const screen =
+            document.createElement(
+                "div"
+            );
+
+
+        screen.id =
+            "dart-hub-leaderboard-screen";
+
+
+        screen.className =
+            "dh-community-screen hidden";
+
+
+        screen.innerHTML = `
+
+            <div class="dh-community-page">
+
+                <div class="dh-community-header">
+
+                    <button
+                        id="dh-leaderboard-back"
+                        class="dh-community-back"
+                        type="button"
+                    >
+                        ← Dart Hub
+                    </button>
+
+
+                    <div>
+
+                        <div class="dh-community-title">
+
+                            🏆 Dart Hub Leaderboards
+
+                        </div>
+
+                        <div class="dh-community-subtitle">
+
+                            Confirmed registered matches only.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dh-community-filter-card">
+
+                    <label>
+                        Game
+                    </label>
+
+                    <select
+                        id="dh-leaderboard-mode"
+                        class="dh-community-select"
+                    >
+
+                        <option value="overall">
+                            Overall
+                        </option>
+
+                        <option value="legs">
+                            Legs
+                        </option>
+
+                        <option value="101">
+                            101
+                        </option>
+
+                        <option value="201">
+                            201
+                        </option>
+
+                        <option value="301">
+                            301
+                        </option>
+
+                        <option value="501">
+                            501
+                        </option>
+
+                        <option value="sets">
+                            Sets + Legs
+                        </option>
+
+                        <option value="cricket">
+                            Cricket
+                        </option>
+
+                    </select>
+
+
+                    <label>
+                        Rank By
+                    </label>
+
+                    <select
+                        id="dh-leaderboard-metric"
+                        class="dh-community-select"
+                    >
+
+                        <option value="win_pct">
+                            Win %
+                        </option>
+
+                        <option value="wins">
+                            Wins
+                        </option>
+
+                        <option value="average">
+                            3-Dart Average
+                        </option>
+
+                        <option value="180s">
+                            180s
+                        </option>
+
+                        <option value="checkout">
+                            Checkout %
+                        </option>
+
+                        <option value="best_checkout">
+                            Best Checkout
+                        </option>
+
+                        <option value="matches">
+                            Matches Played
+                        </option>
+
+                    </select>
+
+
+                    <label>
+                        Minimum Matches
+                    </label>
+
+                    <select
+                        id="dh-leaderboard-minimum"
+                        class="dh-community-select"
+                    >
+
+                        <option value="1">
+                            1
+                        </option>
+
+                        <option value="5" selected>
+                            5
+                        </option>
+
+                        <option value="10">
+                            10
+                        </option>
+
+                        <option value="20">
+                            20
+                        </option>
+
+                        <option value="50">
+                            50
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="dh-leaderboard-content"
+                    class="dh-community-panel"
+                >
+
+                    <div class="dh-community-empty">
+                        Loading leaderboard…
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+
+        document.body.appendChild(
+            screen
+        );
+
+
+        document
+            .getElementById(
+                "dh-leaderboard-back"
+            )
+            .onclick =
+                dhCommunityGoHome;
+
+
+        document
+            .getElementById(
+                "dh-leaderboard-mode"
+            )
+            .onchange =
+                event => {
+
+                    dartHubLeaderboardMode =
+                        event.target.value;
+
+
+                    updateDartHubLeaderboardMetricOptions();
+
+
+                    loadDartHubLeaderboard();
+                };
+
+
+        document
+            .getElementById(
+                "dh-leaderboard-metric"
+            )
+            .onchange =
+                event => {
+
+                    dartHubLeaderboardMetric =
+                        event.target.value;
+
+
+                    loadDartHubLeaderboard();
+                };
+
+
+        document
+            .getElementById(
+                "dh-leaderboard-minimum"
+            )
+            .onchange =
+                event => {
+
+                    dartHubLeaderboardMinimum =
+                        Number(
+                            event.target.value
+                        );
+
+
+                    loadDartHubLeaderboard();
+                };
+    }
+}
+
+
+
+/* =========================================================
+   COMMUNITY STYLES
+========================================================= */
+
+function installDartHubCommunityStyles() {
+
+    if (
+        document.getElementById(
+            "dart-hub-community-style"
+        )
+    ) {
+
+        return;
+    }
+
+
+    const style =
+        document.createElement(
+            "style"
+        );
+
+
+    style.id =
+        "dart-hub-community-style";
+
+
+    style.textContent = `
+
+        .dh-community-screen {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 18000;
+
+            overflow-y: auto;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #162936,
+                    #05080a 48%,
+                    #020303
+                );
+
+            color: white;
+        }
+
+
+        .dh-community-screen.hidden {
+
+            display: none !important;
+        }
+
+
+        .dh-community-page {
+
+            width:
+                min(
+                    950px,
+                    calc(100% - 16px)
+                );
+
+            margin: auto;
+
+            padding:
+                14px 0 50px;
+        }
+
+
+        .dh-community-header {
+
+            display: grid;
+
+            grid-template-columns:
+                auto 1fr;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 12px;
+
+            text-align: left;
+        }
+
+
+        .dh-community-back {
+
+            min-height: 43px;
+
+            padding:
+                7px 12px;
+
+            border:
+                1px solid #34464f;
+
+            border-radius: 8px;
+
+            background: #111a1f;
+
+            color: white;
+
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+
+        .dh-community-title {
+
+            color: #00aaff;
+
+            font-size: 23px;
+
+            font-weight: 1000;
+        }
+
+
+        .dh-community-subtitle {
+
+            margin-top: 2px;
+
+            color: #85969e;
+
+            font-size: 11px;
+        }
+
+
+        .dh-community-search-card,
+        .dh-community-filter-card,
+        .dh-community-panel {
+
+            margin-top: 8px;
+
+            padding: 12px;
+
+            border:
+                1px solid #293b44;
+
+            border-radius: 11px;
+
+            background: #090f12;
+        }
+
+
+        .dh-community-search-row {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            gap: 7px;
+        }
+
+
+        .dh-community-input,
+        .dh-community-select {
+
+            min-height: 48px;
+
+            width: 100%;
+
+            padding:
+                8px 10px;
+
+            border:
+                1px solid #40525b;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: #040708;
+
+            color: white;
+
+            font-size: 15px;
+        }
+
+
+        .dh-community-primary {
+
+            min-height: 48px;
+
+            padding:
+                8px 17px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #008fd6,
+                    #005d94
+                );
+
+            color: white;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+
+        .dh-community-player {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 11px;
+
+            margin-bottom: 7px;
+
+            border:
+                1px solid #2d3d45;
+
+            border-radius: 9px;
+
+            background: #11181b;
+
+            cursor: pointer;
+        }
+
+
+        .dh-community-player:hover {
+
+            border-color: #00aaff;
+        }
+
+
+        .dh-community-player-name {
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .dh-community-player-code {
+
+            margin-top: 3px;
+
+            color: #8d9da5;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .dh-community-open {
+
+            color: #00aaff;
+
+            font-size: 18px;
+
+            font-weight: 900;
+        }
+
+
+        .dh-community-mode-menu {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    8,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 5px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .dh-community-mode {
+
+            min-height: 42px;
+
+            padding: 5px;
+
+            border:
+                1px solid #35464e;
+
+            border-radius: 7px;
+
+            background: #11181c;
+
+            color: #91a0a7;
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+
+        .dh-community-mode.active {
+
+            border-color: #00aaff;
+
+            background: #05618e;
+
+            color: white;
+        }
+
+
+        .dh-community-stat-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 7px;
+        }
+
+
+        .dh-community-stat {
+
+            padding: 10px;
+
+            border:
+                1px solid #293b43;
+
+            border-radius: 9px;
+
+            background: #11181b;
+
+            text-align: center;
+        }
+
+
+        .dh-community-stat span {
+
+            display: block;
+
+            color: #819199;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+
+        .dh-community-stat strong {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #00aaff;
+
+            font-size: 23px;
+        }
+
+
+        .dh-community-form {
+
+            margin-top: 10px;
+
+            padding: 10px;
+
+            border:
+                1px solid #293b43;
+
+            border-radius: 9px;
+
+            background: #10171a;
+        }
+
+
+        .dh-community-form-title {
+
+            margin-bottom: 5px;
+
+            color: #8b9ca4;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+        }
+
+
+        .dh-community-form-value {
+
+            font-size: 23px;
+
+            letter-spacing: 4px;
+        }
+
+
+        .dh-community-filter-card {
+
+            display: grid;
+
+            grid-template-columns:
+                auto 1fr
+                auto 1fr
+                auto 1fr;
+
+            align-items: center;
+
+            gap: 7px;
+
+            text-align: left;
+        }
+
+
+        .dh-community-filter-card label {
+
+            color: #8fa0a8;
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+
+        .dh-leaderboard-row {
+
+            display: grid;
+
+            grid-template-columns:
+                48px 1fr auto;
+
+            align-items: center;
+
+            gap: 9px;
+
+            margin-bottom: 6px;
+
+            padding: 10px;
+
+            border:
+                1px solid #293b43;
+
+            border-radius: 9px;
+
+            background: #11181b;
+
+            cursor: pointer;
+        }
+
+
+        .dh-leaderboard-position {
+
+            color: #00aaff;
+
+            font-size: 23px;
+
+            font-weight: 1000;
+
+            text-align: center;
+        }
+
+
+        .dh-leaderboard-name {
+
+            color: white;
+
+            font-weight: 900;
+        }
+
+
+        .dh-leaderboard-meta {
+
+            margin-top: 3px;
+
+            color: #84969e;
+
+            font-size: 10px;
+        }
+
+
+        .dh-leaderboard-score {
+
+            color: #00ff9d;
+
+            font-size: 20px;
+
+            font-weight: 1000;
+
+            text-align: right;
+        }
+
+
+        .dh-community-empty {
+
+            padding: 20px;
+
+            color: #83949c;
+
+            text-align: center;
+        }
+
+
+        @media (
+            max-width:
+            700px
+        ) {
+
+            .dh-community-mode-menu {
+
+                grid-template-columns:
+                    repeat(
+                        4,
+                        1fr
+                    );
+            }
+
+
+            .dh-community-stat-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+            }
+
+
+            .dh-community-search-row {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .dh-community-filter-card {
+
+                grid-template-columns:
+                    1fr;
+
+                gap: 5px;
+            }
+
+        }
+
+    `;
+
+
+    document.head.appendChild(
+        style
+    );
+}
+
+
+
+/* =========================================================
+   HIDE / HOME
+========================================================= */
+
+function hideDartHubCommunityScreens() {
+
+    [
+
+        "dart-hub-player-search-screen",
+
+        "dart-hub-public-profile-screen",
+
+        "dart-hub-leaderboard-screen"
+
+    ]
+        .forEach(
+            id => {
+
+                document
+                    .getElementById(
+                        id
+                    )
+                    ?.classList
+                    .add(
+                        "hidden"
+                    );
+            }
+        );
+}
+
+
+function dhCommunityHideAppScreens() {
+
+    if (
+        typeof v24HideScreens ===
+        "function"
+    ) {
+
+        v24HideScreens();
+    }
+
+
+    hideDartHubCommunityScreens();
+}
+
+
+function dhCommunityGoHome() {
+
+    hideDartHubCommunityScreens();
+
+
+    if (
+        typeof v24GoHome ===
+        "function"
+    ) {
+
+        v24GoHome();
+
+
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "mode-screen"
+        )
+        ?.classList
+        .remove(
+            "hidden"
+        );
+}
+
+
+
+/* =========================================================
+   OPEN SEARCH
+========================================================= */
+
+function openDartHubPlayerSearch() {
+
+    dhCommunityHideAppScreens();
+
+
+    document
+        .getElementById(
+            "dart-hub-player-search-screen"
+        )
+        .classList
+        .remove(
+            "hidden"
+        );
+
+
+    setTimeout(
+        () =>
+            document
+                .getElementById(
+                    "dh-community-search-input"
+                )
+                ?.focus(),
+        50
+    );
+}
+
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+async function searchDartHubPlayers() {
+
+    const input =
+        document.getElementById(
+            "dh-community-search-input"
+        );
+
+
+    const container =
+        document.getElementById(
+            "dh-community-search-results"
+        );
+
+
+    const query =
+        input.value.trim();
+
+
+    if (
+        query.length <
+        2
+    ) {
+
+        container.innerHTML = `
+
+            <div class="dh-community-empty">
+
+                Enter at least two characters.
+
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="dh-community-empty">
+
+            Searching…
+
+        </div>
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dartHubSupabase
+                .rpc(
+                    "search_dart_hub_players",
+                    {
+
+                        p_query:
+                            query,
+
+                        p_limit:
+                            30
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+        }
+
+
+        const players =
+            data ||
+            [];
+
+
+        if (
+            !players.length
+        ) {
+
+            container.innerHTML = `
+
+                <div class="dh-community-empty">
+
+                    No Dart Hub players found.
+
+                </div>
+            `;
+
+
+            return;
+        }
+
+
+        container.innerHTML =
+            players
+                .map(
+                    player => `
+
+                        <div
+                            class="dh-community-player"
+                            data-community-player="${player.user_id}"
+                        >
+
+                            <div>
+
+                                <div class="dh-community-player-name">
+
+                                    ${dhCommunityEscape(
+                                        player.display_name
+                                    )}
+
+                                </div>
+
+
+                                <div class="dh-community-player-code">
+
+                                    ${dhCommunityEscape(
+                                        player.player_code
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dh-community-open">
+                                ›
+                            </div>
+
+                        </div>
+                    `
+                )
+                .join(
+                    ""
+                );
+
+
+        container
+            .querySelectorAll(
+                "[data-community-player]"
+            )
+            .forEach(
+                element => {
+
+                    element.onclick =
+                        () => {
+
+                            const player =
+                                players.find(
+                                    item =>
+                                        item.user_id ===
+                                        element.dataset
+                                            .communityPlayer
+                                );
+
+
+                            if (
+                                player
+                            ) {
+
+                                openDartHubPublicProfile(
+                                    player
+                                );
+                            }
+                        };
+                }
+            );
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Player search:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="dh-community-empty">
+
+                Unable to search players.
+
+            </div>
+        `;
+    }
+}
+
+
+
+/* =========================================================
+   OPEN PUBLIC PROFILE
+========================================================= */
+
+async function openDartHubPublicProfile(
+    player
+) {
+
+    dartHubCommunityPlayer =
+        player;
+
+
+    dartHubCommunityProfileMode =
+        "overall";
+
+
+    hideDartHubCommunityScreens();
+
+
+    const screen =
+        document.getElementById(
+            "dart-hub-public-profile-screen"
+        );
+
+
+    screen.classList.remove(
+        "hidden"
+    );
+
+
+    document
+        .getElementById(
+            "dh-public-profile-title"
+        )
+        .textContent =
+            player.display_name;
+
+
+    document
+        .getElementById(
+            "dh-public-profile-code"
+        )
+        .textContent =
+            `Player Code: ${player.player_code}`;
+
+
+    screen
+        .querySelectorAll(
+            "[data-dh-public-mode]"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+
+                    "active",
+
+                    button.dataset
+                        .dhPublicMode ===
+                        "overall"
+                );
+            }
+        );
+
+
+    const container =
+        document.getElementById(
+            "dh-public-profile-content"
+        );
+
+
+    container.innerHTML = `
+
+        <div class="dh-community-empty">
+
+            Loading player statistics…
+
+        </div>
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dartHubSupabase
+                .rpc(
+                    "get_dart_hub_public_matches",
+                    {
+
+                        p_user_id:
+                            player.user_id
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+        }
+
+
+        dartHubCommunityMatches =
+            data ||
+            [];
+
+
+        renderDartHubPublicProfile();
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Public profile:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="dh-community-empty">
+
+                Unable to load this player's statistics.
+
+            </div>
+        `;
+    }
+}
+
+
+
+/* =========================================================
+   PUBLIC PROFILE
+========================================================= */
+
+function renderDartHubPublicProfile() {
+
+    const container =
+        document.getElementById(
+            "dh-public-profile-content"
+        );
+
+
+    const matches =
+        dhCommunityFilterMatches(
+
+            dartHubCommunityMatches,
+
+            dartHubCommunityProfileMode
+        );
+
+
+    if (
+        !matches.length
+    ) {
+
+        container.innerHTML = `
+
+            <div class="dh-community-empty">
+
+                No confirmed matches in this category yet.
+
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+    const wins =
+        matches.filter(
+            match =>
+                match.result ===
+                "WIN"
+        ).length;
+
+
+    const losses =
+        matches.length -
+        wins;
+
+
+    const dartsMatches =
+        matches.filter(
+            match =>
+                dhCommunityModeName(
+                    match
+                ) !==
+                "Cricket"
+        );
+
+
+    const average =
+        dhCommunityMean(
+
+            dartsMatches.map(
+                match =>
+                    match.user_average
+            )
+        );
+
+
+    const total180s =
+        dartsMatches.reduce(
+            (
+                total,
+                match
+            ) =>
+
+                total +
+
+                Number(
+                    match.user_180s ||
+                    0
+                ),
+            0
+        );
+
+
+    const checkout =
+        dhCommunityMean(
+
+            dartsMatches.map(
+                match =>
+                    match.checkout_percentage
+            )
+        );
+
+
+    const bestCheckout =
+        dartsMatches.length
+
+            ?
+
+            Math.max(
+
+                ...dartsMatches.map(
+                    match =>
+                        Number(
+                            match.best_checkout ||
+                            0
+                        )
+                )
+            )
+
+            :
+
+            0;
+
+
+    const form =
+        matches
+            .slice(
+                0,
+                10
+            )
+            .map(
+                match =>
+
+                    match.result ===
+                    "WIN"
+
+                        ?
+                        "🟢"
+
+                        :
+                        "🔴"
+            )
+            .join(
+                ""
+            );
+
+
+    container.innerHTML = `
+
+        <div class="dh-community-stat-grid">
+
+            ${dhCommunityStat(
+                "Matches",
+                matches.length
+            )}
+
+            ${dhCommunityStat(
+                "Wins",
+                wins
+            )}
+
+            ${dhCommunityStat(
+                "Losses",
+                losses
+            )}
+
+            ${dhCommunityStat(
+                "Win %",
+                dhCommunityPercentage(
+                    wins,
+                    matches.length
+                )
+            )}
+
+
+            ${
+                dartHubCommunityProfileMode !==
+                    "cricket"
+
+                    ?
+
+                    `
+
+                    ${dhCommunityStat(
+                        "3-Dart Avg",
+                        average.toFixed(
+                            2
+                        )
+                    )}
+
+                    ${dhCommunityStat(
+                        "180s",
+                        total180s
+                    )}
+
+                    ${dhCommunityStat(
+                        "Checkout %",
+                        `${checkout.toFixed(1)}%`
+                    )}
+
+                    ${dhCommunityStat(
+                        "Best Checkout",
+                        bestCheckout ||
+                        "–"
+                    )}
+
+                    `
+
+                    :
+
+                    ""
+            }
+
+        </div>
+
+
+        <div class="dh-community-form">
+
+            <div class="dh-community-form-title">
+
+                Last 10
+
+            </div>
+
+
+            <div class="dh-community-form-value">
+
+                ${form || "–"}
+
+            </div>
+
+        </div>
+
+
+        ${
+            dartHubCommunityProfileMode ===
+            "overall"
+
+                ?
+
+                renderDartHubPublicModeBreakdown(
+                    dartHubCommunityMatches
+                )
+
+                :
+
+                ""
+        }
+    `;
+}
+
+
+
+/* =========================================================
+   PUBLIC PROFILE MODE BREAKDOWN
+========================================================= */
+
+function renderDartHubPublicModeBreakdown(
+    matches
+) {
+
+    const modes = [
+
+        [
+            "101",
+            "101"
+        ],
+
+        [
+            "201",
+            "201"
+        ],
+
+        [
+            "301",
+            "301"
+        ],
+
+        [
+            "501",
+            "501"
+        ],
+
+        [
+            "Sets",
+            "sets"
+        ],
+
+        [
+            "Cricket",
+            "cricket"
+        ]
+
+    ];
+
+
+    return `
+
+        <div class="dh-community-form">
+
+            <div class="dh-community-form-title">
+
+                Records By Game
+
+            </div>
+
+
+            ${
+                modes
+                    .map(
+                        (
+                            [
+                                label,
+                                mode
+                            ]
+                        ) => {
+
+                            const subset =
+                                dhCommunityFilterMatches(
+                                    matches,
+                                    mode
+                                );
+
+
+                            const wins =
+                                subset.filter(
+                                    match =>
+                                        match.result ===
+                                        "WIN"
+                                ).length;
+
+
+                            return `
+
+                                <div
+                                    style="
+                                        display:flex;
+                                        justify-content:space-between;
+                                        gap:10px;
+                                        padding:7px 0;
+                                        border-bottom:1px solid #223038;
+                                    "
+                                >
+
+                                    <span>
+                                        ${label}
+                                    </span>
+
+                                    <strong>
+
+                                        ${wins}
+                                        -
+                                        ${
+                                            subset.length -
+                                            wins
+                                        }
+
+                                    </strong>
+
+                                </div>
+                            `;
+                        }
+                    )
+                    .join(
+                        ""
+                    )
+            }
+
+        </div>
+    `;
+}
+
+
+
+/* =========================================================
+   OPEN LEADERBOARD
+========================================================= */
+
+function openDartHubLeaderboards() {
+
+    dhCommunityHideAppScreens();
+
+
+    document
+        .getElementById(
+            "dart-hub-leaderboard-screen"
+        )
+        .classList
+        .remove(
+            "hidden"
+        );
+
+
+    updateDartHubLeaderboardMetricOptions();
+
+
+    loadDartHubLeaderboard();
+}
+
+
+
+/* =========================================================
+   CRICKET LEADERBOARD OPTIONS
+
+   Cricket has no meaningful 3-dart average,
+   180 or checkout ranking.
+========================================================= */
+
+function updateDartHubLeaderboardMetricOptions() {
+
+    const select =
+        document.getElementById(
+            "dh-leaderboard-metric"
+        );
+
+
+    if (
+        !select
+    ) {
+
+        return;
+    }
+
+
+    if (
+        dartHubLeaderboardMode ===
+        "cricket"
+    ) {
+
+        select.innerHTML = `
+
+            <option value="win_pct">
+                Win %
+            </option>
+
+            <option value="wins">
+                Wins
+            </option>
+
+            <option value="matches">
+                Matches Played
+            </option>
+        `;
+
+
+        if (
+            ![
+                "win_pct",
+                "wins",
+                "matches"
+            ].includes(
+                dartHubLeaderboardMetric
+            )
+        ) {
+
+            dartHubLeaderboardMetric =
+                "win_pct";
+        }
+
+
+    } else {
+
+        select.innerHTML = `
+
+            <option value="win_pct">
+                Win %
+            </option>
+
+            <option value="wins">
+                Wins
+            </option>
+
+            <option value="average">
+                3-Dart Average
+            </option>
+
+            <option value="180s">
+                180s
+            </option>
+
+            <option value="checkout">
+                Checkout %
+            </option>
+
+            <option value="best_checkout">
+                Best Checkout
+            </option>
+
+            <option value="matches">
+                Matches Played
+            </option>
+        `;
+    }
+
+
+    select.value =
+        dartHubLeaderboardMetric;
+}
+
+
+
+/* =========================================================
+   LOAD LEADERBOARD
+========================================================= */
+
+async function loadDartHubLeaderboard() {
+
+    const container =
+        document.getElementById(
+            "dh-leaderboard-content"
+        );
+
+
+    if (
+        !container
+    ) {
+
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="dh-community-empty">
+
+            Loading leaderboard…
+
+        </div>
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dartHubSupabase
+                .rpc(
+                    "dart_hub_leaderboard",
+                    {
+
+                        p_mode:
+                            dartHubLeaderboardMode,
+
+                        p_metric:
+                            dartHubLeaderboardMetric,
+
+                        p_min_matches:
+                            dartHubLeaderboardMinimum,
+
+                        p_limit:
+                            50
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+        }
+
+
+        const rows =
+            data ||
+            [];
+
+
+        if (
+            !rows.length
+        ) {
+
+            container.innerHTML = `
+
+                <div class="dh-community-empty">
+
+                    No players meet these filters yet.
+
+                </div>
+            `;
+
+
+            return;
+        }
+
+
+        container.innerHTML =
+            rows
+                .map(
+                    (
+                        row,
+                        index
+                    ) => {
+
+                        const score =
+                            dartHubLeaderboardValue(
+                                row
+                            );
+
+
+                        const medal =
+
+                            index ===
+                            0
+
+                                ?
+                                "🥇"
+
+                                :
+
+                            index ===
+                            1
+
+                                ?
+                                "🥈"
+
+                                :
+
+                            index ===
+                            2
+
+                                ?
+                                "🥉"
+
+                                :
+
+                                `#${index + 1}`;
+
+
+                        return `
+
+                            <div
+                                class="dh-leaderboard-row"
+                                data-leaderboard-user="${row.user_id}"
+                            >
+
+                                <div class="dh-leaderboard-position">
+
+                                    ${medal}
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="dh-leaderboard-name">
+
+                                        ${dhCommunityEscape(
+                                            row.display_name
+                                        )}
+
+                                    </div>
+
+
+                                    <div class="dh-leaderboard-meta">
+
+                                        ${
+                                            row.matches
+                                        }
+                                        matches
+
+                                        •
+
+                                        ${
+                                            row.wins
+                                        }
+                                        wins
+
+                                        •
+
+                                        ${
+                                            Number(
+                                                row.win_percentage ||
+                                                0
+                                            ).toFixed(
+                                                1
+                                            )
+                                        }%
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="dh-leaderboard-score">
+
+                                    ${dhCommunityEscape(
+                                        score
+                                    )}
+
+                                </div>
+
+                            </div>
+                        `;
+                    }
+                )
+                .join(
+                    ""
+                );
+
+
+        container
+            .querySelectorAll(
+                "[data-leaderboard-user]"
+            )
+            .forEach(
+                element => {
+
+                    element.onclick =
+                        () => {
+
+                            const row =
+                                rows.find(
+                                    item =>
+                                        item.user_id ===
+                                        element.dataset
+                                            .leaderboardUser
+                                );
+
+
+                            if (
+                                row
+                            ) {
+
+                                openDartHubPublicProfile({
+
+                                    user_id:
+                                        row.user_id,
+
+                                    display_name:
+                                        row.display_name,
+
+                                    player_code:
+                                        row.player_code
+                                });
+                            }
+                        };
+                }
+            );
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Leaderboard:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="dh-community-empty">
+
+                Unable to load the leaderboard.
+
+            </div>
+        `;
+    }
+}
+
+
+
+/* =========================================================
+   LEADERBOARD VALUE
+========================================================= */
+
+function dartHubLeaderboardValue(
+    row
+) {
+
+    switch (
+        dartHubLeaderboardMetric
+    ) {
+
+        case "wins":
+
+            return `${row.wins} wins`;
+
+
+        case "average":
+
+            return Number(
+                row.three_dart_average ||
+                0
+            ).toFixed(
+                2
+            );
+
+
+        case "180s":
+
+            return `${row.total_180s} × 180`;
+
+
+        case "checkout":
+
+            return (
+
+                Number(
+                    row.checkout_percentage ||
+                    0
+                ).toFixed(
+                    1
+                )
+
+                +
+
+                "%"
+            );
+
+
+        case "best_checkout":
+
+            return row.best_checkout ||
+                "–";
+
+
+        case "matches":
+
+            return `${row.matches}`;
+
+
+        default:
+
+            return (
+
+                Number(
+                    row.win_percentage ||
+                    0
+                ).toFixed(
+                    1
+                )
+
+                +
+
+                "%"
+            );
+    }
+}
+
+
+
+/* =========================================================
+   INITIALISE COMMUNITY
+========================================================= */
+
+function initialiseDartHubCommunity() {
+
+    installDartHubCommunityStyles();
+
+
+    installDartHubCommunityScreens();
+
+
+    installDartHubCommunityButtons();
+
+
+    console.log(
+        "Dart Hub community profiles and leaderboards ready."
+    );
+}
+
+
+setTimeout(
+    initialiseDartHubCommunity,
+    900
+);
