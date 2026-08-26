@@ -3,48 +3,34 @@
 
 /* =========================================================
    DART HUB MENU
-   Main navigation + Play screen
-
-   Permanent file:
-   menu.js
-
-   This file does NOT contain game logic.
-   It reorganises the existing Dart Hub homepage
-   and moves the existing game-mode buttons into
-   a dedicated Play screen.
 ========================================================= */
 
+const DH_MENU = {
 
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-const DART_HUB_MENU = {
-
-    playScreenId:
+    playScreen:
         "dart-hub-play-screen",
 
-    playButtonId:
+    playButton:
         "dart-hub-main-play-button",
 
-    styleId:
-        "dart-hub-menu-styles",
+    oldButtons:
+        "dart-hub-original-game-buttons",
 
-    originalModeScreenId:
-        "mode-screen"
+    style:
+        "dart-hub-menu-style"
 };
 
 
 
 /* =========================================================
-   CREATE STYLES
+   STYLES
 ========================================================= */
 
-function installDartHubMenuStyles() {
+function dhMenuInstallStyles() {
 
     if (
         document.getElementById(
-            DART_HUB_MENU.styleId
+            DH_MENU.style
         )
     ) {
 
@@ -59,32 +45,26 @@ function installDartHubMenuStyles() {
 
 
     style.id =
-        DART_HUB_MENU.styleId;
+        DH_MENU.style;
 
 
     style.textContent = `
-
-        /* ================================================
-           MAIN PLAY BUTTON
-        ================================================= */
 
         #dart-hub-main-play-button {
 
             width: 100%;
 
-            min-height: 72px;
-
-            margin-bottom: 4px;
+            min-height: 70px;
 
             border: 1px solid #00aaff;
 
-            border-radius: 12px;
+            border-radius: 11px;
 
             background:
                 linear-gradient(
                     135deg,
-                    #007fc1,
-                    #005886
+                    #008ed1,
+                    #005e91
                 );
 
             color: white;
@@ -93,54 +73,9 @@ function installDartHubMenuStyles() {
 
             font-weight: 1000;
 
-            letter-spacing: 1px;
-
             cursor: pointer;
-
-            box-shadow:
-                0 0 18px
-                rgba(
-                    0,
-                    170,
-                    255,
-                    0.18
-                );
         }
 
-
-        #dart-hub-main-play-button:hover {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #009ce8,
-                    #006ba3
-                );
-
-            box-shadow:
-                0 0 22px
-                rgba(
-                    0,
-                    170,
-                    255,
-                    0.35
-                );
-        }
-
-
-        #dart-hub-main-play-button:active {
-
-            transform:
-                scale(
-                    0.985
-                );
-        }
-
-
-
-        /* ================================================
-           PLAY SCREEN
-        ================================================= */
 
         #dart-hub-play-screen {
 
@@ -152,15 +87,14 @@ function installDartHubMenuStyles() {
 
             overflow-y: auto;
 
-            padding:
-                14px;
+            padding: 12px;
 
             background:
                 radial-gradient(
                     circle at top,
-                    #172c39 0%,
-                    #080d10 48%,
-                    #020303 100%
+                    #182c38,
+                    #060a0d 50%,
+                    #020303
                 );
 
             color: white;
@@ -169,12 +103,11 @@ function installDartHubMenuStyles() {
 
         #dart-hub-play-screen.hidden {
 
-            display:
-                none !important;
+            display: none !important;
         }
 
 
-        .dart-hub-play-container {
+        .dh-play-page {
 
             width:
                 min(
@@ -182,20 +115,13 @@ function installDartHubMenuStyles() {
                     100%
                 );
 
-            margin:
-                0 auto;
+            margin: auto;
 
-            padding-bottom:
-                40px;
+            padding-bottom: 40px;
         }
 
 
-
-        /* ================================================
-           PLAY HEADER
-        ================================================= */
-
-        .dart-hub-play-header {
+        .dh-play-header {
 
             display: grid;
 
@@ -208,491 +134,247 @@ function installDartHubMenuStyles() {
 
             gap: 10px;
 
-            margin-bottom:
-                22px;
+            margin-bottom: 18px;
         }
 
 
-        .dart-hub-play-back {
+        .dh-play-back {
 
             min-height: 43px;
 
-            padding:
-                7px
-                12px;
+            padding: 7px 12px;
 
             border:
-                1px solid
-                #344852;
+                1px solid #354850;
 
-            border-radius:
-                8px;
+            border-radius: 8px;
 
-            background:
-                #111a1f;
+            background: #11191d;
 
-            color:
-                white;
+            color: white;
 
-            font-weight:
-                900;
+            font-weight: 900;
 
-            cursor:
-                pointer;
+            cursor: pointer;
         }
 
 
-        .dart-hub-play-header-centre {
+        .dh-play-heading {
 
-            text-align:
-                center;
+            text-align: center;
         }
 
 
-        .dart-hub-play-icon {
+        .dh-play-icon {
 
-            font-size:
-                42px;
-
-            line-height:
-                1;
+            font-size: 42px;
         }
 
 
-        .dart-hub-play-title {
+        .dh-play-title {
 
-            margin-top:
-                4px;
+            color: #00aaff;
 
-            color:
-                #00aaff;
+            font-size: 28px;
 
-            font-size:
-                28px;
-
-            font-weight:
-                1000;
-
-            letter-spacing:
-                1px;
+            font-weight: 1000;
         }
 
 
-        .dart-hub-play-subtitle {
+        .dh-play-subtitle {
 
-            margin-top:
-                3px;
+            color: #84969e;
 
-            color:
-                #82949d;
-
-            font-size:
-                12px;
+            font-size: 11px;
         }
 
 
-        .dart-hub-play-header-space {
+        .dh-play-spacer {
 
-            width:
-                75px;
+            width: 70px;
         }
 
 
+        .dh-game-list {
 
-        /* ================================================
-           GAME MODE AREA
-        ================================================= */
+            display: grid;
 
-        .dart-hub-game-list {
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            gap:
-                12px;
+            gap: 10px;
         }
 
 
-        .dart-hub-game-card {
+        .dh-game-card {
 
-            position:
-                relative;
-
-            display:
-                grid;
+            display: grid;
 
             grid-template-columns:
                 55px
                 1fr
                 auto;
 
-            align-items:
-                center;
+            align-items: center;
 
-            gap:
-                12px;
+            gap: 11px;
 
-            min-height:
-                92px;
+            min-height: 90px;
 
-            padding:
-                14px;
+            padding: 13px;
 
             border:
-                1px solid
-                #2b414b;
+                1px solid #30434c;
 
-            border-radius:
-                13px;
+            border-radius: 12px;
 
             background:
                 linear-gradient(
                     145deg,
-                    #131d22,
-                    #0b1013
+                    #141c20,
+                    #090e11
                 );
 
-            text-align:
-                left;
+            color: white;
 
-            cursor:
-                pointer;
+            text-align: left;
 
-            transition:
-                transform
-                0.12s ease,
-                border-color
-                0.12s ease,
-                box-shadow
-                0.12s ease;
+            cursor: pointer;
         }
 
 
-        .dart-hub-game-card:hover {
+        .dh-game-card:hover {
 
-            border-color:
-                #00aaff;
-
-            box-shadow:
-                0 0 18px
-                rgba(
-                    0,
-                    170,
-                    255,
-                    0.18
-                );
-
-            transform:
-                translateY(
-                    -1px
-                );
+            border-color: #00aaff;
         }
 
 
-        .dart-hub-game-card:active {
+        .dh-game-icon {
 
-            transform:
-                scale(
-                    0.99
-                );
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 52px;
+
+            height: 52px;
+
+            border-radius: 50%;
+
+            background: #07141a;
+
+            font-size: 28px;
         }
 
 
-        .dart-hub-game-icon {
+        .dh-game-name {
 
-            display:
-                flex;
+            font-size: 18px;
 
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            width:
-                55px;
-
-            height:
-                55px;
-
-            border-radius:
-                50%;
-
-            background:
-                #07141b;
-
-            font-size:
-                30px;
+            font-weight: 1000;
         }
 
 
-        .dart-hub-game-name {
+        .dh-game-description {
 
-            color:
-                white;
+            margin-top: 3px;
 
-            font-size:
-                19px;
+            color: #84959c;
 
-            font-weight:
-                1000;
+            font-size: 11px;
+
+            line-height: 1.4;
         }
 
 
-        .dart-hub-game-description {
+        .dh-game-arrow {
 
-            margin-top:
-                4px;
+            color: #00aaff;
 
-            color:
-                #8799a1;
+            font-size: 28px;
 
-            font-size:
-                11px;
-
-            line-height:
-                1.4;
+            font-weight: 1000;
         }
 
 
-        .dart-hub-game-arrow {
-
-            color:
-                #00aaff;
-
-            font-size:
-                30px;
-
-            font-weight:
-                1000;
-        }
-
-
-
-        /* ================================================
-           SPECIAL CARD ACCENTS
-        ================================================= */
-
-        .dart-hub-game-card[data-game="legs"] {
+        .dh-game-card[data-game="legs"] {
 
             border-left:
-                4px solid
-                #00aaff;
+                4px solid #00aaff;
         }
 
 
-        .dart-hub-game-card[data-game="sets"] {
+        .dh-game-card[data-game="sets"] {
 
             border-left:
-                4px solid
-                #f0b429;
+                4px solid #e5ad28;
         }
 
 
-        .dart-hub-game-card[data-game="cricket"] {
+        .dh-game-card[data-game="cricket"] {
 
             border-left:
-                4px solid
-                #00d47e;
+                4px solid #00c979;
         }
 
 
+        .dh-game-card[data-game="practice"] {
 
-        /* ================================================
-           FUTURE GAMES
-        ================================================= */
-
-        .dart-hub-future-games {
-
-            margin-top:
-                20px;
-
-            padding:
-                12px;
-
-            border:
-                1px dashed
-                #31434b;
-
-            border-radius:
-                11px;
-
-            background:
-                rgba(
-                    10,
-                    17,
-                    20,
-                    0.65
-                );
-
-            text-align:
-                center;
+            border-left:
+                4px solid #a86cff;
         }
 
-
-        .dart-hub-future-title {
-
-            color:
-                #70838c;
-
-            font-size:
-                10px;
-
-            font-weight:
-                900;
-
-            text-transform:
-                uppercase;
-
-            letter-spacing:
-                1px;
-        }
-
-
-        .dart-hub-future-text {
-
-            margin-top:
-                5px;
-
-            color:
-                #53656d;
-
-            font-size:
-                11px;
-        }
-
-
-
-        /* ================================================
-           EXISTING BUTTONS WHEN MOVED TO PLAY SCREEN
-
-           We hide their original appearance because
-           the game cards above trigger them instead.
-        ================================================= */
 
         #dart-hub-original-game-buttons {
 
-            display:
-                none !important;
+            display: none !important;
         }
 
 
-
-        /* ================================================
-           MOBILE
-        ================================================= */
-
         @media (
-            max-width:
-            600px
+            max-width:600px
         ) {
 
-            #dart-hub-play-screen {
-
-                padding:
-                    8px;
-            }
-
-
-            .dart-hub-play-header {
+            .dh-play-header {
 
                 grid-template-columns:
-                    auto
-                    1fr;
-
-                margin-bottom:
-                    14px;
+                    auto 1fr;
             }
 
 
-            .dart-hub-play-header-space {
+            .dh-play-spacer {
 
-                display:
-                    none;
+                display: none;
             }
 
 
-            .dart-hub-play-back {
-
-                padding:
-                    6px
-                    9px;
-
-                font-size:
-                    12px;
-            }
-
-
-            .dart-hub-play-icon {
-
-                font-size:
-                    34px;
-            }
-
-
-            .dart-hub-play-title {
-
-                font-size:
-                    22px;
-            }
-
-
-            .dart-hub-game-card {
+            .dh-game-card {
 
                 grid-template-columns:
-                    48px
+                    47px
                     1fr
                     auto;
 
-                min-height:
-                    83px;
+                min-height: 82px;
 
-                padding:
-                    11px;
-
-                gap:
-                    9px;
+                padding: 10px;
             }
 
 
-            .dart-hub-game-icon {
+            .dh-game-icon {
 
-                width:
-                    46px;
+                width: 45px;
 
-                height:
-                    46px;
+                height: 45px;
 
-                font-size:
-                    25px;
+                font-size: 24px;
             }
 
 
-            .dart-hub-game-name {
+            .dh-game-name {
 
-                font-size:
-                    17px;
+                font-size: 16px;
             }
 
-
-            .dart-hub-game-description {
-
-                font-size:
-                    10px;
-            }
-
-
-            #dart-hub-main-play-button {
-
-                min-height:
-                    64px;
-
-                font-size:
-                    21px;
-            }
         }
 
     `;
@@ -706,351 +388,41 @@ function installDartHubMenuStyles() {
 
 
 /* =========================================================
-   FIND EXISTING GAME BUTTONS
-
-   We use text rather than assuming IDs because this keeps
-   menu.js compatible with the existing Dart Hub structure.
+   ORIGINAL GAME BUTTONS
 ========================================================= */
 
-function findDartHubGameButtons() {
-
-    const modeScreen =
-        document.getElementById(
-            DART_HUB_MENU.originalModeScreenId
-        );
-
-
-    if (
-        !modeScreen
-    ) {
-
-        return {
-            legs: null,
-            sets: null,
-            cricket: null
-        };
-    }
-
-
-    const buttons =
-        Array.from(
-            modeScreen.querySelectorAll(
-                "button"
-            )
-        );
-
-
-    let legs =
-        null;
-
-
-    let sets =
-        null;
-
-
-    let cricket =
-        null;
-
-
-    buttons.forEach(
-        button => {
-
-            const text =
-                String(
-                    button.textContent ||
-                    ""
-                )
-                    .trim()
-                    .toLowerCase();
-
-
-            /*
-               SETS MUST BE CHECKED BEFORE LEGS,
-               because "Sets + Legs" also contains
-               the word "legs".
-            */
-
-            if (
-                !sets
-
-                &&
-
-                text.includes(
-                    "sets"
-                )
-
-                &&
-
-                text.includes(
-                    "legs"
-                )
-            ) {
-
-                sets =
-                    button;
-
-
-                return;
-            }
-
-
-            if (
-                !cricket
-
-                &&
-
-                text.includes(
-                    "cricket"
-                )
-            ) {
-
-                cricket =
-                    button;
-
-
-                return;
-            }
-
-
-            if (
-                !legs
-
-                &&
-
-                text.includes(
-                    "legs"
-                )
-
-                &&
-
-                !text.includes(
-                    "sets"
-                )
-            ) {
-
-                legs =
-                    button;
-            }
-        }
-    );
-
+function dhMenuOriginalButtons() {
 
     return {
-        legs,
-        sets,
-        cricket
+
+        legs:
+            document.querySelector(
+                '.mode-btn[data-mode="501"]'
+            ),
+
+        sets:
+            document.querySelector(
+                '.mode-btn[data-mode="sets"]'
+            ),
+
+        cricket:
+            document.querySelector(
+                '.mode-btn[data-mode="cricket"]'
+            )
     };
 }
 
 
 
 /* =========================================================
-   HIDE OTHER DART HUB OVERLAY SCREENS
+   PLAY SCREEN
 ========================================================= */
 
-function hideDartHubMenuScreens() {
-
-    document
-        .getElementById(
-            DART_HUB_MENU.playScreenId
-        )
-        ?.classList
-        .add(
-            "hidden"
-        );
-}
-
-
-
-/* =========================================================
-   GO HOME
-========================================================= */
-
-function dartHubMenuGoHome() {
-
-    hideDartHubMenuScreens();
-
-
-    /*
-       If features.js provides the standard home
-       function, use it.
-    */
-
-    if (
-        typeof v24GoHome ===
-        "function"
-    ) {
-
-        v24GoHome();
-
-
-        return;
-    }
-
-
-    /*
-       Otherwise show the normal mode/home screen.
-    */
-
-    document
-        .querySelectorAll(
-            ".screen"
-        )
-        .forEach(
-            screen => {
-
-                screen.classList.add(
-                    "hidden"
-                );
-            }
-        );
-
-
-    document
-        .getElementById(
-            DART_HUB_MENU.originalModeScreenId
-        )
-        ?.classList
-        .remove(
-            "hidden"
-        );
-}
-
-
-
-/* =========================================================
-   OPEN PLAY SCREEN
-========================================================= */
-
-function openDartHubPlayMenu() {
-
-    /*
-       Hide any feature overlays if that function exists.
-    */
-
-    if (
-        typeof hideDartHubCommunityScreens ===
-        "function"
-    ) {
-
-        hideDartHubCommunityScreens();
-    }
-
-
-    /*
-       Hide normal Dart Hub screens.
-    */
-
-    if (
-        typeof v24HideScreens ===
-        "function"
-    ) {
-
-        v24HideScreens();
-    }
-
-
-    document
-        .getElementById(
-            DART_HUB_MENU.originalModeScreenId
-        )
-        ?.classList
-        .add(
-            "hidden"
-        );
-
-
-    const playScreen =
-        document.getElementById(
-            DART_HUB_MENU.playScreenId
-        );
-
-
-    if (
-        playScreen
-    ) {
-
-        playScreen
-            .classList
-            .remove(
-                "hidden"
-            );
-    }
-}
-
-
-
-/* =========================================================
-   START EXISTING GAME MODE
-
-   IMPORTANT:
-   We don't recreate the old game logic.
-
-   We simply click the ORIGINAL game button,
-   meaning script.js continues doing exactly what
-   it already did before menu.js existed.
-========================================================= */
-
-function startExistingDartHubGame(
-    game
-) {
-
-    const gameButtons =
-        findDartHubGameButtons();
-
-
-    const button =
-        gameButtons[
-            game
-        ];
-
-
-    if (
-        !button
-    ) {
-
-        alert(
-            "Dart Hub could not find that game mode."
-        );
-
-
-        console.error(
-            "Missing Dart Hub game button:",
-            game
-        );
-
-
-        return;
-    }
-
-
-    /*
-       Close the Play screen first.
-    */
-
-    hideDartHubMenuScreens();
-
-
-    /*
-       The original button may live inside the
-       hidden home screen, but programmatic click()
-       still fires its existing event listener.
-    */
-
-    button.click();
-}
-
-
-
-/* =========================================================
-   CREATE PLAY SCREEN
-========================================================= */
-
-function createDartHubPlayScreen() {
+function dhMenuCreatePlayScreen() {
 
     if (
         document.getElementById(
-            DART_HUB_MENU.playScreenId
+            DH_MENU.playScreen
         )
     ) {
 
@@ -1065,7 +437,7 @@ function createDartHubPlayScreen() {
 
 
     screen.id =
-        DART_HUB_MENU.playScreenId;
+        DH_MENU.playScreen;
 
 
     screen.className =
@@ -1074,180 +446,160 @@ function createDartHubPlayScreen() {
 
     screen.innerHTML = `
 
-        <div class="dart-hub-play-container">
+        <div class="dh-play-page">
 
-            <div class="dart-hub-play-header">
+            <div class="dh-play-header">
 
                 <button
-                    id="dart-hub-play-back"
-                    class="dart-hub-play-back"
+                    id="dh-play-back"
+                    class="dh-play-back"
                     type="button"
                 >
                     ← Back
                 </button>
 
 
-                <div class="dart-hub-play-header-centre">
+                <div class="dh-play-heading">
 
-                    <div class="dart-hub-play-icon">
+                    <div class="dh-play-icon">
                         🎮
                     </div>
 
-
-                    <div class="dart-hub-play-title">
+                    <div class="dh-play-title">
                         PLAY
                     </div>
 
-
-                    <div class="dart-hub-play-subtitle">
-                        Choose your game mode
+                    <div class="dh-play-subtitle">
+                        Choose a game
                     </div>
 
                 </div>
 
 
-                <div class="dart-hub-play-header-space"></div>
+                <div class="dh-play-spacer"></div>
 
             </div>
 
 
+            <div class="dh-game-list">
 
-            <div class="dart-hub-game-list">
 
-
-                <!-- =====================================
-                     LEGS
-                ====================================== -->
-
-                <div
-                    id="dart-hub-play-legs"
-                    class="dart-hub-game-card"
+                <button
+                    class="dh-game-card"
                     data-game="legs"
-                    role="button"
-                    tabindex="0"
+                    type="button"
                 >
 
-                    <div class="dart-hub-game-icon">
+                    <span class="dh-game-icon">
                         🎯
-                    </div>
+                    </span>
 
+                    <span>
 
-                    <div>
-
-                        <div class="dart-hub-game-name">
+                        <span class="dh-game-name">
                             Legs
-                        </div>
+                        </span>
 
+                        <span class="dh-game-description">
+                            101, 201, 301, 501 or custom score.
+                        </span>
 
-                        <div class="dart-hub-game-description">
-                            Play 101, 201, 301, 501 or a custom
-                            starting score.
-                        </div>
+                    </span>
 
-                    </div>
-
-
-                    <div class="dart-hub-game-arrow">
+                    <span class="dh-game-arrow">
                         ›
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
 
-
-                <!-- =====================================
-                     SETS + LEGS
-                ====================================== -->
-
-                <div
-                    id="dart-hub-play-sets"
-                    class="dart-hub-game-card"
+                <button
+                    class="dh-game-card"
                     data-game="sets"
-                    role="button"
-                    tabindex="0"
+                    type="button"
                 >
 
-                    <div class="dart-hub-game-icon">
+                    <span class="dh-game-icon">
                         🏆
-                    </div>
+                    </span>
 
+                    <span>
 
-                    <div>
-
-                        <div class="dart-hub-game-name">
+                        <span class="dh-game-name">
                             Sets + Legs
-                        </div>
+                        </span>
 
+                        <span class="dh-game-description">
+                            Traditional sets and legs match.
+                        </span>
 
-                        <div class="dart-hub-game-description">
-                            Traditional darts match using sets
-                            and legs.
-                        </div>
+                    </span>
 
-                    </div>
-
-
-                    <div class="dart-hub-game-arrow">
+                    <span class="dh-game-arrow">
                         ›
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
 
-
-                <!-- =====================================
-                     CRICKET
-                ====================================== -->
-
-                <div
-                    id="dart-hub-play-cricket"
-                    class="dart-hub-game-card"
+                <button
+                    class="dh-game-card"
                     data-game="cricket"
-                    role="button"
-                    tabindex="0"
+                    type="button"
                 >
 
-                    <div class="dart-hub-game-icon">
+                    <span class="dh-game-icon">
                         🏏
-                    </div>
+                    </span>
 
+                    <span>
 
-                    <div>
-
-                        <div class="dart-hub-game-name">
+                        <span class="dh-game-name">
                             Cricket
-                        </div>
+                        </span>
 
+                        <span class="dh-game-description">
+                            Dart Hub Cricket with runs,
+                            wickets and innings.
+                        </span>
 
-                        <div class="dart-hub-game-description">
-                            Play Dart Hub Cricket with batting,
-                            bowling, wickets and innings.
-                        </div>
+                    </span>
 
-                    </div>
-
-
-                    <div class="dart-hub-game-arrow">
+                    <span class="dh-game-arrow">
                         ›
-                    </div>
+                    </span>
 
-                </div>
-
-            </div>
+                </button>
 
 
+                <button
+                    class="dh-game-card"
+                    data-game="practice"
+                    type="button"
+                >
 
-            <div class="dart-hub-future-games">
+                    <span class="dh-game-icon">
+                        📈
+                    </span>
 
-                <div class="dart-hub-future-title">
-                    More games coming
-                </div>
+                    <span>
 
+                        <span class="dh-game-name">
+                            Average Practice
+                        </span>
 
-                <div class="dart-hub-future-text">
-                    New game modes can be added here without
-                    making the Dart Hub homepage crowded.
-                </div>
+                        <span class="dh-game-description">
+                            Throw as long as you want and
+                            improve your 3-dart average.
+                        </span>
+
+                    </span>
+
+                    <span class="dh-game-arrow">
+                        ›
+                    </span>
+
+                </button>
 
             </div>
 
@@ -1260,114 +612,46 @@ function createDartHubPlayScreen() {
     );
 
 
-
-    /* =====================================================
-       BACK
-    ====================================================== */
-
     document
         .getElementById(
-            "dart-hub-play-back"
+            "dh-play-back"
         )
-        .addEventListener(
-            "click",
-            dartHubMenuGoHome
-        );
+        .onclick =
+            dhMenuClosePlay;
 
-
-
-    /* =====================================================
-       LEGS
-    ====================================================== */
-
-    document
-        .getElementById(
-            "dart-hub-play-legs"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                startExistingDartHubGame(
-                    "legs"
-                );
-            }
-        );
-
-
-
-    /* =====================================================
-       SETS
-    ====================================================== */
-
-    document
-        .getElementById(
-            "dart-hub-play-sets"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                startExistingDartHubGame(
-                    "sets"
-                );
-            }
-        );
-
-
-
-    /* =====================================================
-       CRICKET
-    ====================================================== */
-
-    document
-        .getElementById(
-            "dart-hub-play-cricket"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                startExistingDartHubGame(
-                    "cricket"
-                );
-            }
-        );
-
-
-
-    /* =====================================================
-       KEYBOARD ACCESS
-    ====================================================== */
 
     screen
         .querySelectorAll(
-            ".dart-hub-game-card"
+            "[data-game]"
         )
         .forEach(
-            card => {
+            button => {
 
-                card.addEventListener(
-                    "keydown",
-                    event => {
+                button.onclick =
+                    () => {
+
+                        const game =
+                            button.dataset.game;
+
 
                         if (
-                            event.key ===
-                            "Enter"
-
-                            ||
-
-                            event.key ===
-                            " "
+                            typeof dartHubChooseBoardForGame ===
+                            "function"
                         ) {
 
-                            event.preventDefault();
+                            dartHubChooseBoardForGame(
+                                game
+                            );
 
 
-                            card.click();
+                            return;
                         }
-                    }
-                );
+
+
+                        dhMenuStartOriginalGame(
+                            game
+                        );
+                    };
             }
         );
 }
@@ -1375,14 +659,14 @@ function createDartHubPlayScreen() {
 
 
 /* =========================================================
-   CREATE MAIN PLAY BUTTON
+   HOME PLAY BUTTON
 ========================================================= */
 
-function createDartHubMainPlayButton() {
+function dhMenuCreateMainButton() {
 
     if (
         document.getElementById(
-            DART_HUB_MENU.playButtonId
+            DH_MENU.playButton
         )
     ) {
 
@@ -1390,28 +674,9 @@ function createDartHubMainPlayButton() {
     }
 
 
-    const modeScreen =
-        document.getElementById(
-            DART_HUB_MENU.originalModeScreenId
-        );
-
-
-    if (
-        !modeScreen
-    ) {
-
-        console.warn(
-            "Dart Hub menu: mode-screen not found."
-        );
-
-
-        return;
-    }
-
-
     const modeButtons =
-        modeScreen.querySelector(
-            ".mode-buttons"
+        document.querySelector(
+            "#mode-screen .mode-buttons"
         );
 
 
@@ -1419,216 +684,221 @@ function createDartHubMainPlayButton() {
         !modeButtons
     ) {
 
-        console.warn(
-            "Dart Hub menu: .mode-buttons not found."
-        );
-
-
         return;
     }
 
 
-    const existingGames =
-        findDartHubGameButtons();
+    const old =
+        dhMenuOriginalButtons();
 
 
-    /*
-       We need at least one game button before
-       reorganising the homepage.
-    */
-
-    if (
-        !existingGames.legs
-
-        &&
-
-        !existingGames.sets
-
-        &&
-
-        !existingGames.cricket
-    ) {
-
-        console.warn(
-            "Dart Hub menu: no existing game buttons found."
-        );
-
-
-        return;
-    }
-
-
-
-    /* =====================================================
-       CREATE PLAY BUTTON
-    ====================================================== */
-
-    const playButton =
+    const play =
         document.createElement(
             "button"
         );
 
 
-    playButton.id =
-        DART_HUB_MENU.playButtonId;
+    play.id =
+        DH_MENU.playButton;
 
 
-    playButton.type =
+    play.type =
         "button";
 
 
-    playButton.innerHTML =
+    play.textContent =
         "🎮 PLAY";
 
 
-    playButton.addEventListener(
-        "click",
-        openDartHubPlayMenu
-    );
+    play.onclick =
+        dhMenuOpenPlay;
 
-
-
-    /* =====================================================
-       INSERT PLAY AT TOP
-    ====================================================== */
 
     modeButtons.insertBefore(
-        playButton,
+        play,
         modeButtons.firstChild
     );
 
 
-
-    /* =====================================================
-       HIDE ORIGINAL GAME BUTTONS
-
-       We don't delete them because their existing
-       click handlers contain the real game logic.
-
-       Instead, put them in a hidden holder.
-    ====================================================== */
-
-    const holder =
-        document.createElement(
-            "div"
+    let holder =
+        document.getElementById(
+            DH_MENU.oldButtons
         );
 
 
-    holder.id =
-        "dart-hub-original-game-buttons";
+    if (
+        !holder
+    ) {
+
+        holder =
+            document.createElement(
+                "div"
+            );
 
 
-    modeButtons.appendChild(
-        holder
-    );
+        holder.id =
+            DH_MENU.oldButtons;
+
+
+        modeButtons.appendChild(
+            holder
+        );
+    }
 
 
     [
-
-        existingGames.legs,
-
-        existingGames.sets,
-
-        existingGames.cricket
+        old.legs,
+        old.sets,
+        old.cricket
 
     ]
         .filter(
             Boolean
         )
         .forEach(
-            button => {
-
+            button =>
                 holder.appendChild(
                     button
-                );
-            }
+                )
         );
 }
 
 
 
 /* =========================================================
-   KEEP PLAY SCREEN CLOSED WHEN OTHER FEATURES OPEN
-
-   Some of your existing feature functions are global.
-   We wrap the important ones so the Play overlay cannot
-   remain sitting over Profile/Rivals/etc.
+   OPEN / CLOSE
 ========================================================= */
 
-function protectDartHubMenuNavigation() {
+function dhMenuOpenPlay() {
 
-    const functionsToWrap = [
+    if (
+        typeof v24HideScreens ===
+        "function"
+    ) {
 
-        "v24OpenProfile",
-
-        "v24OpenStats",
-
-        "v24OpenRivals",
-
-        "v24OpenConfirmations",
-
-        "openDartHubPlayerSearch",
-
-        "openDartHubLeaderboards",
-
-        "openWatchLive"
-
-    ];
+        v24HideScreens();
 
 
-    functionsToWrap.forEach(
-        functionName => {
+    } else {
 
-            const original =
-                window[
-                    functionName
-                ];
-
-
-            if (
-                typeof original !==
-                "function"
-            ) {
-
-                return;
-            }
+        document
+            .getElementById(
+                "mode-screen"
+            )
+            ?.classList
+            .add(
+                "hidden"
+            );
+    }
 
 
-            if (
-                original
-                    .__dartHubMenuWrapped
-            ) {
-
-                return;
-            }
-
-
-            const wrapped =
-                function (
-                    ...args
-                ) {
-
-                    hideDartHubMenuScreens();
+    document
+        .getElementById(
+            DH_MENU.playScreen
+        )
+        ?.classList
+        .remove(
+            "hidden"
+        );
+}
 
 
-                    return original.apply(
-                        this,
-                        args
-                    );
-                };
+function dhMenuClosePlay() {
+
+    document
+        .getElementById(
+            DH_MENU.playScreen
+        )
+        ?.classList
+        .add(
+            "hidden"
+        );
 
 
-            wrapped
-                .__dartHubMenuWrapped =
-                    true;
+    if (
+        typeof v24GoHome ===
+        "function"
+    ) {
+
+        v24GoHome();
 
 
-            window[
-                functionName
-            ] =
-                wrapped;
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "mode-screen"
+        )
+        ?.classList
+        .remove(
+            "hidden"
+        );
+}
+
+
+
+/* =========================================================
+   START ORIGINAL GAME
+========================================================= */
+
+function dhMenuStartOriginalGame(
+    game
+) {
+
+    const old =
+        dhMenuOriginalButtons();
+
+
+    if (
+        game ===
+        "practice"
+    ) {
+
+        if (
+            typeof dartHubStartAveragePractice ===
+            "function"
+        ) {
+
+            dartHubStartAveragePractice();
         }
-    );
+
+
+        return;
+    }
+
+
+    const button =
+        old[
+            game
+        ];
+
+
+    if (
+        !button
+    ) {
+
+        alert(
+            "Dart Hub could not open this game."
+        );
+
+
+        return;
+    }
+
+
+    document
+        .getElementById(
+            DH_MENU.playScreen
+        )
+        ?.classList
+        .add(
+            "hidden"
+        );
+
+
+    button.click();
 }
 
 
@@ -1637,33 +907,15 @@ function protectDartHubMenuNavigation() {
    INITIALISE
 ========================================================= */
 
-function initialiseDartHubMenu() {
+function dhMenuInit() {
 
-    installDartHubMenuStyles();
+    dhMenuInstallStyles();
 
+    dhMenuCreatePlayScreen();
 
-    createDartHubPlayScreen();
-
-
-    createDartHubMainPlayButton();
-
-
-    protectDartHubMenuNavigation();
-
-
-    console.log(
-        "Dart Hub menu ready."
-    );
+    dhMenuCreateMainButton();
 }
 
-
-
-/* =========================================================
-   START
-
-   features.js adds some homepage buttons after load,
-   so we wait briefly before reorganising the menu.
-========================================================= */
 
 if (
     document.readyState ===
@@ -1672,20 +924,18 @@ if (
 
     document.addEventListener(
         "DOMContentLoaded",
-        () => {
-
+        () =>
             setTimeout(
-                initialiseDartHubMenu,
-                1400
-            );
-        }
+                dhMenuInit,
+                1500
+            )
     );
 
 
 } else {
 
     setTimeout(
-        initialiseDartHubMenu,
-        1400
+        dhMenuInit,
+        1500
     );
 }
