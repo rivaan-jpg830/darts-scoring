@@ -8,7 +8,7 @@
 
 
 const CACHE_NAME =
-    "dart-hub-main-v2";
+    "dart-hub-main-v3";
 
 
 const APP_FILES = [
@@ -32,6 +32,10 @@ const APP_FILES = [
     "./live.js",
 
     "./manifest.json",
+
+    "./board-practice.js",
+
+    "./stats-extra.js",
 
     "./menu.js",
 
