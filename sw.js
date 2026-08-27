@@ -3,12 +3,11 @@
 
 /* =========================================================
    DART HUB SERVICE WORKER
-   CLEAN FILE STRUCTURE
 ========================================================= */
 
 
 const CACHE_NAME =
-    "dart-hub-main-v3";
+    "dart-hub-main-v4";
 
 
 const APP_FILES = [
@@ -31,23 +30,25 @@ const APP_FILES = [
 
     "./live.js",
 
-    "./manifest.json",
-
     "./board-practice.js",
 
     "./stats-extra.js",
 
+    "./scoring-ui.js",
+
     "./menu.js",
+
+    "./manifest.json",
 
     "./icon.svg"
 
 ];
 
 
+
 /* =========================================================
    INSTALL
 ========================================================= */
-
 
 self.addEventListener(
     "install",
@@ -76,10 +77,10 @@ self.addEventListener(
 );
 
 
+
 /* =========================================================
    ACTIVATE
 ========================================================= */
-
 
 self.addEventListener(
     "activate",
@@ -98,11 +99,6 @@ self.addEventListener(
                             cacheNames.map(
                                 cacheName => {
 
-                                    /*
-                                       Delete all previous
-                                       Dart Hub caches.
-                                    */
-
                                     if (
 
                                         cacheName.startsWith(
@@ -113,7 +109,6 @@ self.addEventListener(
 
                                         cacheName !==
                                         CACHE_NAME
-
                                     ) {
 
                                         return caches.delete(
@@ -140,25 +135,17 @@ self.addEventListener(
 );
 
 
+
 /* =========================================================
    MESSAGE
 ========================================================= */
-
 
 self.addEventListener(
     "message",
     event => {
 
         if (
-            !event.data
-        ) {
-
-            return;
-        }
-
-
-        if (
-            event.data.type ===
+            event.data?.type ===
             "SKIP_WAITING"
         ) {
 
@@ -168,18 +155,15 @@ self.addEventListener(
 );
 
 
+
 /* =========================================================
    FETCH
 ========================================================= */
-
 
 self.addEventListener(
     "fetch",
     event => {
 
-        /*
-           Only cache GET requests.
-        */
 
         if (
             event.request.method !==
@@ -197,16 +181,7 @@ self.addEventListener(
 
 
         /*
-           SUPABASE MUST ALWAYS
-           USE THE LIVE NETWORK.
-
-           Authentication,
-           database,
-           match confirmations,
-           profiles,
-           rivals and realtime
-           score updates must never
-           be served from our app cache.
+           Never cache Supabase requests.
         */
 
         if (
@@ -219,14 +194,10 @@ self.addEventListener(
         }
 
 
-        /*
+
+        /* =================================================
            PAGE NAVIGATION
-
-           Try network first.
-
-           If Dart Hub is offline,
-           use the cached main page.
-        */
+        ================================================= */
 
         if (
             event.request.mode ===
@@ -269,22 +240,17 @@ self.addEventListener(
                     .catch(
                         async () => {
 
-                            const cached =
+                            return (
+
                                 await caches.match(
                                     "./index.html"
-                                );
+                                )
 
+                                ||
 
-                            if (
-                                cached
-                            ) {
-
-                                return cached;
-                            }
-
-
-                            return caches.match(
-                                "./"
+                                caches.match(
+                                    "./"
+                                )
                             );
                         }
                     )
@@ -295,14 +261,11 @@ self.addEventListener(
         }
 
 
-        /*
-           DART HUB FILES
 
-           Network first so updates
-           appear immediately.
-
-           Cache is used when offline.
-        */
+        /* =================================================
+           APP FILES
+           NETWORK FIRST
+        ================================================= */
 
         event.respondWith(
 
@@ -328,7 +291,6 @@ self.addEventListener(
                                 response.type ===
                                 "opaque"
                             )
-
                         ) {
 
                             const copy =

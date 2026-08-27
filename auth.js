@@ -6,10 +6,15 @@
 ========================================================= */
 
 
-function loadDartHubScript(src) {
+function loadDartHubScript(
+    src
+) {
 
     return new Promise(
-        (resolve, reject) => {
+        (
+            resolve,
+            reject
+        ) => {
 
             const script =
                 document.createElement(
@@ -37,6 +42,7 @@ function loadDartHubScript(src) {
                 () => {
 
                     reject(
+
                         new Error(
                             `Could not load ${src}`
                         )
@@ -52,58 +58,101 @@ function loadDartHubScript(src) {
 }
 
 
+
 /* =========================================================
    START DART HUB
 ========================================================= */
-
 
 async function startDartHub() {
 
     try {
 
-        /*
-           LOGIN
-           SUPABASE
-           CLOUD PROFILE
-        */
+
+        /* =================================================
+           LOGIN / ACCOUNT
+        ================================================= */
 
         await loadDartHubScript(
             "./auth-core.js"
         );
 
 
-        /*
+
+        /* =================================================
            REGISTERED PLAYERS
-           PLAYER CODES
-           MATCH IDENTITY
-           RESULT CONFIRMATIONS FOUNDATION
-        */
+        ================================================= */
 
         await loadDartHubScript(
             "./players.js"
         );
 
 
-        /*
-           MULTI-GAME PROFILE STATS
-           CRICKET CLOUD SUPPORT
-           CONFIRMATION PAGE
+
+        /* =================================================
+           PROFILES
+           STATS
            RIVALS
-           101 / 301 / 501 STATS
-        */
+           CONFIRMATIONS
+           COMMUNITY
+        ================================================= */
 
         await loadDartHubScript(
             "./features.js"
         );
 
 
-        /*
+
+        /* =================================================
            LIVE SCORE
-           SECOND SCREEN
-        */
+        ================================================= */
 
         await loadDartHubScript(
             "./live.js"
+        );
+
+
+
+        /* =================================================
+           BOARD TYPES
+           AVERAGE PRACTICE
+        ================================================= */
+
+        await loadDartHubScript(
+            "./board-practice.js"
+        );
+
+
+
+        /* =================================================
+           EXTRA / BOARD STATS
+        ================================================= */
+
+        await loadDartHubScript(
+            "./stats-extra.js"
+        );
+
+
+
+        /* =================================================
+           IMPROVED SCORING UI
+
+           Must load AFTER core Cricket/features.
+        ================================================= */
+
+        await loadDartHubScript(
+            "./scoring-ui.js"
+        );
+
+
+
+        /* =================================================
+           PLAY MENU
+
+           Load last so every game exists first.
+        ================================================= */
+
+        await loadDartHubScript(
+            "./menu.js"
         );
 
 
