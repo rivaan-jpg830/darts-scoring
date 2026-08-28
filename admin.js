@@ -23,7 +23,7 @@ let dhAdminEditingMatchID =
 
 
 /* =========================================================
-   ESCAPE
+   HELPERS
 ========================================================= */
 
 function dhAdminEscape(
@@ -59,11 +59,6 @@ function dhAdminEscape(
 }
 
 
-
-/* =========================================================
-   NUMBER
-========================================================= */
-
 function dhAdminNumber(
     value
 ) {
@@ -77,14 +72,28 @@ function dhAdminNumber(
     return Number.isFinite(
         number
     )
+
         ? number
+
         : 0;
+}
+
+
+function dhAdminValue(
+    id
+) {
+
+    return document
+        .getElementById(
+            id
+        )
+        ?.value;
 }
 
 
 
 /* =========================================================
-   ACCESS CHECK
+   ACCESS
 ========================================================= */
 
 async function dhAdminCheckAccess() {
@@ -142,7 +151,7 @@ async function dhAdminCheckAccess() {
     ) {
 
         console.error(
-            "Dart Hub access check:",
+            "Admin access check:",
             error
         );
 
@@ -164,13 +173,6 @@ async function dhAdminCheckAccess() {
         data?.banned
     ) {
 
-        const reason =
-            String(
-                data.reason ||
-                ""
-            );
-
-
         await dartHubSupabase
             .auth
             .signOut();
@@ -183,10 +185,10 @@ async function dhAdminCheckAccess() {
             +
 
             (
-                reason
+                data.reason
 
                     ? "\n\nReason:\n" +
-                      reason
+                      data.reason
 
                     : ""
             )
@@ -229,13 +231,11 @@ function dhAdminInstallStyles() {
 
         #dh-admin-home-button {
 
-            width: 100%;
+            width:100%;
+            min-height:48px;
 
-            min-height: 48px;
-
-            border: 1px solid #b576ff;
-
-            border-radius: 8px;
+            border:1px solid #b576ff;
+            border-radius:8px;
 
             background:
                 linear-gradient(
@@ -244,25 +244,25 @@ function dhAdminInstallStyles() {
                     #3f2266
                 );
 
-            color: white;
+            color:white;
 
-            font-weight: 900;
+            font-weight:900;
 
-            cursor: pointer;
+            cursor:pointer;
         }
 
 
         #dh-admin-screen {
 
-            position: fixed;
+            position:fixed;
 
-            inset: 0;
+            inset:0;
 
-            z-index: 26000;
+            z-index:26000;
 
-            overflow-y: auto;
+            overflow-y:auto;
 
-            padding: 12px;
+            padding:12px;
 
             background:
                 radial-gradient(
@@ -272,118 +272,108 @@ function dhAdminInstallStyles() {
                     #020203
                 );
 
-            color: white;
+            color:white;
 
-            text-align: left;
+            text-align:left;
         }
 
 
         #dh-admin-screen.hidden {
 
-            display: none !important;
+            display:none !important;
         }
 
 
         .dh-admin-page {
 
-            width:
-                min(
-                    1050px,
-                    100%
-                );
+            width:min(
+                1050px,
+                100%
+            );
 
-            margin: auto;
+            margin:auto;
 
-            padding-bottom: 40px;
+            padding-bottom:40px;
         }
 
 
         .dh-admin-header {
 
-            display: flex;
+            display:flex;
 
-            align-items: center;
+            align-items:center;
 
-            gap: 12px;
+            gap:12px;
 
-            margin-bottom: 14px;
+            margin-bottom:14px;
         }
 
 
         .dh-admin-header h1 {
 
-            margin: 0;
+            margin:0;
 
-            color: #bc85ff;
+            color:#bc85ff;
         }
 
 
         .dh-admin-card {
 
-            margin-top: 10px;
+            margin-top:10px;
 
-            padding: 13px;
+            padding:13px;
 
-            border:
-                1px solid #47365e;
+            border:1px solid #47365e;
 
-            border-radius: 10px;
+            border-radius:10px;
 
-            background: #101015;
+            background:#101015;
+        }
+
+
+        .dh-admin-card h2 {
+
+            margin-top:4px;
         }
 
 
         .dh-admin-search-row {
 
-            display: grid;
+            display:grid;
 
             grid-template-columns:
-                1fr
-                auto;
+                1fr auto;
 
-            gap: 7px;
+            gap:7px;
         }
 
 
         .dh-admin-input,
-        .dh-admin-select,
-        .dh-admin-textarea {
+        .dh-admin-select {
 
-            width: 100%;
+            width:100%;
 
-            min-width: 0;
+            min-width:0;
 
-            min-height: 45px;
+            min-height:45px;
 
-            padding: 8px 10px;
+            padding:8px 10px;
 
-            border:
-                1px solid #4a4d57;
+            border:1px solid #4a4d57;
 
-            border-radius: 7px;
+            border-radius:7px;
 
-            outline: none;
+            outline:none;
 
-            background: #050507;
+            background:#050507;
 
-            color: white;
-
-        }
-
-
-        .dh-admin-textarea {
-
-            min-height: 100px;
-
-            resize: vertical;
-
-            font-family: monospace;
+            color:white;
         }
 
 
         .dh-admin-grid {
 
-            display: grid;
+            display:grid;
 
             grid-template-columns:
                 repeat(
@@ -394,70 +384,84 @@ function dhAdminInstallStyles() {
                     )
                 );
 
-            gap: 8px;
+            gap:8px;
         }
 
 
         .dh-admin-field label {
 
-            display: block;
+            display:block;
 
-            margin-bottom: 4px;
+            margin-bottom:4px;
 
-            color: #9e95a8;
+            color:#9e95a8;
 
-            font-size: 10px;
+            font-size:10px;
 
-            font-weight: 900;
+            font-weight:900;
 
-            text-transform: uppercase;
+            text-transform:uppercase;
         }
 
 
-        .dh-admin-result {
+        .dh-admin-mode-note {
 
-            margin-top: 7px;
+            margin:
+                8px 0;
 
-            padding: 9px;
+            padding:8px;
 
-            border:
-                1px solid #34313b;
+            border-radius:7px;
 
-            border-radius: 8px;
+            background:#18151e;
 
-            background: #09090c;
+            color:#a99db5;
 
-            cursor: pointer;
+            font-size:11px;
         }
 
 
-        .dh-admin-result:hover {
+        .dh-admin-result-item {
 
-            border-color: #a96cff;
+            margin-top:7px;
+
+            padding:9px;
+
+            border:1px solid #34313b;
+
+            border-radius:8px;
+
+            background:#09090c;
+
+            cursor:pointer;
+        }
+
+
+        .dh-admin-result-item:hover {
+
+            border-color:#a96cff;
         }
 
 
         .dh-admin-result-name {
 
-            color: white;
-
-            font-weight: 900;
+            font-weight:900;
         }
 
 
         .dh-admin-result-meta {
 
-            margin-top: 2px;
+            margin-top:3px;
 
-            color: #8d8794;
+            color:#8d8794;
 
-            font-size: 10px;
+            font-size:10px;
         }
 
 
         .dh-admin-stat-grid {
 
-            display: grid;
+            display:grid;
 
             grid-template-columns:
                 repeat(
@@ -468,92 +472,116 @@ function dhAdminInstallStyles() {
                     )
                 );
 
-            gap: 7px;
+            gap:7px;
         }
 
 
         .dh-admin-match {
 
-            display: grid;
+            display:grid;
 
             grid-template-columns:
-                1fr
-                auto;
+                1fr auto;
 
-            gap: 8px;
+            gap:8px;
 
-            margin-top: 6px;
+            margin-top:6px;
 
-            padding: 9px;
+            padding:9px;
 
-            border:
-                1px solid #32313a;
+            border:1px solid #32313a;
 
-            border-radius: 8px;
+            border-radius:8px;
 
-            background: #09090c;
+            background:#09090c;
         }
 
 
         .dh-admin-match-actions {
 
-            display: flex;
+            display:flex;
 
-            gap: 5px;
+            gap:5px;
         }
 
 
         .dh-admin-small-button {
 
-            min-height: 36px;
+            min-height:36px;
 
-            padding: 5px 9px;
+            padding:5px 9px;
 
-            border: none;
+            border:none;
 
-            border-radius: 6px;
+            border-radius:6px;
 
-            color: white;
+            color:white;
 
-            font-weight: 800;
+            font-weight:800;
 
-            cursor: pointer;
+            cursor:pointer;
         }
 
 
         .dh-admin-edit {
 
-            background: #176491;
+            background:#176491;
         }
 
 
         .dh-admin-delete {
 
-            background: #812929;
+            background:#812929;
         }
 
 
         .dh-admin-danger {
 
-            border-color: #782e2e;
+            border-color:#782e2e;
 
-            background: #210d0d;
+            background:#210d0d;
         }
 
 
         .dh-admin-success {
 
-            color: #72ffc0;
+            color:#72ffc0;
 
-            font-weight: 800;
+            font-weight:800;
         }
 
 
         .dh-admin-error {
 
-            color: #ff9494;
+            color:#ff9494;
 
-            font-weight: 800;
+            font-weight:800;
+        }
+
+
+        .dh-admin-practice-box {
+
+            border-color:#694b8e;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #191121,
+                    #0c0a10
+                );
+        }
+
+
+        .dh-admin-cricket-box {
+
+            border-color:#1b7952;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #0d2119,
+                    #080e0b
+                );
         }
 
 
@@ -589,7 +617,6 @@ function dhAdminInstallStyles() {
             }
 
         }
-
     `;
 
 
@@ -663,23 +690,20 @@ function dhAdminUpdateButton() {
 
 
     if (
-        !button
+        button
     ) {
 
-        return;
+        button.classList.toggle(
+            "hidden",
+            !dhAdminIsAdmin
+        );
     }
-
-
-    button.classList.toggle(
-        "hidden",
-        !dhAdminIsAdmin
-    );
 }
 
 
 
 /* =========================================================
-   CREATE SCREEN
+   SCREEN
 ========================================================= */
 
 function dhAdminCreateScreen() {
@@ -712,6 +736,7 @@ function dhAdminCreateScreen() {
 
         <div class="dh-admin-page">
 
+
             <div class="dh-admin-header">
 
                 <button
@@ -730,8 +755,6 @@ function dhAdminCreateScreen() {
             </div>
 
 
-
-            <!-- SEARCH -->
 
             <div class="dh-admin-card">
 
@@ -769,8 +792,6 @@ function dhAdminCreateScreen() {
 
 
 
-            <!-- PLAYER -->
-
             <div
                 id="dh-admin-player-area"
                 class="hidden"
@@ -795,8 +816,6 @@ function dhAdminCreateScreen() {
                 </div>
 
 
-
-                <!-- BAN -->
 
                 <div class="dh-admin-card dh-admin-danger">
 
@@ -844,8 +863,6 @@ function dhAdminCreateScreen() {
 
 
 
-                <!-- PROFILE STATS -->
-
                 <div class="dh-admin-card">
 
                     <h2>
@@ -875,217 +892,53 @@ function dhAdminCreateScreen() {
 
 
 
-                <!-- ADD / EDIT RECORD -->
-
-                <div class="dh-admin-card">
+                <div
+                    id="dh-admin-record-card"
+                    class="dh-admin-card"
+                >
 
                     <h2 id="dh-admin-record-title">
                         Add Match / Practice Record
                     </h2>
 
 
-                    <div class="dh-admin-grid">
+                    <div class="dh-admin-field">
+
+                        <label>
+                            Type
+                        </label>
 
 
-                        <div class="dh-admin-field">
+                        <select
+                            id="dh-admin-game-mode"
+                            class="dh-admin-select"
+                        >
 
-                            <label>
-                                Game Mode
-                            </label>
+                            <option value="Legs">
+                                🎯 Legs
+                            </option>
 
-                            <select
-                                id="dh-admin-game-mode"
-                                class="dh-admin-select"
-                            >
+                            <option value="Sets + Legs">
+                                🏆 Sets + Legs
+                            </option>
 
-                                <option>
-                                    Legs
-                                </option>
+                            <option value="Cricket">
+                                🏏 Cricket
+                            </option>
 
-                                <option>
-                                    Sets + Legs
-                                </option>
+                            <option value="Average Practice">
+                                📈 Average Practice
+                            </option>
 
-                                <option>
-                                    Cricket
-                                </option>
-
-                                <option>
-                                    Average Practice
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Starting Score
-                            </label>
-
-                            <input
-                                id="dh-admin-start-score"
-                                class="dh-admin-input"
-                                type="number"
-                                value="501"
-                            >
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Result
-                            </label>
-
-                            <select
-                                id="dh-admin-result"
-                                class="dh-admin-select"
-                            >
-
-                                <option value="WIN">
-                                    WIN
-                                </option>
-
-                                <option value="LOSS">
-                                    LOSS
-                                </option>
-
-                                <option value="PRACTICE">
-                                    PRACTICE
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Opponent
-                            </label>
-
-                            <input
-                                id="dh-admin-opponent"
-                                class="dh-admin-input"
-                                value="Admin Entry"
-                            >
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Average
-                            </label>
-
-                            <input
-                                id="dh-admin-average"
-                                class="dh-admin-input"
-                                type="number"
-                                step="0.01"
-                                value="0"
-                            >
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                180s
-                            </label>
-
-                            <input
-                                id="dh-admin-180s"
-                                class="dh-admin-input"
-                                type="number"
-                                value="0"
-                            >
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Checkout %
-                            </label>
-
-                            <input
-                                id="dh-admin-checkout"
-                                class="dh-admin-input"
-                                type="number"
-                                step="0.1"
-                                value="0"
-                            >
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Best Checkout
-                            </label>
-
-                            <input
-                                id="dh-admin-best-checkout"
-                                class="dh-admin-input"
-                                type="number"
-                                value="0"
-                            >
-
-                        </div>
-
-
-                        <div class="dh-admin-field">
-
-                            <label>
-                                Board
-                            </label>
-
-                            <select
-                                id="dh-admin-board"
-                                class="dh-admin-select"
-                            >
-
-                                <option value="standard">
-                                    Standard
-                                </option>
-
-                                <option value="indoor">
-                                    Indoor
-                                </option>
-
-                            </select>
-
-                        </div>
+                        </select>
 
                     </div>
 
 
                     <div
-                        class="dh-admin-field"
-                        style="margin-top:8px;"
-                    >
-
-                        <label>
-                            Extra Stats / Details JSON
-                        </label>
-
-
-                        <textarea
-                            id="dh-admin-details"
-                            class="dh-admin-textarea"
-                        >{}</textarea>
-
-                    </div>
+                        id="dh-admin-dynamic-fields"
+                        style="margin-top:10px;"
+                    ></div>
 
 
                     <div
@@ -1093,7 +946,7 @@ function dhAdminCreateScreen() {
                             display:grid;
                             grid-template-columns:1fr 1fr;
                             gap:7px;
-                            margin-top:8px;
+                            margin-top:10px;
                         "
                     >
 
@@ -1120,8 +973,6 @@ function dhAdminCreateScreen() {
 
 
 
-                <!-- HISTORY -->
-
                 <div class="dh-admin-card">
 
                     <h2>
@@ -1138,7 +989,9 @@ function dhAdminCreateScreen() {
 
                 <div
                     id="dh-admin-message"
-                    style="margin-top:10px;"
+                    style="
+                        margin-top:10px;
+                    "
                 ></div>
 
             </div>
@@ -1189,6 +1042,15 @@ function dhAdminCreateScreen() {
 
     document
         .getElementById(
+            "dh-admin-game-mode"
+        )
+        .onchange =
+            () =>
+                dhAdminRenderRecordFields();
+
+
+    document
+        .getElementById(
             "dh-admin-ban-button"
         )
         .onclick =
@@ -1231,6 +1093,482 @@ function dhAdminCreateScreen() {
         )
         .onclick =
             dhAdminClearRecordForm;
+
+
+    dhAdminRenderRecordFields();
+}
+
+
+
+/* =========================================================
+   DYNAMIC RECORD FORM
+========================================================= */
+
+function dhAdminField(
+    id,
+    label,
+    value = 0,
+    type = "number",
+    step = "1"
+) {
+
+    return `
+
+        <div class="dh-admin-field">
+
+            <label for="${id}">
+                ${label}
+            </label>
+
+
+            <input
+                id="${id}"
+                class="dh-admin-input"
+                type="${type}"
+                step="${step}"
+                value="${dhAdminEscape(
+                    value
+                )}"
+            >
+
+        </div>
+    `;
+}
+
+
+function dhAdminBoardField(
+    value = "standard"
+) {
+
+    return `
+
+        <div class="dh-admin-field">
+
+            <label>
+                Board
+            </label>
+
+
+            <select
+                id="dh-admin-board"
+                class="dh-admin-select"
+            >
+
+                <option
+                    value="standard"
+                    ${
+                        value ===
+                        "standard"
+
+                            ? "selected"
+
+                            : ""
+                    }
+                >
+                    🎯 Standard
+                </option>
+
+
+                <option
+                    value="indoor"
+                    ${
+                        value ===
+                        "indoor"
+
+                            ? "selected"
+
+                            : ""
+                    }
+                >
+                    🏠 Indoor
+                </option>
+
+            </select>
+
+        </div>
+    `;
+}
+
+
+function dhAdminResultField(
+    value = "WIN"
+) {
+
+    return `
+
+        <div class="dh-admin-field">
+
+            <label>
+                Result
+            </label>
+
+
+            <select
+                id="dh-admin-result"
+                class="dh-admin-select"
+            >
+
+                <option
+                    value="WIN"
+                    ${
+                        value ===
+                        "WIN"
+
+                            ? "selected"
+
+                            : ""
+                    }
+                >
+                    WIN
+                </option>
+
+
+                <option
+                    value="LOSS"
+                    ${
+                        value ===
+                        "LOSS"
+
+                            ? "selected"
+
+                            : ""
+                    }
+                >
+                    LOSS
+                </option>
+
+            </select>
+
+        </div>
+    `;
+}
+
+
+
+function dhAdminRenderRecordFields(
+    data = {}
+) {
+
+    const mode =
+        document
+            .getElementById(
+                "dh-admin-game-mode"
+            )
+            ?.value
+            ||
+            "Legs";
+
+
+    const box =
+        document.getElementById(
+            "dh-admin-dynamic-fields"
+        );
+
+
+    const card =
+        document.getElementById(
+            "dh-admin-record-card"
+        );
+
+
+    if (
+        !box
+    ) {
+
+        return;
+    }
+
+
+    card.classList.remove(
+        "dh-admin-practice-box",
+        "dh-admin-cricket-box"
+    );
+
+
+
+    /* =====================================================
+       PRACTICE
+    ===================================================== */
+
+    if (
+        mode ===
+        "Average Practice"
+    ) {
+
+        card.classList.add(
+            "dh-admin-practice-box"
+        );
+
+
+        box.innerHTML = `
+
+            <div class="dh-admin-mode-note">
+
+                📈 Practice does not affect Matches,
+                Wins or Losses.
+
+            </div>
+
+
+            <div class="dh-admin-grid">
+
+                ${dhAdminBoardField(
+                    data.board_type ||
+                    "standard"
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-practice-points",
+                    "Points Scored",
+                    data.points ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-practice-darts",
+                    "Darts Thrown",
+                    data.darts ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-practice-visits",
+                    "Visits",
+                    data.visits ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-average",
+                    "3-Dart Average",
+                    data.average ||
+                    0,
+                    "number",
+                    "0.01"
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-practice-best",
+                    "Best Visit",
+                    data.highest_visit ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-practice-100",
+                    "100+",
+                    data.scores_100 ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-practice-140",
+                    "140+",
+                    data.scores_140 ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-180s",
+                    "180s",
+                    data.scores_180 ||
+                    0
+                )}
+
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+
+    /* =====================================================
+       CRICKET
+    ===================================================== */
+
+    if (
+        mode ===
+        "Cricket"
+    ) {
+
+        card.classList.add(
+            "dh-admin-cricket-box"
+        );
+
+
+        box.innerHTML = `
+
+            <div class="dh-admin-mode-note">
+
+                🏏 Cricket uses runs and wickets,
+                not a darts average or checkout percentage.
+
+            </div>
+
+
+            <div class="dh-admin-grid">
+
+                ${dhAdminResultField(
+                    data.result ||
+                    "WIN"
+                )}
+
+
+                ${dhAdminBoardField(
+                    data.board_type ||
+                    "standard"
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-opponent",
+                    "Opponent / Team",
+                    data.opponent_name ||
+                    "Admin Entry",
+                    "text"
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-cricket-runs",
+                    "Runs Scored",
+                    data.runs ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-cricket-wickets-lost",
+                    "Wickets Lost",
+                    data.wickets_lost ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-cricket-opponent-runs",
+                    "Opponent Runs",
+                    data.opponent_runs ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-cricket-opponent-wickets",
+                    "Opponent Wickets Lost",
+                    data.opponent_wickets_lost ||
+                    0
+                )}
+
+
+                ${dhAdminField(
+                    "dh-admin-cricket-total-wickets",
+                    "Total Wickets",
+                    data.total_wickets ||
+                    11
+                )}
+
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+
+    /* =====================================================
+       LEGS / SETS
+    ===================================================== */
+
+    box.innerHTML = `
+
+        <div class="dh-admin-mode-note">
+
+            🎯 Enter the saved match statistics
+            for this player's side of the match.
+
+        </div>
+
+
+        <div class="dh-admin-grid">
+
+            ${dhAdminField(
+                "dh-admin-start-score",
+                "Starting Score",
+                data.starting_score ||
+                501
+            )}
+
+
+            ${dhAdminResultField(
+                data.result ||
+                "WIN"
+            )}
+
+
+            ${dhAdminField(
+                "dh-admin-opponent",
+                "Opponent",
+                data.opponent_name ||
+                "Admin Entry",
+                "text"
+            )}
+
+
+            ${dhAdminField(
+                "dh-admin-average",
+                "Average",
+                data.average ||
+                0,
+                "number",
+                "0.01"
+            )}
+
+
+            ${dhAdminField(
+                "dh-admin-180s",
+                "180s",
+                data.scores_180 ||
+                0
+            )}
+
+
+            ${dhAdminField(
+                "dh-admin-checkout",
+                "Checkout %",
+                data.checkout_percentage ||
+                0,
+                "number",
+                "0.1"
+            )}
+
+
+            ${dhAdminField(
+                "dh-admin-best-checkout",
+                "Best Checkout",
+                data.best_checkout ||
+                0
+            )}
+
+
+            ${dhAdminBoardField(
+                data.board_type ||
+                "standard"
+            )}
+
+        </div>
+    `;
 }
 
 
@@ -1306,12 +1644,10 @@ function dhAdminClose() {
 async function dhAdminSearch() {
 
     const query =
-        document
-            .getElementById(
-                "dh-admin-search"
-            )
-            .value
-            .trim();
+        dhAdminValue(
+            "dh-admin-search"
+        )
+        .trim();
 
 
     const results =
@@ -1320,7 +1656,7 @@ async function dhAdminSearch() {
         );
 
 
-    results.innerHTML =
+    results.textContent =
         "Searching…";
 
 
@@ -1361,7 +1697,7 @@ async function dhAdminSearch() {
         !data?.length
     ) {
 
-        results.innerHTML =
+        results.textContent =
             "No players found.";
 
 
@@ -1375,7 +1711,7 @@ async function dhAdminSearch() {
                 player => `
 
                     <div
-                        class="dh-admin-result"
+                        class="dh-admin-result-item"
                         data-admin-user="${player.user_id}"
                     >
 
@@ -1407,7 +1743,7 @@ async function dhAdminSearch() {
                             }
 
                             •
-                            
+
                             ${
                                 dhAdminEscape(
                                     player.email ||
@@ -1481,20 +1817,6 @@ async function dhAdminLoadPlayer(
     }
 
 
-    if (
-        !data?.profile
-    ) {
-
-        dhAdminMessage(
-            "Player could not be loaded.",
-            true
-        );
-
-
-        return;
-    }
-
-
     dhAdminSelectedUser =
         userID;
 
@@ -1518,7 +1840,9 @@ async function dhAdminLoadPlayer(
             "dh-admin-player-name"
         )
         .textContent =
-            data.profile.display_name ||
+            data.profile
+                ?.display_name
+            ||
             "Player";
 
 
@@ -1528,7 +1852,7 @@ async function dhAdminLoadPlayer(
         )
         .textContent =
 
-            `${data.profile.player_code || "No player code"} • ` +
+            `${data.profile?.player_code || "No player code"} • ` +
 
             `${data.email || ""}`;
 
@@ -1543,7 +1867,8 @@ async function dhAdminLoadPlayer(
 
 
     dhAdminRenderStats(
-        data.profile
+        data.profile ||
+        {}
     );
 
 
@@ -1559,7 +1884,7 @@ async function dhAdminLoadPlayer(
 
 
 /* =========================================================
-   STATS
+   PROFILE STATS
 ========================================================= */
 
 function dhAdminRenderStats(
@@ -1630,61 +1955,56 @@ function dhAdminRenderStats(
     ];
 
 
-    const grid =
-        document.getElementById(
+    document
+        .getElementById(
             "dh-admin-stats-grid"
-        );
+        )
+        .innerHTML =
+
+            fields
+                .map(
+                    (
+                        [
+                            label,
+                            field
+                        ]
+                    ) => `
+
+                        <div class="dh-admin-field">
+
+                            <label>
+                                ${label}
+                            </label>
 
 
-    grid.innerHTML =
-        fields
-            .map(
-                (
-                    [
-                        label,
-                        field
-                    ]
-                ) => `
+                            <input
+                                class="dh-admin-input"
+                                data-admin-stat="${field}"
+                                type="number"
+                                step="${
+                                    field ===
+                                    "best_match_average"
 
-                    <div class="dh-admin-field">
+                                        ? "0.01"
 
-                        <label>
-                            ${label}
-                        </label>
+                                        : "1"
+                                }"
+                                value="${
+                                    dhAdminEscape(
+                                        profile[field] ??
+                                        0
+                                    )
+                                }"
+                            >
 
-                        <input
-                            class="dh-admin-input"
-                            data-admin-stat="${field}"
-                            type="number"
-                            step="${
-                                field ===
-                                "best_match_average"
-
-                                    ? "0.01"
-
-                                    : "1"
-                            }"
-                            value="${
-                                dhAdminEscape(
-                                    profile[field] ??
-                                    0
-                                )
-                            }"
-                        >
-
-                    </div>
-                `
-            )
-            .join(
-                ""
-            );
+                        </div>
+                    `
+                )
+                .join(
+                    ""
+                );
 }
 
-
-
-/* =========================================================
-   SAVE STATS
-========================================================= */
 
 function dhAdminStat(
     name
@@ -1701,20 +2021,15 @@ function dhAdminStat(
 }
 
 
+
+/* =========================================================
+   SAVE PROFILE STATS
+========================================================= */
+
 async function dhAdminSaveStats() {
 
     if (
         !dhAdminSelectedUser
-    ) {
-
-        return;
-    }
-
-
-    if (
-        !confirm(
-            "Save these statistics for this player?"
-        )
     ) {
 
         return;
@@ -1839,12 +2154,10 @@ async function dhAdminSetBan(
 
 
     const reason =
-        document
-            .getElementById(
-                "dh-admin-ban-reason"
-            )
-            .value
-            .trim();
+        dhAdminValue(
+            "dh-admin-ban-reason"
+        )
+        .trim();
 
 
     if (
@@ -1853,24 +2166,9 @@ async function dhAdminSetBan(
     ) {
 
         alert(
-            "Please enter a reason for the ban."
+            "Enter a reason for the ban."
         );
 
-
-        return;
-    }
-
-
-    if (
-        !confirm(
-
-            banned
-
-                ? "Ban this player from Dart Hub?"
-
-                : "Restore this player's access?"
-        )
-    ) {
 
         return;
     }
@@ -1930,7 +2228,490 @@ async function dhAdminSetBan(
 
 
 /* =========================================================
-   MATCH LIST
+   SAVE RECORD
+========================================================= */
+
+async function dhAdminSaveRecord() {
+
+    if (
+        !dhAdminSelectedUser
+    ) {
+
+        return;
+    }
+
+
+    const mode =
+        dhAdminValue(
+            "dh-admin-game-mode"
+        );
+
+
+    let startingScore =
+        0;
+
+
+    let result =
+        "WIN";
+
+
+    let opponent =
+        "Admin Entry";
+
+
+    let average =
+        0;
+
+
+    let scores180 =
+        0;
+
+
+    let checkoutPercentage =
+        0;
+
+
+    let bestCheckout =
+        0;
+
+
+    let boardType =
+        dhAdminValue(
+            "dh-admin-board"
+        )
+        ||
+        "standard";
+
+
+    let details = {
+
+        board_type:
+            boardType
+    };
+
+
+
+    /* =====================================================
+       PRACTICE
+    ===================================================== */
+
+    if (
+        mode ===
+        "Average Practice"
+    ) {
+
+        const points =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-practice-points"
+                )
+            );
+
+
+        const darts =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-practice-darts"
+                )
+            );
+
+
+        const visits =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-practice-visits"
+                )
+            );
+
+
+        average =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-average"
+                )
+            );
+
+
+        const bestVisit =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-practice-best"
+                )
+            );
+
+
+        const scores100 =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-practice-100"
+                )
+            );
+
+
+        const scores140 =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-practice-140"
+                )
+            );
+
+
+        scores180 =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-180s"
+                )
+            );
+
+
+        /*
+           If points + darts exist, calculate
+           the average automatically.
+
+           This prevents mismatched Practice stats.
+        */
+
+        if (
+            darts >
+            0
+        ) {
+
+            average =
+                Number(
+                    (
+                        points /
+                        darts *
+                        3
+                    )
+                    .toFixed(
+                        2
+                    )
+                );
+        }
+
+
+        startingScore =
+            0;
+
+
+        result =
+            "PRACTICE";
+
+
+        opponent =
+            "Practice";
+
+
+        details = {
+
+            game:
+                "Average Practice",
+
+            board_type:
+                boardType,
+
+            points,
+
+            darts,
+
+            visits,
+
+            average,
+
+            highest_visit:
+                bestVisit,
+
+            scores_100:
+                scores100,
+
+            scores_140:
+                scores140,
+
+            scores_180:
+                scores180,
+
+            admin_entry:
+                true
+        };
+    }
+
+
+
+    /* =====================================================
+       CRICKET
+    ===================================================== */
+
+    else if (
+        mode ===
+        "Cricket"
+    ) {
+
+        result =
+            dhAdminValue(
+                "dh-admin-result"
+            );
+
+
+        opponent =
+            dhAdminValue(
+                "dh-admin-opponent"
+            )
+            ||
+            "Admin Entry";
+
+
+        const runs =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-cricket-runs"
+                )
+            );
+
+
+        const wicketsLost =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-cricket-wickets-lost"
+                )
+            );
+
+
+        const opponentRuns =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-cricket-opponent-runs"
+                )
+            );
+
+
+        const opponentWickets =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-cricket-opponent-wickets"
+                )
+            );
+
+
+        const totalWickets =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-cricket-total-wickets"
+                )
+            );
+
+
+        details = {
+
+            game:
+                "Cricket",
+
+            board_type:
+                boardType,
+
+            total_wickets:
+                totalWickets,
+
+            user_runs:
+                runs,
+
+            user_wickets_lost:
+                wicketsLost,
+
+            opponent_runs:
+                opponentRuns,
+
+            opponent_wickets_lost:
+                opponentWickets,
+
+            admin_entry:
+                true
+        };
+    }
+
+
+
+    /* =====================================================
+       LEGS / SETS
+    ===================================================== */
+
+    else {
+
+        startingScore =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-start-score"
+                )
+            );
+
+
+        result =
+            dhAdminValue(
+                "dh-admin-result"
+            );
+
+
+        opponent =
+            dhAdminValue(
+                "dh-admin-opponent"
+            )
+            ||
+            "Admin Entry";
+
+
+        average =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-average"
+                )
+            );
+
+
+        scores180 =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-180s"
+                )
+            );
+
+
+        checkoutPercentage =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-checkout"
+                )
+            );
+
+
+        bestCheckout =
+            dhAdminNumber(
+                dhAdminValue(
+                    "dh-admin-best-checkout"
+                )
+            );
+
+
+        details = {
+
+            game:
+                mode,
+
+            board_type:
+                boardType,
+
+            starting_score:
+                startingScore,
+
+            admin_entry:
+                true
+        };
+    }
+
+
+
+    /* =====================================================
+       SAVE
+    ===================================================== */
+
+    const {
+        data,
+        error
+    } =
+        await dartHubSupabase
+            .rpc(
+                "dh_admin_save_record",
+                {
+
+                    p_match_id:
+
+                        dhAdminEditingMatchID ===
+                        null
+
+                            ? null
+
+                            : Number(
+                                dhAdminEditingMatchID
+                            ),
+
+                    p_user_id:
+                        dhAdminSelectedUser,
+
+                    p_game_mode:
+                        mode,
+
+                    p_starting_score:
+                        startingScore,
+
+                    p_result:
+                        result,
+
+                    p_opponent_name:
+                        opponent,
+
+                    p_user_average:
+                        average,
+
+                    p_user_180s:
+                        scores180,
+
+                    p_checkout_percentage:
+                        checkoutPercentage,
+
+                    p_best_checkout:
+                        bestCheckout,
+
+                    p_board_type:
+                        boardType,
+
+                    p_match_details:
+                        details
+                }
+            );
+
+
+    if (
+        error
+    ) {
+
+        console.error(
+            "Admin record save:",
+            error
+        );
+
+
+        dhAdminMessage(
+            error.message,
+            true
+        );
+
+
+        return;
+    }
+
+
+    console.log(
+        "Admin record saved:",
+        data
+    );
+
+
+    dhAdminMessage(
+        "✅ Record saved.",
+        false
+    );
+
+
+    dhAdminClearRecordForm();
+
+
+    await dhAdminLoadPlayer(
+        dhAdminSelectedUser
+    );
+}
+
+
+
+/* =========================================================
+   RECORD LIST
 ========================================================= */
 
 function dhAdminRenderMatches(
@@ -1947,7 +2728,7 @@ function dhAdminRenderMatches(
         !matches.length
     ) {
 
-        list.innerHTML =
+        list.textContent =
             "No records.";
 
 
@@ -1960,24 +2741,24 @@ function dhAdminRenderMatches(
             .map(
                 match => `
 
-                    <div
-                        class="dh-admin-match"
-                        data-match-id="${match.id}"
-                    >
+                    <div class="dh-admin-match">
 
                         <div>
 
                             <strong>
+
                                 ${dhAdminEscape(
                                     match.game_mode
                                 )}
+
+                                •
+
+                                ${dhAdminEscape(
+                                    match.result
+                                )}
+
                             </strong>
 
-                            •
-                            
-                            ${dhAdminEscape(
-                                match.result
-                            )}
 
                             <div
                                 style="
@@ -1988,22 +2769,42 @@ function dhAdminRenderMatches(
                             >
 
                                 ${
-                                    match.starting_score ||
-                                    0
-                                }
-                                start
+                                    match.game_mode ===
+                                    "Average Practice"
 
-                                •
+                                        ? `${
+                                            match.match_details
+                                                ?.darts ||
+                                            0
+                                        } darts • Avg ${
+                                            Number(
+                                                match.user_average ||
+                                                0
+                                            ).toFixed(
+                                                2
+                                            )
+                                        }`
 
-                                Avg
-                                ${
-                                    Number(
-                                        match.user_average ||
-                                        0
-                                    )
-                                    .toFixed(
-                                        2
-                                    )
+                                        : match.game_mode ===
+                                          "Cricket"
+
+                                            ? `${
+                                                match.match_details
+                                                    ?.user_runs ||
+                                                0
+                                            } runs`
+
+                                            : `${
+                                                match.starting_score ||
+                                                0
+                                            } start • Avg ${
+                                                Number(
+                                                    match.user_average ||
+                                                    0
+                                                ).toFixed(
+                                                    2
+                                                )
+                                            }`
                                 }
 
                                 •
@@ -2064,9 +2865,13 @@ function dhAdminRenderMatches(
                         const match =
                             matches.find(
                                 item =>
-                                    item.id ===
-                                    button.dataset
-                                        .editMatch
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(
+                                        button.dataset
+                                            .editMatch
+                                    )
                             );
 
 
@@ -2093,8 +2898,10 @@ function dhAdminRenderMatches(
                 button.onclick =
                     () =>
                         dhAdminDeleteRecord(
-                            button.dataset
-                                .deleteMatch
+                            Number(
+                                button.dataset
+                                    .deleteMatch
+                            )
                         );
             }
         );
@@ -2103,7 +2910,7 @@ function dhAdminRenderMatches(
 
 
 /* =========================================================
-   EDIT RECORD
+   EDIT
 ========================================================= */
 
 function dhAdminEditRecord(
@@ -2111,7 +2918,9 @@ function dhAdminEditRecord(
 ) {
 
     dhAdminEditingMatchID =
-        match.id;
+        Number(
+            match.id
+        );
 
 
     document
@@ -2119,7 +2928,12 @@ function dhAdminEditRecord(
             "dh-admin-record-title"
         )
         .textContent =
-            "Edit Match / Practice Record";
+            "Edit Record";
+
+
+    const mode =
+        match.game_mode ||
+        "Legs";
 
 
     document
@@ -2127,115 +2941,136 @@ function dhAdminEditRecord(
             "dh-admin-game-mode"
         )
         .value =
-            match.game_mode ||
-            "Legs";
+            mode;
+
+
+    const details =
+        match.match_details ||
+        {};
+
+
+    if (
+        mode ===
+        "Average Practice"
+    ) {
+
+        dhAdminRenderRecordFields({
+
+            board_type:
+                match.board_type ||
+                details.board_type,
+
+            points:
+                details.points,
+
+            darts:
+                details.darts,
+
+            visits:
+                details.visits,
+
+            average:
+                match.user_average,
+
+            highest_visit:
+                details.highest_visit,
+
+            scores_100:
+                details.scores_100,
+
+            scores_140:
+                details.scores_140,
+
+            scores_180:
+                details.scores_180 ||
+                match.user_180s
+        });
+
+
+    } else if (
+        mode ===
+        "Cricket"
+    ) {
+
+        dhAdminRenderRecordFields({
+
+            board_type:
+                match.board_type ||
+                details.board_type,
+
+            result:
+                match.result,
+
+            opponent_name:
+                match.opponent_name,
+
+            runs:
+                details.user_runs,
+
+            wickets_lost:
+                details.user_wickets_lost,
+
+            opponent_runs:
+                details.opponent_runs,
+
+            opponent_wickets_lost:
+                details.opponent_wickets_lost,
+
+            total_wickets:
+                details.total_wickets
+        });
+
+
+    } else {
+
+        dhAdminRenderRecordFields({
+
+            starting_score:
+                match.starting_score,
+
+            result:
+                match.result,
+
+            opponent_name:
+                match.opponent_name,
+
+            average:
+                match.user_average,
+
+            scores_180:
+                match.user_180s,
+
+            checkout_percentage:
+                match.checkout_percentage,
+
+            best_checkout:
+                match.best_checkout,
+
+            board_type:
+                match.board_type ||
+                details.board_type
+        });
+    }
 
 
     document
         .getElementById(
-            "dh-admin-start-score"
+            "dh-admin-record-card"
         )
-        .value =
-            match.starting_score ||
-            0;
+        ?.scrollIntoView({
 
+            behavior:
+                "smooth",
 
-    document
-        .getElementById(
-            "dh-admin-result"
-        )
-        .value =
-            match.result ||
-            "LOSS";
-
-
-    document
-        .getElementById(
-            "dh-admin-opponent"
-        )
-        .value =
-            match.opponent_name ||
-            "";
-
-
-    document
-        .getElementById(
-            "dh-admin-average"
-        )
-        .value =
-            match.user_average ||
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-180s"
-        )
-        .value =
-            match.user_180s ||
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-checkout"
-        )
-        .value =
-            match.checkout_percentage ||
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-best-checkout"
-        )
-        .value =
-            match.best_checkout ||
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-board"
-        )
-        .value =
-
-            match.board_type ===
-            "indoor"
-
-                ? "indoor"
-
-                : "standard";
-
-
-    document
-        .getElementById(
-            "dh-admin-details"
-        )
-        .value =
-            JSON.stringify(
-
-                match.match_details ||
-                {},
-
-                null,
-
-                2
-            );
-
-
-    document
-        .getElementById(
-            "dh-admin-save-record"
-        )
-        .textContent =
-            "💾 Save Changes";
+            block:
+                "start"
+        });
 }
 
 
 
 /* =========================================================
-   CLEAR FORM
+   CLEAR
 ========================================================= */
 
 function dhAdminClearRecordForm() {
@@ -2244,271 +3079,37 @@ function dhAdminClearRecordForm() {
         null;
 
 
-    document
-        .getElementById(
+    const title =
+        document.getElementById(
             "dh-admin-record-title"
-        )
-        .textContent =
+        );
+
+
+    if (
+        title
+    ) {
+
+        title.textContent =
             "Add Match / Practice Record";
+    }
 
 
-    document
-        .getElementById(
+    const mode =
+        document.getElementById(
             "dh-admin-game-mode"
-        )
-        .value =
+        );
+
+
+    if (
+        mode
+    ) {
+
+        mode.value =
             "Legs";
-
-
-    document
-        .getElementById(
-            "dh-admin-start-score"
-        )
-        .value =
-            501;
-
-
-    document
-        .getElementById(
-            "dh-admin-result"
-        )
-        .value =
-            "WIN";
-
-
-    document
-        .getElementById(
-            "dh-admin-opponent"
-        )
-        .value =
-            "Admin Entry";
-
-
-    document
-        .getElementById(
-            "dh-admin-average"
-        )
-        .value =
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-180s"
-        )
-        .value =
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-checkout"
-        )
-        .value =
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-best-checkout"
-        )
-        .value =
-            0;
-
-
-    document
-        .getElementById(
-            "dh-admin-board"
-        )
-        .value =
-            "standard";
-
-
-    document
-        .getElementById(
-            "dh-admin-details"
-        )
-        .value =
-            "{}";
-
-
-    document
-        .getElementById(
-            "dh-admin-save-record"
-        )
-        .textContent =
-            "Save Record";
-}
-
-
-
-/* =========================================================
-   SAVE RECORD
-========================================================= */
-
-async function dhAdminSaveRecord() {
-
-    if (
-        !dhAdminSelectedUser
-    ) {
-
-        return;
     }
 
 
-    let details;
-
-
-    try {
-
-        details =
-            JSON.parse(
-
-                document
-                    .getElementById(
-                        "dh-admin-details"
-                    )
-                    .value
-                    .trim()
-
-                ||
-
-                "{}"
-            );
-
-
-    } catch (
-        error
-    ) {
-
-        alert(
-            "The Extra Stats / Details JSON is not valid JSON."
-        );
-
-
-        return;
-    }
-
-
-    const {
-        error
-    } =
-        await dartHubSupabase
-            .rpc(
-                "dh_admin_save_record",
-                {
-
-                    p_match_id:
-                        dhAdminEditingMatchID,
-
-                    p_user_id:
-                        dhAdminSelectedUser,
-
-                    p_game_mode:
-                        document
-                            .getElementById(
-                                "dh-admin-game-mode"
-                            )
-                            .value,
-
-                    p_starting_score:
-                        dhAdminNumber(
-                            document
-                                .getElementById(
-                                    "dh-admin-start-score"
-                                )
-                                .value
-                        ),
-
-                    p_result:
-                        document
-                            .getElementById(
-                                "dh-admin-result"
-                            )
-                            .value,
-
-                    p_opponent_name:
-                        document
-                            .getElementById(
-                                "dh-admin-opponent"
-                            )
-                            .value,
-
-                    p_user_average:
-                        dhAdminNumber(
-                            document
-                                .getElementById(
-                                    "dh-admin-average"
-                                )
-                                .value
-                        ),
-
-                    p_user_180s:
-                        dhAdminNumber(
-                            document
-                                .getElementById(
-                                    "dh-admin-180s"
-                                )
-                                .value
-                        ),
-
-                    p_checkout_percentage:
-                        dhAdminNumber(
-                            document
-                                .getElementById(
-                                    "dh-admin-checkout"
-                                )
-                                .value
-                        ),
-
-                    p_best_checkout:
-                        dhAdminNumber(
-                            document
-                                .getElementById(
-                                    "dh-admin-best-checkout"
-                                )
-                                .value
-                        ),
-
-                    p_board_type:
-                        document
-                            .getElementById(
-                                "dh-admin-board"
-                            )
-                            .value,
-
-                    p_match_details:
-                        details
-                }
-            );
-
-
-    if (
-        error
-    ) {
-
-        dhAdminMessage(
-            error.message,
-            true
-        );
-
-
-        return;
-    }
-
-
-    dhAdminMessage(
-        "✅ Record saved.",
-        false
-    );
-
-
-    dhAdminClearRecordForm();
-
-
-    await dhAdminLoadPlayer(
-        dhAdminSelectedUser
-    );
+    dhAdminRenderRecordFields();
 }
 
 
@@ -2523,7 +3124,7 @@ async function dhAdminDeleteRecord(
 
     if (
         !confirm(
-            "Permanently delete this Dart Hub record?"
+            "Permanently delete this record?"
         )
     ) {
 
@@ -2540,7 +3141,9 @@ async function dhAdminDeleteRecord(
                 {
 
                     p_match_id:
-                        matchID
+                        Number(
+                            matchID
+                        )
                 }
             );
 
@@ -2560,7 +3163,7 @@ async function dhAdminDeleteRecord(
 
 
     dhAdminMessage(
-        "Record deleted.",
+        "✅ Record deleted.",
         false
     );
 
@@ -2611,7 +3214,7 @@ function dhAdminMessage(
 
 
 /* =========================================================
-   AUTH EVENTS
+   AUTH WATCH
 ========================================================= */
 
 function dhAdminInstallAuthWatch() {
