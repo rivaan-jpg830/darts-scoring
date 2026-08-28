@@ -5,9 +5,8 @@
    DART HUB SERVICE WORKER
 ========================================================= */
 
-
 const CACHE_NAME =
-    "dart-hub-main-v4";
+    "dart-hub-main-v5";
 
 
 const APP_FILES = [
@@ -32,16 +31,19 @@ const APP_FILES = [
 
     "./board-practice.js",
 
+    "./practice-safety.js",
+
     "./stats-extra.js",
 
     "./scoring-ui.js",
 
     "./menu.js",
 
+    "./admin.js",
+
     "./manifest.json",
 
     "./icon.svg"
-
 ];
 
 
@@ -62,12 +64,10 @@ self.addEventListener(
                 )
 
                 .then(
-                    cache => {
-
-                        return cache.addAll(
+                    cache =>
+                        cache.addAll(
                             APP_FILES
-                        );
-                    }
+                        )
                 )
         );
 
@@ -92,9 +92,9 @@ self.addEventListener(
                 .keys()
 
                 .then(
-                    cacheNames => {
+                    cacheNames =>
 
-                        return Promise.all(
+                        Promise.all(
 
                             cacheNames.map(
                                 cacheName => {
@@ -108,7 +108,7 @@ self.addEventListener(
                                         &&
 
                                         cacheName !==
-                                        CACHE_NAME
+                                            CACHE_NAME
                                     ) {
 
                                         return caches.delete(
@@ -120,15 +120,12 @@ self.addEventListener(
                                     return Promise.resolve();
                                 }
                             )
-                        );
-                    }
+                        )
                 )
 
                 .then(
-                    () => {
-
-                        return self.clients.claim();
-                    }
+                    () =>
+                        self.clients.claim()
                 )
         );
     }
@@ -164,7 +161,6 @@ self.addEventListener(
     "fetch",
     event => {
 
-
         if (
             event.request.method !==
             "GET"
@@ -181,7 +177,7 @@ self.addEventListener(
 
 
         /*
-           Never cache Supabase requests.
+           NEVER CACHE SUPABASE.
         */
 
         if (
@@ -196,7 +192,8 @@ self.addEventListener(
 
 
         /* =================================================
-           PAGE NAVIGATION
+           HTML PAGE
+           NETWORK FIRST
         ================================================= */
 
         if (
@@ -248,7 +245,7 @@ self.addEventListener(
 
                                 ||
 
-                                caches.match(
+                                await caches.match(
                                     "./"
                                 )
                             );

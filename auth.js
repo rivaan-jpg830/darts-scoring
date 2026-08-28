@@ -5,7 +5,6 @@
    DART HUB SCRIPT LOADER
 ========================================================= */
 
-
 function loadDartHubScript(
     src
 ) {
@@ -16,6 +15,38 @@ function loadDartHubScript(
             reject
         ) => {
 
+            /*
+               Protection against accidental double loading.
+            */
+
+            const existing =
+                Array.from(
+                    document.scripts
+                )
+                .find(
+                    script =>
+                        script.src &&
+                        script.src.endsWith(
+                            src.replace(
+                                "./",
+                                "/"
+                            )
+                        )
+                );
+
+
+            if (
+                existing &&
+                existing.dataset.dartHubLoaded ===
+                    "true"
+            ) {
+
+                resolve();
+
+                return;
+            }
+
+
             const script =
                 document.createElement(
                     "script"
@@ -24,6 +55,10 @@ function loadDartHubScript(
 
             script.src =
                 src;
+
+
+            script.dataset.dartHubLoaded =
+                "true";
 
 
             script.onload =
@@ -124,6 +159,16 @@ async function startDartHub() {
 
 
         /* =================================================
+           PRACTICE BACKUP / SAFE CLOUD SAVE
+        ================================================= */
+
+        await loadDartHubScript(
+            "./practice-safety.js"
+        );
+
+
+
+        /* =================================================
            EXTRA / BOARD STATS
         ================================================= */
 
@@ -134,9 +179,7 @@ async function startDartHub() {
 
 
         /* =================================================
-           IMPROVED SCORING UI
-
-           Must load AFTER core Cricket/features.
+           SCORING UI
         ================================================= */
 
         await loadDartHubScript(
@@ -147,12 +190,25 @@ async function startDartHub() {
 
         /* =================================================
            PLAY MENU
-
-           Load last so every game exists first.
         ================================================= */
 
         await loadDartHubScript(
             "./menu.js"
+        );
+
+
+
+        /* =================================================
+           ADMIN
+
+           Loads last because it uses:
+           - authentication
+           - profile screens
+           - main menu
+        ================================================= */
+
+        await loadDartHubScript(
+            "./admin.js"
         );
 
 
@@ -175,7 +231,10 @@ async function startDartHub() {
 
             "Dart Hub could not start correctly.\n\n" +
 
-            "Please refresh the page."
+            (
+                error?.message ||
+                "Please refresh the page."
+            )
         );
     }
 }
